@@ -41,6 +41,16 @@ export default function CardBuilder() {
 
   const [paymentGroup, setPaymentGroup] = useState<"qris_ewallet" | "bank_card">("qris_ewallet");
 
+  // On mobile, scroll to preview after template selection so user sees result immediately
+  const scrollToPreview = () => {
+    if (typeof window !== "undefined" && window.innerWidth < 1024) {
+      const el = document.getElementById("live-preview");
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+  };
+
   const onSubmit = async (data: CardDraft) => {
     setSubmitting(true);
     setSubmitError(null);
@@ -105,7 +115,7 @@ export default function CardBuilder() {
                 type="radio"
                 value="classic_editorial"
                 checked={formValues.template === "classic_editorial"}
-                onChange={() => setValue("template", "classic_editorial")}
+                onChange={() => { setValue("template", "classic_editorial"); scrollToPreview(); }}
                 className="hidden"
               />
               <span className="text-2xl mb-2">✒️</span>
@@ -127,7 +137,7 @@ export default function CardBuilder() {
                 type="radio"
                 value="polaroid_scrapbook"
                 checked={formValues.template === "polaroid_scrapbook"}
-                onChange={() => setValue("template", "polaroid_scrapbook")}
+                onChange={() => { setValue("template", "polaroid_scrapbook"); scrollToPreview(); }}
                 className="hidden"
               />
               <span className="text-2xl mb-2">📷</span>
@@ -149,7 +159,7 @@ export default function CardBuilder() {
                 type="radio"
                 value="nocturnal_journal"
                 checked={formValues.template === "nocturnal_journal"}
-                onChange={() => setValue("template", "nocturnal_journal")}
+                onChange={() => { setValue("template", "nocturnal_journal"); scrollToPreview(); }}
                 className="hidden"
               />
               <span className="text-2xl mb-2">🌌</span>
@@ -372,7 +382,7 @@ export default function CardBuilder() {
       </form>
 
       {/* Right Column: Live Visual Preview Mockup (1 col on desktop) */}
-      <div className="lg:sticky lg:top-8 w-full flex justify-center">
+      <div id="live-preview" className="lg:sticky lg:top-8 w-full flex justify-center scroll-mt-6">
         <LivePreview draft={formValues} />
       </div>
     </div>

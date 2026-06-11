@@ -49,7 +49,13 @@ export async function publishCard(orderId: string): Promise<string> {
     }
 
     const cardId = order.cardId;
-    const publicCardBaseUrl = process.env.PUBLIC_CARD_BASE_URL || "";
+    const publicCardBaseUrl = process.env.PUBLIC_CARD_BASE_URL;
+    if (!publicCardBaseUrl) {
+      throw new Error(
+        "[Publisher] FATAL: PUBLIC_CARD_BASE_URL environment variable is not set. " +
+        "Please set it to 'https://pub.dearnote.asia' in your Vercel environment variables."
+      );
+    }
     const cleanBaseUrl = publicCardBaseUrl.endsWith("/")
       ? publicCardBaseUrl.slice(0, -1)
       : publicCardBaseUrl;
