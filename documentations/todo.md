@@ -36,7 +36,7 @@
 * [x] Create `ARCHITECTURE.md`.
 * [x] Create `TODO.md`.
 * [x] Create `.env.example`.
-* [ ] Push repo to GitHub.
+* [x] Push repo to GitHub.
 * [ ] Connect repo to Vercel.
 
 Suggested packages:
@@ -104,8 +104,8 @@ ADMIN_SECRET=
 
 ### Vercel Domain
 
-* [ ] Point `dearnote.asia` to Vercel.
-* [ ] Verify SSL.
+* [x] Point `dearnote.asia` to Vercel. (A and CNAME records set up)
+* [x] Verify SSL. (Subdomain SSL is active)
 * [ ] Confirm `https://dearnote.asia` works.
 * [ ] Confirm `/create` route works.
 
@@ -113,7 +113,7 @@ ADMIN_SECRET=
 
 * [x] Create R2 bucket `dearnote`. (Verified existing)
 * [x] Enable managed domain `pub-*.r2.dev` for public object access.
-* [/] Connect custom `pub.dearnote.asia` domain (optional for later)
+* [x] Connect custom `pub.dearnote.asia` domain (Attached to R2)
 * [x] Verify public object access and set CORS policy.
 * [x] Verify connection using test-connection.txt upload and download.
 * [x] Decide whether object listing is disabled (disabled by default on public domains for security).

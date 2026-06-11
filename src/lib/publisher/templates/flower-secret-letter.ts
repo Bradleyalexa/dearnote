@@ -1,0 +1,596 @@
+import { PublishedConfig } from "../../schemas/card-draft";
+
+export function generateFlowerSecretLetterHtml(config: PublishedConfig): string {
+  const hasSecretCode = !!config.secretCode;
+  const letterTitle = config.letterTitle || "A Special Message For You";
+  
+  // Format the letter body to preserve line breaks
+  const escapedLetterBody = JSON.stringify(config.letterBody);
+  
+  // Photo items rendering
+  const photosJson = JSON.stringify(config.photos);
+  
+  // Voice note check
+  const hasVoiceNote = !!config.voiceNote;
+  const voiceNoteSrc = config.voiceNote?.src || "";
+
+  return `<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>For You - DearNote</title>
+  <meta name="robots" content="noindex, nofollow">
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            vibes: ['"Great Vibes"', 'cursive'],
+            playfair: ['"Playfair Display"', 'serif'],
+            sans: ['Montserrat', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom CSS animations and styles */
+    body {
+      background: linear-gradient(135deg, #ffe5ec 0%, #ffc2d1 50%, #f7aef8 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(229, 152, 155, 0.5);
+      border-radius: 3px;
+    }
+    
+    /* Petal falling animation */
+    .petal {
+      position: absolute;
+      background: radial-gradient(circle at 30% 30%, #ffb3c1, #ff85a1);
+      border-radius: 150% 0 150% 150%;
+      opacity: 0.8;
+      z-index: 1;
+      pointer-events: none;
+      animation: fall linear infinite;
+    }
+    @keyframes fall {
+      0% {
+        transform: translate(0, -10px) rotate(0deg) scale(0.8);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.8;
+      }
+      90% {
+        opacity: 0.8;
+      }
+      100% {
+        transform: translate(100px, 105vh) rotate(360deg) scale(0.5);
+        opacity: 0;
+      }
+    }
+
+    /* Envelope styling */
+    .envelope-wrapper {
+      position: relative;
+      width: 340px;
+      height: 220px;
+      background-color: #f08080;
+      border-radius: 0 0 8px 8px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      cursor: pointer;
+      transform-style: preserve-3d;
+      transition: transform 0.5s ease;
+      z-index: 10;
+    }
+    .envelope-wrapper::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-left: 170px solid transparent;
+      border-right: 170px solid transparent;
+      border-top: 110px solid #cd5c5c;
+      transform-origin: top;
+      transition: transform 0.4s ease 0.4s;
+      z-index: 30;
+    }
+    .envelope-wrapper::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-left: 170px solid #e9967a;
+      border-right: 170px solid #e9967a;
+      border-bottom: 110px solid #e9967a;
+      border-radius: 0 0 8px 8px;
+      z-index: 25;
+    }
+    .envelope-wrapper.open::before {
+      transform: rotateX(180deg);
+      z-index: 5;
+    }
+    .envelope-card {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      background: #fff8f8;
+      border-radius: 4px;
+      padding: 20px;
+      z-index: 15;
+      transition: transform 0.6s ease;
+      transform: translateY(0);
+      box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
+    }
+    .envelope-wrapper.open .envelope-card {
+      transform: translateY(-120px);
+      z-index: 35;
+    }
+
+    /* Wax seal pulse */
+    .wax-seal {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 50px;
+      height: 50px;
+      background: radial-gradient(circle, #e63946, #c1121f);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2), inset 0 2px 4px rgba(255,255,255,0.4);
+      z-index: 40;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      color: #fff;
+    }
+    .wax-seal::after {
+      content: '❤';
+      font-family: sans-serif;
+    }
+    .envelope-wrapper.open .wax-seal {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0);
+      pointer-events: none;
+    }
+    .wax-seal:hover {
+      transform: translate(-50%, -50%) scale(1.1);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+    }
+
+    /* Glassmorphism containers */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      box-shadow: 0 10px 30px rgba(181, 101, 118, 0.15);
+    }
+  </style>
+</head>
+<body class="flex items-center justify-center p-4 relative min-h-screen">
+
+  <!-- Floating Petals Container -->
+  <div id="petals-container" class="absolute inset-0 overflow-hidden pointer-events-none z-0"></div>
+
+  <!-- SECTION 1: COSMETIC SECRET CODE -->
+  ${
+    hasSecretCode
+      ? `
+  <div id="code-section" class="w-full max-w-md glass-card rounded-2xl p-8 text-center z-10 transition-all duration-500 transform scale-100">
+    <div class="mb-6">
+      <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-rose-100 text-rose-500 text-3xl mb-4">
+        🔒
+      </div>
+      <h2 class="font-playfair text-2xl font-bold text-gray-800 mb-2">Pesan Rahasia</h2>
+      <p class="text-sm text-gray-500">Ada pesan khusus dari <span class="font-semibold text-rose-500">${config.fromName}</span> untuk <span class="font-semibold text-rose-500">${config.toName}</span>. Masukkan kode rahasia untuk membuka.</p>
+    </div>
+    
+    <div class="space-y-4">
+      <input 
+        type="text" 
+        id="secret-code-input" 
+        placeholder="Masukkan Kode Rahasia" 
+        maxlength="12"
+        class="w-full px-4 py-3 rounded-xl border border-rose-200 text-center font-semibold text-gray-700 focus:outline-none focus:ring-2 focus:ring-rose-400 uppercase tracking-widest placeholder:tracking-normal placeholder:font-normal"
+      >
+      <button 
+        onclick="verifyCode()"
+        class="w-full py-3 bg-gradient-to-r from-rose-400 to-pink-500 hover:from-rose-500 hover:to-pink-600 text-white font-semibold rounded-xl shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+      >
+        Buka Pesan
+      </button>
+      <p id="code-error" class="text-xs text-red-500 opacity-0 transition-opacity font-medium">Kode rahasia tidak cocok. Silakan coba lagi.</p>
+    </div>
+  </div>
+  `
+      : ""
+  }
+
+  <!-- SECTION 2: ENVELOPE OPENING UX -->
+  <div id="envelope-section" class="${
+    hasSecretCode ? "hidden" : ""
+  } flex-col items-center justify-center z-10 transition-all duration-500">
+    <div class="text-center mb-8">
+      <h3 class="font-vibes text-4xl text-rose-700 mb-1">Dear ${
+        config.toName
+      }</h3>
+      <p class="text-xs text-rose-600 font-semibold uppercase tracking-wider">Sebuah surat manis untukmu</p>
+    </div>
+    
+    <div id="envelope" class="envelope-wrapper" onclick="openEnvelope()">
+      <div class="wax-seal"></div>
+      <div class="envelope-card flex flex-col justify-between items-center text-center">
+        <span class="font-vibes text-3xl text-rose-500">Dari ${
+          config.fromName
+        }</span>
+        <span class="text-[10px] uppercase font-bold tracking-widest text-rose-400">Ketuk untuk Membaca</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: MAIN LETTER CONTENT -->
+  <div id="letter-section" class="hidden w-full max-w-2xl glass-card rounded-3xl p-6 sm:p-10 my-8 z-10 opacity-0 transition-all duration-1000 transform translate-y-10">
+    <!-- Letter Header -->
+    <div class="text-center border-b border-rose-100 pb-6 mb-8">
+      <h1 class="font-vibes text-5xl text-rose-500 mb-2">${letterTitle}</h1>
+      <div class="flex items-center justify-between text-xs font-semibold text-rose-400 uppercase tracking-widest px-2">
+        <span>Untuk: ${config.toName}</span>
+        <span>Dari: ${config.fromName}</span>
+      </div>
+    </div>
+
+    <!-- Letter Body (Typewriter effect container) -->
+    <div class="font-playfair text-gray-700 leading-relaxed text-base sm:text-lg mb-8 whitespace-pre-wrap min-h-[120px]" id="letter-body-content"></div>
+
+    <!-- Photos Gallery -->
+    <div id="gallery-container" class="hidden space-y-6 mb-8 transition-opacity duration-1000 opacity-0">
+      <h3 class="font-playfair text-xl font-bold text-center text-rose-600 mb-4">Galeri Kenangan Kita</h3>
+      <div id="photos-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+    </div>
+
+    <!-- Voice Note Section -->
+    ${
+      hasVoiceNote
+        ? `
+    <div id="voice-section" class="hidden bg-rose-50/80 border border-rose-100 rounded-2xl p-4 sm:p-6 mb-8 transition-opacity duration-1000 opacity-0">
+      <h4 class="font-playfair text-sm font-semibold text-rose-700 mb-3 text-center flex items-center justify-center gap-2">
+        <span>🎙</span> Pesan Suara Untukmu
+      </h4>
+      <div class="flex flex-col sm:flex-row items-center gap-4">
+        <!-- Custom Audio Player UI -->
+        <button id="play-btn" onclick="toggleAudio()" class="w-12 h-12 rounded-full bg-rose-400 hover:bg-rose-500 text-white flex items-center justify-center shadow-md transition-all">
+          <span id="play-icon" class="text-xl">▶</span>
+        </button>
+        <div class="flex-1 w-full">
+          <div class="relative h-2 bg-rose-200 rounded-full cursor-pointer" id="progress-bar-container" onclick="seekAudio(event)">
+            <div class="absolute top-0 left-0 h-full bg-rose-400 rounded-full w-0" id="audio-progress"></div>
+          </div>
+          <div class="flex justify-between text-xs text-rose-500 font-semibold mt-2">
+            <span id="current-time">0:00</span>
+            <span id="duration">0:00</span>
+          </div>
+        </div>
+        <audio id="audio-element" src="${voiceNoteSrc}" ontimeupdate="updateProgress()" onloadedmetadata="initAudioMetadata()"></audio>
+      </div>
+    </div>
+    `
+        : ""
+    }
+
+    <!-- Final Message -->
+    ${
+      config.finalMessage
+        ? `
+    <div id="final-message-container" class="hidden text-center mt-10 pt-8 border-t border-rose-100 transition-opacity duration-1000 opacity-0">
+      <p class="font-vibes text-4xl text-rose-500 mb-1">${config.finalMessage}</p>
+      <p class="text-[10px] font-bold uppercase tracking-wider text-rose-400">Selamanya Bersamamu</p>
+    </div>
+    `
+        : ""
+    }
+
+    <!-- Footer branding -->
+    <div class="text-center mt-8 text-[10px] font-semibold text-rose-400 uppercase tracking-widest">
+      Made with DearNote
+    </div>
+  </div>
+
+  <script>
+    // Config variables passed from publisher
+    const config = {
+      secretCode: "${config.secretCode || ""}",
+      letterBody: ${escapedLetterBody},
+      photos: ${photosJson},
+      hasVoiceNote: ${hasVoiceNote}
+    };
+
+    // 1. Generate Floating Petals
+    const petalsContainer = document.getElementById('petals-container');
+    const petalColors = ['#ffb3c1', '#ffc2d1', '#ffe5ec', '#ff85a1'];
+    
+    function createPetal() {
+      const petal = document.createElement('div');
+      petal.classList.add('petal');
+      
+      // Random sizes, speeds, angles, positions
+      const size = Math.random() * 12 + 8;
+      const left = Math.random() * window.innerWidth;
+      const duration = Math.random() * 8 + 5;
+      const delay = Math.random() * 5;
+      const color = petalColors[Math.floor(Math.random() * petalColors.length)];
+      
+      petal.style.width = size + 'px';
+      petal.style.height = size + 'px';
+      petal.style.left = left + 'px';
+      petal.style.animationDuration = duration + 's';
+      petal.style.animationDelay = delay + 's';
+      petal.style.background = 'radial-gradient(circle at 30% 30%, ' + color + ', #e5989b)';
+      
+      // Random shape variants
+      if (Math.random() > 0.5) {
+        petal.style.borderRadius = '50% 0 50% 50%';
+      }
+      
+      petalsContainer.appendChild(petal);
+      
+      // Remove petal after animation completes
+      setTimeout(() => {
+        petal.remove();
+      }, (duration + delay) * 1000);
+    }
+    
+    // Spawn initial petals
+    for (let i = 0; i < 20; i++) {
+      createPetal();
+    }
+    // Continuously spawn petals
+    setInterval(createPetal, 400);
+
+    // 2. Secret Code Validation
+    function verifyCode() {
+      const input = document.getElementById('secret-code-input').value.trim().toUpperCase();
+      const actualCode = config.secretCode.toUpperCase();
+      const errorMsg = document.getElementById('code-error');
+      
+      if (input === actualCode) {
+        // Transition to envelope section
+        const codeSection = document.getElementById('code-section');
+        codeSection.classList.add('scale-95', 'opacity-0');
+        setTimeout(() => {
+          codeSection.remove();
+          const envSection = document.getElementById('envelope-section');
+          envSection.classList.remove('hidden');
+          envSection.classList.add('flex');
+        }, 500);
+      } else {
+        errorMsg.classList.remove('opacity-0');
+        // Shake input effect
+        const inputEl = document.getElementById('secret-code-input');
+        inputEl.classList.add('border-red-400', 'animate-bounce');
+        setTimeout(() => {
+          inputEl.classList.remove('animate-bounce');
+        }, 500);
+      }
+    }
+
+    // Enter key support for secret code
+    if (document.getElementById('secret-code-input')) {
+      document.getElementById('secret-code-input').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          verifyCode();
+        }
+      });
+    }
+
+    // 3. Envelope Unfolding Animation
+    let isEnvelopeOpened = false;
+    function openEnvelope() {
+      if (isEnvelopeOpened) return;
+      isEnvelopeOpened = true;
+      
+      const envelope = document.getElementById('envelope');
+      envelope.classList.add('open');
+      
+      // Wait for envelope animation to finish, then slide in the letter
+      setTimeout(() => {
+        const envSection = document.getElementById('envelope-section');
+        envSection.classList.add('scale-90', 'opacity-0');
+        
+        setTimeout(() => {
+          envSection.remove();
+          const letterSection = document.getElementById('letter-section');
+          letterSection.classList.remove('hidden');
+          // Trigger CSS transition
+          setTimeout(() => {
+            letterSection.classList.remove('opacity-0', 'translate-y-10');
+            startTypewriter();
+          }, 50);
+        }, 600);
+      }, 1500);
+    }
+
+    // 4. Typewriter Animation for Letter Body
+    function startTypewriter() {
+      const container = document.getElementById('letter-body-content');
+      const text = config.letterBody;
+      let index = 0;
+      const speed = 25; // millisecond delay per character
+      
+      function type() {
+        if (index < text.length) {
+          container.innerHTML += text.charAt(index);
+          index++;
+          
+          // Auto scroll letter window down on mobile if it expands
+          if (window.innerHeight + window.scrollY < document.body.offsetHeight) {
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+          }
+          
+          setTimeout(type, speed);
+        } else {
+          // Completed typing, reveal other sections
+          revealExtraSections();
+        }
+      }
+      
+      type();
+    }
+
+    // 5. Reveal Extra Sections (Photos, Audio, Final Message)
+    function revealExtraSections() {
+      // 1. Photos
+      if (config.photos && config.photos.length > 0) {
+        const gallery = document.getElementById('gallery-container');
+        const grid = document.getElementById('photos-grid');
+        
+        config.photos.forEach(photo => {
+          const item = document.createElement('div');
+          item.className = 'flex flex-col bg-white border border-rose-50 rounded-xl overflow-hidden shadow-sm p-3 transform transition hover:scale-[1.02] duration-300';
+          
+          // Image
+          const img = document.createElement('img');
+          img.src = photo.src;
+          img.alt = photo.caption || 'Memory';
+          img.className = 'w-full h-48 sm:h-60 object-cover rounded-lg mb-2';
+          
+          item.appendChild(img);
+          
+          // Caption
+          if (photo.caption) {
+            const cap = document.createElement('p');
+            cap.className = 'font-playfair text-sm text-center text-gray-600 italic px-2 py-1';
+            cap.innerText = photo.caption;
+            item.appendChild(cap);
+          }
+          
+          grid.appendChild(item);
+        });
+        
+        gallery.classList.remove('hidden');
+        setTimeout(() => { gallery.classList.add('opacity-100'); }, 100);
+      }
+      
+      // 2. Voice note
+      if (config.hasVoiceNote) {
+        const voice = document.getElementById('voice-section');
+        voice.classList.remove('hidden');
+        setTimeout(() => { voice.classList.add('opacity-100'); }, 300);
+      }
+      
+      // 3. Final message
+      const finalMsg = document.getElementById('final-message-container');
+      if (finalMsg) {
+        finalMsg.classList.remove('hidden');
+        setTimeout(() => { finalMsg.classList.add('opacity-100'); }, 600);
+      }
+    }
+
+    // 6. Custom Audio Player Logic
+    let audio = null;
+    let isPlaying = false;
+    
+    function getAudioElement() {
+      if (!audio) {
+        audio = document.getElementById('audio-element');
+      }
+      return audio;
+    }
+
+    function initAudioMetadata() {
+      const player = getAudioElement();
+      const durationEl = document.getElementById('duration');
+      if (durationEl && player.duration) {
+        durationEl.innerText = formatTime(player.duration);
+      }
+    }
+
+    function toggleAudio() {
+      const player = getAudioElement();
+      const playIcon = document.getElementById('play-icon');
+      
+      if (isPlaying) {
+        player.pause();
+        playIcon.innerText = '▶';
+        isPlaying = false;
+      } else {
+        player.play().catch(e => {
+          console.error("Audio playback error:", e);
+        });
+        playIcon.innerText = '⏸';
+        isPlaying = true;
+      }
+    }
+
+    function updateProgress() {
+      const player = getAudioElement();
+      const progress = document.getElementById('audio-progress');
+      const current = document.getElementById('current-time');
+      
+      if (player.duration) {
+        const percent = (player.currentTime / player.duration) * 100;
+        progress.style.width = percent + '%';
+        current.innerText = formatTime(player.currentTime);
+      }
+      
+      // Audio ended
+      if (player.ended) {
+        document.getElementById('play-icon').innerText = '▶';
+        progress.style.width = '0%';
+        current.innerText = '0:00';
+        isPlaying = false;
+      }
+    }
+
+    function seekAudio(event) {
+      const player = getAudioElement();
+      const bar = document.getElementById('progress-bar-container');
+      const rect = bar.getBoundingClientRect();
+      const clickPosition = (event.clientX - rect.left) / rect.width;
+      
+      if (player.duration) {
+        player.currentTime = clickPosition * player.duration;
+      }
+    }
+
+    function formatTime(secs) {
+      if (isNaN(secs)) return '0:00';
+      const m = Math.floor(secs / 60);
+      const s = Math.floor(secs % 60);
+      return m + ':' + (s < 10 ? '0' : '') + s;
+    }
+    
+    // In case duration loads after meta
+    window.addEventListener('load', () => {
+      setTimeout(initAudioMetadata, 1000);
+    });
+  </script>
+
+</body>
+</html>`;
+}

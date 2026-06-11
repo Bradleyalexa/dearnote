@@ -1,0 +1,26 @@
+{
+  "cardId": "demo_demo-moonlight",
+  "template": "moonlight_voice_letter",
+  "fromName": "Rian",
+  "toName": "Alya",
+  "secretCode": "1234",
+  "letterTitle": "Bisikan di Bawah Bintang",
+  "letterBody": "Untuk Alya,\n\nMalam ini langit cerah sekali, dan itu membuatku memikirkanmu. Jarak mungkin memisahkan kita saat ini, tapi kita selalu memandang bulan yang sama.\n\nAku merekam pesan suara di bawah ini khusus untukmu. Dengarkan ya saat kamu rindu suaraku.",
+  "photos": [
+    {
+      "src": "https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=600&auto=format&fit=crop",
+      "caption": "Our first picnic date"
+    },
+    {
+      "src": "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?q=80&w=600&auto=format&fit=crop",
+      "caption": "Sunset beach walk"
+    }
+  ],
+  "voiceNote": {
+    "src": "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+    "durationSeconds": 372
+  },
+  "finalMessage": "Good Night, Sleep Tight.",
+  "publishedAt": "2026-06-11T10:13:47.231Z",
+  "expiresAt": "2026-12-08T10:13:47.231Z"
+}
