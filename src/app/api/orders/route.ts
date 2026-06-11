@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { nanoid } from "nanoid";
 import { CardDraftSchema } from "@/lib/schemas/card-draft";
-import { putJson } from "@/lib/r2/client";
+import { putJson, getObject } from "@/lib/r2/client";
 
 export async function POST(req: NextRequest) {
   try {
@@ -32,7 +32,29 @@ export async function POST(req: NextRequest) {
 
     // 4. Generate Identifiers
     const orderId = `order_${nanoid(8)}`;
-    const cardId = `card_${nanoid(8)}`;
+    
+    // Generate unique 6-digit numeric card ID
+    let cardId = "";
+    let isUnique = false;
+    let attempts = 0;
+    while (!isUnique && attempts < 5) {
+      let tempId = "";
+      for (let i = 0; i < 6; i++) {
+        tempId += Math.floor(Math.random() * 10).toString();
+      }
+      try {
+        await getObject(`cards/${tempId}/status.json`);
+        attempts++;
+      } catch (err) {
+        cardId = tempId;
+        isUnique = true;
+      }
+    }
+
+    if (!cardId) {
+      cardId = Math.floor(100000 + Math.random() * 900000).toString();
+    }
+
     const createdAt = new Date().toISOString();
 
     // 5. Build Order JSON
