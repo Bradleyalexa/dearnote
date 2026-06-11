@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
     }
 
     // 3. Calculate Pricing Server-Side
-    const qrisPrice = parseInt(process.env.CARD_PRICE_QRIS_EWALLET_IDR || "3000", 10);
+    const qrisPrice = parseInt(process.env.CARD_PRICE_QRIS_EWALLET_IDR || "5000", 10);
     const bankPrice = parseInt(process.env.CARD_PRICE_BANK_CARD_IDR || "8000", 10);
     const amount = paymentGroup === "qris_ewallet" ? qrisPrice : bankPrice;
 

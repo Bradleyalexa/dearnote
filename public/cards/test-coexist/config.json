@@ -1,0 +1,21 @@
+{
+  "cardId": "test_bgm_coexist",
+  "template": "classic_editorial",
+  "fromName": "Ardi",
+  "toName": "Nadya",
+  "secretCode": "1234",
+  "letterTitle": "Pengetesan Coexistence BGM & Voice Note",
+  "letterBody": "Halo! Ini adalah isi dari surat pengetesan coexistence audio.\nMusik latar (BGM) Cello Hangat seharusnya berputar di background saat amplop dibuka.\nLalu jika tombol Voice Note (menggunakan track Piano) di-play, BGM Cello akan terhenti (pause).\nSaat Voice Note Piano di-pause atau selesai, BGM Cello akan lanjut berputar (resume).",
+  "photos": [],
+  "voiceNote": {
+    "src": "/audio/track1.mp3",
+    "durationSeconds": 35
+  },
+  "bgMusic": {
+    "src": "/audio/track2.mp3",
+    "durationSeconds": 25
+  },
+  "finalMessage": "Selesai Pengetesan.",
+  "publishedAt": "2026-06-11T16:12:10.002Z",
+  "expiresAt": "2026-09-09T16:12:10.002Z"
+}

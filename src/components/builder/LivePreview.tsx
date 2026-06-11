@@ -31,6 +31,18 @@ export default function LivePreview({ draft }: LivePreviewProps) {
       };
     }
 
+    if (draft.bgMusic) {
+      // Encode each path segment to handle filenames with spaces or special chars
+      const encodedBgSrc = draft.bgMusic.src
+        .split("/")
+        .map((seg) => encodeURIComponent(seg))
+        .join("/");
+      config.bgMusic = {
+        src: encodedBgSrc,
+        durationSeconds: draft.bgMusic.durationSeconds,
+      };
+    }
+
     // 2. Generate HTML
     let html = generateIndexHtml(config);
 

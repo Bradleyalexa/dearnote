@@ -8,6 +8,10 @@ export function generatePolaroidScrapbookHtml(config: PublishedConfig): string {
   const hasVoiceNote = !!config.voiceNote;
   const voiceNoteSrc = config.voiceNote?.src || "";
 
+  // Background music check
+  const hasBgMusic = !!config.bgMusic;
+  const bgMusicSrc = config.bgMusic?.src || "";
+
   return `<!DOCTYPE html>
 <html lang="id">
 <head>
@@ -110,6 +114,18 @@ export function generatePolaroidScrapbookHtml(config: PublishedConfig): string {
   </style>
 </head>
 <body class="flex items-center justify-center p-4 relative min-h-screen">
+
+  <!-- Floating BGM Toggle Button -->
+  ${
+    hasBgMusic
+      ? `
+  <button id="bgm-toggle-btn" onclick="toggleBgm()" class="fixed top-4 right-4 z-50 w-10 h-10 rounded-full bg-[#E5D3C0]/85 backdrop-blur-sm border border-[#D5C2B0] shadow-md flex items-center justify-center text-zinc-700 hover:bg-[#D8C4B0] transition-all" title="Matikan Musik Latar">
+    <span id="bgm-icon" class="text-sm">🎵</span>
+  </button>
+  <audio id="bgm-audio-element" src="${bgMusicSrc}" loop></audio>
+  `
+      : ""
+  }
 
   <!-- SECTION 1: CODE LOCK ACCESS SCREEN -->
   ${
@@ -267,6 +283,8 @@ export function generatePolaroidScrapbookHtml(config: PublishedConfig): string {
       if (input === actualCode) {
         const codeSection = document.getElementById('code-section');
         codeSection.classList.add('scale-95', 'opacity-0');
+        // Start BGM on user interaction
+        playBgm();
         setTimeout(() => {
           codeSection.remove();
           const coverSection = document.getElementById('cover-section');
@@ -286,6 +304,9 @@ export function generatePolaroidScrapbookHtml(config: PublishedConfig): string {
     function openScrapbook() {
       if (isCoverOpened) return;
       isCoverOpened = true;
+      
+      // Start BGM on user interaction
+      playBgm();
       
       const cover = document.getElementById('scrapbook-cover');
       cover.style.transform = 'perspective(1000px) rotateY(-150deg)';
@@ -388,6 +409,55 @@ export function generatePolaroidScrapbookHtml(config: PublishedConfig): string {
     let audio = null;
     let isPlaying = false;
     
+    // Background Music (BGM) Logic
+    let bgmAudio = null;
+    let isBgmPlaying = false;
+    let isBgmMuted = false;
+
+    function getBgmAudio() {
+      if (!bgmAudio) {
+        bgmAudio = document.getElementById('bgm-audio-element');
+      }
+      return bgmAudio;
+    }
+
+    function playBgm() {
+      const player = getBgmAudio();
+      if (player && !isBgmMuted && !isPlaying) {
+        player.play().catch(e => console.error("BGM Autoplay blocked:", e));
+        isBgmPlaying = true;
+        const icon = document.getElementById('bgm-icon');
+        if (icon) icon.innerText = '🎵';
+      }
+    }
+
+    function pauseBgm() {
+      const player = getBgmAudio();
+      if (player && isBgmPlaying) {
+        player.pause();
+        isBgmPlaying = false;
+      }
+    }
+
+    function toggleBgm() {
+      const player = getBgmAudio();
+      const icon = document.getElementById('bgm-icon');
+      if (!player) return;
+      if (isBgmMuted) {
+        isBgmMuted = false;
+        if (icon) icon.innerText = '🎵';
+        if (!isPlaying) {
+          player.play().catch(e => console.error(e));
+          isBgmPlaying = true;
+        }
+      } else {
+        isBgmMuted = true;
+        if (icon) icon.innerText = '🔇';
+        player.pause();
+        isBgmPlaying = false;
+      }
+    }
+
     function getAudioElement() {
       if (!audio) audio = document.getElementById('audio-element');
       return audio;
@@ -409,7 +479,9 @@ export function generatePolaroidScrapbookHtml(config: PublishedConfig): string {
         player.pause();
         playIcon.innerText = '▶';
         isPlaying = false;
+        playBgm();
       } else {
+        pauseBgm();
         player.play().catch(e => console.error(e));
         playIcon.innerText = '⏸';
         isPlaying = true;
@@ -432,6 +504,7 @@ export function generatePolaroidScrapbookHtml(config: PublishedConfig): string {
         progress.style.width = '0%';
         current.innerText = '0:00';
         isPlaying = false;
+        playBgm();
       }
     }
 

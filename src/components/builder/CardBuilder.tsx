@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { CardDraftSchema, CardDraft } from "@/lib/schemas/card-draft";
 import PhotoUploader from "./PhotoUploader";
 import VoiceNoteUploader from "./VoiceNoteUploader";
+import BackgroundMusicSelector from "./BackgroundMusicSelector";
 import LivePreview from "./LivePreview";
 
 export default function CardBuilder() {
@@ -29,6 +30,8 @@ export default function CardBuilder() {
       letterTitle: "",
       letterBody: "",
       photos: [],
+      voiceNote: undefined,
+      bgMusic: undefined,
       finalMessage: "",
     },
   });
@@ -164,7 +167,7 @@ export default function CardBuilder() {
             <label className="block text-sm font-semibold text-zinc-700">Dari (Nama Anda)</label>
             <input
               type="text"
-              placeholder="Contoh: Alexander"
+              placeholder="Contoh: Kevin"
               {...register("fromName")}
               maxLength={40}
               className="w-full px-4 py-2.5 border border-zinc-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-zinc-400 text-sm font-medium text-zinc-700"
@@ -192,7 +195,7 @@ export default function CardBuilder() {
         {/* 3. Access Code Gate */}
         <div className="space-y-1.5 bg-zinc-50 border border-zinc-200/60 rounded-2xl p-4">
           <div className="flex items-center justify-between">
-            <label className="block text-sm font-semibold text-zinc-700">Kode Akses Jurnal (Opsional)</label>
+            <label className="block text-sm font-semibold text-zinc-700">Kode Akses / Passkey (Opsional)</label>
             <span className="text-[9px] bg-zinc-200 text-zinc-600 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
               Keamanan
             </span>
@@ -202,7 +205,7 @@ export default function CardBuilder() {
           </p>
           <input
             type="text"
-            placeholder="Contoh: AKSES123"
+            placeholder="Contoh: dearnote"
             {...register("secretCode")}
             maxLength={12}
             className="w-full px-4 py-2.5 border border-zinc-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-zinc-400 text-sm font-bold text-zinc-700 tracking-widest placeholder:tracking-normal placeholder:font-normal uppercase"
@@ -257,12 +260,21 @@ export default function CardBuilder() {
           )}
         />
 
-        {/* 6. Voice Note Uploader (Optional, Max 60s) */}
+        {/* 6. Voice Note Uploader (Optional) */}
         <Controller
           control={control}
           name="voiceNote"
           render={({ field }) => (
             <VoiceNoteUploader value={field.value} onChange={field.onChange} />
+          )}
+        />
+
+        {/* 7. Background Music Selector (Optional) */}
+        <Controller
+          control={control}
+          name="bgMusic"
+          render={({ field }) => (
+            <BackgroundMusicSelector value={field.value} onChange={field.onChange} />
           )}
         />
 
@@ -285,49 +297,51 @@ export default function CardBuilder() {
         <div className="space-y-3 pt-4 border-t border-zinc-150">
           <label className="block text-sm font-semibold text-zinc-700">Pilih Metode Pembayaran</label>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 font-sans">
-            {/* QRIS / E-Wallet */}
-            <label
+            {/* Option 1: QRIS / E-Wallet */}
+            <div
+              onClick={() => setPaymentGroup("qris_ewallet")}
               className={`border-2 rounded-xl p-4 flex items-center justify-between cursor-pointer transition-all ${
                 paymentGroup === "qris_ewallet"
                   ? "border-zinc-800 bg-zinc-50/50 shadow-sm"
-                  : "border-gray-250 hover:border-zinc-300 hover:bg-zinc-50/10"
+                  : "border-gray-200 hover:border-zinc-300 hover:bg-zinc-50/10"
               }`}
             >
-              <input
-                type="radio"
-                value="qris_ewallet"
-                checked={paymentGroup === "qris_ewallet"}
-                onChange={() => setPaymentGroup("qris_ewallet")}
-                className="hidden"
-              />
-              <div className="flex flex-col">
-                <span className="text-xs font-bold text-zinc-800">QRIS / E-Wallet</span>
-                <span className="text-[10px] text-zinc-400 mt-0.5 leading-none">OVO, GoPay, Dana, dll</span>
+              <div className="flex flex-col text-left">
+                <span className="text-xs font-bold text-zinc-850 text-[#18181b]">QRIS / E-Wallet</span>
+                <span className="text-[10px] text-zinc-400 mt-1 leading-normal">OVO, GoPay, Dana, LinkAja, dll</span>
               </div>
-              <span className="text-sm font-bold text-zinc-800">Rp3.000</span>
-            </label>
+              <div className="flex items-center gap-3">
+                <span className="text-sm font-bold text-zinc-850 text-[#18181b]">Rp5.000</span>
+                <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${
+                  paymentGroup === "qris_ewallet" ? "border-zinc-800" : "border-gray-300"
+                }`}>
+                  {paymentGroup === "qris_ewallet" && <div className="w-2 h-2 rounded-full bg-zinc-800" />}
+                </div>
+              </div>
+            </div>
 
-            {/* Bank / Cards */}
-            <label
+            {/* Option 2: Bank Transfer / Credit Card */}
+            <div
+              onClick={() => setPaymentGroup("bank_card")}
               className={`border-2 rounded-xl p-4 flex items-center justify-between cursor-pointer transition-all ${
                 paymentGroup === "bank_card"
                   ? "border-zinc-800 bg-zinc-50/50 shadow-sm"
-                  : "border-gray-250 hover:border-zinc-300 hover:bg-zinc-50/10"
+                  : "border-gray-200 hover:border-zinc-300 hover:bg-zinc-50/10"
               }`}
             >
-              <input
-                type="radio"
-                value="bank_card"
-                checked={paymentGroup === "bank_card"}
-                onChange={() => setPaymentGroup("bank_card")}
-                className="hidden"
-              />
-              <div className="flex flex-col">
-                <span className="text-xs font-bold text-zinc-800">Transfer Bank / Kartu</span>
-                <span className="text-[10px] text-zinc-400 mt-0.5 leading-none">Virtual Account, Debit/Kredit</span>
+              <div className="flex flex-col text-left">
+                <span className="text-xs font-bold text-zinc-850 text-[#18181b]">Transfer Bank / Kartu</span>
+                <span className="text-[10px] text-zinc-400 mt-1 leading-normal">Virtual Account (BCA, Mandiri, dll), Visa/Mastercard</span>
               </div>
-              <span className="text-sm font-bold text-zinc-800">Rp8.000</span>
-            </label>
+              <div className="flex items-center gap-3">
+                <span className="text-sm font-bold text-zinc-850 text-[#18181b]">Rp8.000</span>
+                <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${
+                  paymentGroup === "bank_card" ? "border-zinc-800" : "border-gray-300"
+                }`}>
+                  {paymentGroup === "bank_card" && <div className="w-2 h-2 rounded-full bg-zinc-800" />}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 

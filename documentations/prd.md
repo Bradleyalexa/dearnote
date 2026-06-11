@@ -2,7 +2,7 @@
 
 ## 1. Product Overview
 
-**DearNote** adalah no-account romantic digital card builder untuk membuat kartu/surat digital interaktif yang bisa dibuka lewat link. User membuat kartu, upload foto/voice note, membayar, lalu sistem mem-publish kartu sebagai static HTML yang bisa diakses publik selama 180 hari.
+**DearNote** adalah no-account romantic digital card builder untuk membuat kartu/surat digital interaktif yang bisa dibuka lewat link. User membuat kartu, upload foto/voice note, membayar, lalu sistem mem-publish kartu sebagai static HTML yang bisa diakses publik selama 90 hari.
 
 Domain utama:
 
@@ -83,7 +83,7 @@ Release pertama langsung mencakup fitur utama berikut:
 * Voice note allowed.
 * Cosmetic secret code.
 * No edit after publish.
-* Card expiry 180 days.
+* Card expiry 90 days.
 * No watermark.
 * Public static URL.
 * QR code generation.
@@ -115,7 +115,7 @@ DearNote uses two pricing groups based on payment method.
 ### QRIS & E-wallets
 
 ```txt
-Price: Rp3.000 per card
+Price: Rp5.000 per card
 ```
 
 Allowed payment methods:
@@ -140,7 +140,7 @@ Allowed payment methods:
 User must choose payment method group before checkout:
 
 ```txt
-QRIS / E-wallets → Rp3.000
+QRIS / E-wallets → Rp5.000
 Banks / Cards → Rp8.000
 ```
 
@@ -237,13 +237,13 @@ URL requirements:
 Each published card expires after:
 
 ```txt
-180 days
+90 days
 ```
 
 Expiry behavior:
 
-* The card remains accessible for 180 days after publish.
-* After 180 days, the card may show an expired page or be deleted from R2.
+* The card remains accessible for 90 days after publish.
+* After 90 days, the card may show an expired page or be deleted from R2.
 * The system should store `expiresAt` in `status.json`.
 * Automated cleanup can be manual initially, but data must include expiry metadata.
 
@@ -482,7 +482,7 @@ Backend responsibilities:
 ### Payment Groups
 
 ```txt
-qris_ewallet → Rp3.000
+qris_ewallet → Rp5.000
 bank_card → Rp8.000
 ```
 
@@ -695,7 +695,7 @@ A release is complete when:
 * User can upload up to 5 photos.
 * User can upload a voice note.
 * User can preview card on mobile.
-* User can choose QRIS/e-wallet payment for Rp3.000.
+* User can choose QRIS/e-wallet payment for Rp5.000.
 * User can choose bank/card payment for Rp8.000.
 * DOKU checkout is created successfully.
 * Payment success webhook is verified.
@@ -703,7 +703,7 @@ A release is complete when:
 * Published card opens from public URL.
 * Published card loads photos and voice note.
 * QR code opens same card URL.
-* Card status includes 180-day expiry.
+* Card status includes 90-day expiry.
 * No watermark appears on paid card.
 * No account/auth/database is required.
 
@@ -790,7 +790,7 @@ Payment: DOKU Checkout
 Database: none
 Auth: none
 Card output: static HTML
-Price: Rp3.000 / Rp8.000 based on payment group
-Expiry: 180 days
+Price: Rp5.000 / Rp8.000 based on payment group
+Expiry: 90 days
 Templates: 3
 ```

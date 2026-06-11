@@ -1,24 +1,4 @@
-import { PublishedConfig } from "../../schemas/card-draft";
-
-export function generateClassicEditorialHtml(config: PublishedConfig): string {
-  const hasSecretCode = !!config.secretCode;
-  const letterTitle = config.letterTitle || "A Special Note For You";
-  
-  // Format the letter body to preserve line breaks
-  const escapedLetterBody = JSON.stringify(config.letterBody);
-  
-  // Photo items rendering
-  const photosJson = JSON.stringify(config.photos);
-  
-  // Voice note check
-  const hasVoiceNote = !!config.voiceNote;
-  const voiceNoteSrc = config.voiceNote?.src || "";
-
-  // Background music check
-  const hasBgMusic = !!config.bgMusic;
-  const bgMusicSrc = config.bgMusic?.src || "";
-
-  return `<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
@@ -204,21 +184,15 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
   <div id="dust-container" class="absolute inset-0 overflow-hidden pointer-events-none z-0"></div>
 
   <!-- Floating BGM Toggle Button -->
-  ${
-    hasBgMusic
-      ? `
+  
   <button id="bgm-toggle-btn" onclick="toggleBgm()" class="fixed top-4 right-4 z-50 w-10 h-10 rounded-full bg-white/80 backdrop-blur-md border border-zinc-200 shadow-md flex items-center justify-center text-zinc-650 hover:bg-white transition-all" title="Matikan Musik Latar">
     <span id="bgm-icon" class="text-sm">🎵</span>
   </button>
-  <audio id="bgm-audio-element" src="${bgMusicSrc}" loop></audio>
-  `
-      : ""
-  }
+  <audio id="bgm-audio-element" src="/audio/track2.mp3" loop></audio>
+  
 
   <!-- SECTION 1: CODE LOCK ACCESS SCREEN -->
-  ${
-    hasSecretCode
-      ? `
+  
   <div id="code-section" class="w-full max-w-md keepsake-card rounded-2xl p-8 text-center z-10 transition-all duration-500 transform scale-100 border border-zinc-100">
     <div class="mb-6">
       <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-zinc-50 text-zinc-500 border border-zinc-100 text-2xl mb-4">
@@ -245,23 +219,19 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
       <p id="code-error" class="text-xs text-red-500 opacity-0 transition-opacity font-semibold">Kode tidak cocok. Silakan coba kembali.</p>
     </div>
   </div>
-  `
-      : ""
-  }
+  
 
   <!-- SECTION 2: ENVELOPE OPENING UX -->
-  <div id="envelope-section" class="${
-    hasSecretCode ? "hidden" : ""
-  } flex-col items-center justify-center z-10 transition-all duration-500">
+  <div id="envelope-section" class="hidden flex-col items-center justify-center z-10 transition-all duration-500">
     <div class="text-center mb-8">
-      <h3 class="font-lora text-2xl font-semibold text-zinc-700 mb-1">Kepada: ${config.toName}</h3>
+      <h3 class="font-lora text-2xl font-semibold text-zinc-700 mb-1">Kepada: Nadya</h3>
       <p class="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">Sebuah Catatan Kenangan Untukmu</p>
     </div>
     
     <div id="envelope" class="envelope-wrapper" onclick="openEnvelope()">
       <div class="wax-seal"></div>
       <div class="envelope-card flex flex-col justify-between items-center text-center">
-        <span class="font-lora text-xl font-medium text-zinc-600">Dari: ${config.fromName}</span>
+        <span class="font-lora text-xl font-medium text-zinc-600">Dari: Ardi</span>
         <span class="text-[9px] uppercase font-bold tracking-widest text-amber-600/80">Ketuk untuk Membuka</span>
       </div>
     </div>
@@ -272,10 +242,10 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
     
     <!-- Letter Header -->
     <div class="text-center border-b border-zinc-100 pb-6 mb-8">
-      <h1 class="font-lora text-3xl font-semibold text-zinc-800 mb-3">${letterTitle}</h1>
+      <h1 class="font-lora text-3xl font-semibold text-zinc-800 mb-3">Pengetesan Coexistence BGM & Voice Note</h1>
       <div class="flex items-center justify-between text-[10px] font-bold text-zinc-400 uppercase tracking-widest px-2">
-        <span>Untuk: ${config.toName}</span>
-        <span>Dari: ${config.fromName}</span>
+        <span>Untuk: Nadya</span>
+        <span>Dari: Ardi</span>
       </div>
     </div>
 
@@ -292,9 +262,7 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
     </div>
 
     <!-- Voice Note Section -->
-    ${
-      hasVoiceNote
-        ? `
+    
     <div id="voice-section" class="hidden bg-zinc-50 border border-zinc-200/50 rounded-2xl p-4 sm:p-6 mb-8 transition-opacity duration-1000 opacity-0">
       <h4 class="font-lora text-sm font-semibold text-zinc-700 mb-3 text-center flex items-center justify-center gap-2">
         <span>🎙</span> Lampiran Pesan Suara
@@ -313,24 +281,18 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
             <span id="duration">0:00</span>
           </div>
         </div>
-        <audio id="audio-element" src="${voiceNoteSrc}" ontimeupdate="updateProgress()" onloadedmetadata="initAudioMetadata()"></audio>
+        <audio id="audio-element" src="/audio/track1.mp3" ontimeupdate="updateProgress()" onloadedmetadata="initAudioMetadata()"></audio>
       </div>
     </div>
-    `
-        : ""
-    }
+    
 
     <!-- Final Message -->
-    ${
-      config.finalMessage
-        ? `
+    
     <div id="final-message-container" class="hidden text-center mt-10 pt-8 border-t border-zinc-100 transition-opacity duration-1000 opacity-0">
-      <p class="font-lora text-2xl italic text-zinc-800 mb-2">"${config.finalMessage}"</p>
+      <p class="font-lora text-2xl italic text-zinc-800 mb-2">"Selesai Pengetesan."</p>
       <p class="text-[9px] font-bold uppercase tracking-wider text-zinc-400">Salam Hangat</p>
     </div>
-    `
-        : ""
-    }
+    
 
     <!-- Footer branding -->
     <div class="text-center mt-8 text-[9px] font-bold text-zinc-300 uppercase tracking-widest border-t border-zinc-50 pt-4">
@@ -340,10 +302,10 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
 
   <script>
     const config = {
-      secretCode: "${config.secretCode || ""}",
-      letterBody: ${escapedLetterBody},
-      photos: ${photosJson},
-      hasVoiceNote: ${hasVoiceNote}
+      secretCode: "1234",
+      letterBody: "Halo! Ini adalah isi dari surat pengetesan coexistence audio.\nMusik latar (BGM) Cello Hangat seharusnya berputar di background saat amplop dibuka.\nLalu jika tombol Voice Note (menggunakan track Piano) di-play, BGM Cello akan terhenti (pause).\nSaat Voice Note Piano di-pause atau selesai, BGM Cello akan lanjut berputar (resume).",
+      photos: [],
+      hasVoiceNote: true
     };
 
     // 1. Generate Floating Dust Particles
@@ -632,5 +594,4 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
     });
   </script>
 </body>
-</html>`;
-}
+</html>

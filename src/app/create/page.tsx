@@ -22,7 +22,7 @@ export default function CreatePage() {
 
       {/* Footer */}
       <footer className="w-full py-6 text-center text-[10px] text-slate-500 font-medium">
-        Made with DearNote • Kartu yang diterbitkan aktif selama 180 hari
+        Made with DearNote • Kartu yang diterbitkan aktif selama 90 hari
       </footer>
     </div>
   );

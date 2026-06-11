@@ -2,6 +2,7 @@
 
 import { use, useEffect, useState } from "react";
 import Link from "next/link";
+import QrCodeCustomizer from "@/components/ui/QrCodeCustomizer";
 
 interface OrderStatusResponse {
   orderId: string;
@@ -18,6 +19,7 @@ export default function SuccessPage(props: { params: Promise<{ orderId: string }
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [showCustomizer, setShowCustomizer] = useState(false);
 
   useEffect(() => {
     if (!orderId) return;
@@ -138,15 +140,12 @@ export default function SuccessPage(props: { params: Promise<{ orderId: string }
                   alt="QR Code Link"
                   className="w-40 h-40 border border-gray-150 rounded-lg shadow-inner"
                 />
-                <div className="flex gap-3 text-xs font-semibold uppercase tracking-wider text-zinc-500">
-                  <a href={order.qrPngUrl} download={`qrcode-${orderId}.png`} className="hover:text-zinc-850">
-                    📥 Download PNG
-                  </a>
-                  <span className="text-gray-300">|</span>
-                  <a href={order.qrSvgUrl} download={`qrcode-${orderId}.svg`} className="hover:text-zinc-850">
-                    📥 Download SVG
-                  </a>
-                </div>
+                <button
+                  onClick={() => setShowCustomizer(true)}
+                  className="px-5 py-2.5 bg-zinc-100 hover:bg-zinc-200 border border-zinc-200/50 text-zinc-700 text-xs font-bold rounded-xl shadow-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer uppercase tracking-wider"
+                >
+                  🎨 Modifikasi & Unduh QR
+                </button>
               </div>
             )}
 
@@ -189,6 +188,14 @@ export default function SuccessPage(props: { params: Promise<{ orderId: string }
         )}
 
       </div>
+
+      {showCustomizer && order?.cardUrl && (
+        <QrCodeCustomizer
+          cardUrl={order.cardUrl}
+          orderId={orderId}
+          onClose={() => setShowCustomizer(false)}
+        />
+      )}
     </div>
   );
 }

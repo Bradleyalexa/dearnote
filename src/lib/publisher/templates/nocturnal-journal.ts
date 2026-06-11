@@ -8,6 +8,10 @@ export function generateNocturnalJournalHtml(config: PublishedConfig): string {
   const hasVoiceNote = !!config.voiceNote;
   const voiceNoteSrc = config.voiceNote?.src || "";
 
+  // Background music check
+  const hasBgMusic = !!config.bgMusic;
+  const bgMusicSrc = config.bgMusic?.src || "";
+
   return `<!DOCTYPE html>
 <html lang="id">
 <head>
@@ -106,6 +110,18 @@ export function generateNocturnalJournalHtml(config: PublishedConfig): string {
 </head>
 <body class="flex items-center justify-center p-4 relative min-h-screen">
 
+  <!-- Floating BGM Toggle Button -->
+  ${
+    hasBgMusic
+      ? `
+  <button id="bgm-toggle-btn" onclick="toggleBgm()" class="fixed top-4 right-4 z-50 w-10 h-10 rounded-full bg-white/5 backdrop-blur-md border border-white/10 shadow-md flex items-center justify-center text-zinc-300 hover:bg-white/10 transition-all" title="Matikan Musik Latar">
+    <span id="bgm-icon" class="text-sm">🎵</span>
+  </button>
+  <audio id="bgm-audio-element" src="${bgMusicSrc}" loop></audio>
+  `
+      : ""
+  }
+
   <!-- Twinkling Stars Container -->
   <div id="stars-container" class="absolute inset-0 overflow-hidden pointer-events-none z-0"></div>
 
@@ -134,7 +150,7 @@ export function generateNocturnalJournalHtml(config: PublishedConfig): string {
         onclick="verifyCode()"
         class="w-full py-3 bg-zinc-200 hover:bg-white text-zinc-900 font-bold rounded-xl shadow-md transition-all text-sm uppercase tracking-wider"
       >
-        Buka Jurnal
+        Buka Notes
       </button>
       <p id="code-error" class="text-xs text-zinc-400 opacity-0 transition-opacity font-semibold">Kode tidak cocok. Silakan coba kembali.</p>
     </div>
@@ -274,6 +290,8 @@ export function generateNocturnalJournalHtml(config: PublishedConfig): string {
       if (input === actualCode) {
         const codeSection = document.getElementById('code-section');
         codeSection.classList.add('scale-95', 'opacity-0');
+        // Start BGM on user interaction
+        playBgm();
         setTimeout(() => {
           codeSection.remove();
           const moonSection = document.getElementById('moon-section');
@@ -299,6 +317,9 @@ export function generateNocturnalJournalHtml(config: PublishedConfig): string {
     function openMoon() {
       if (isMoonOpened) return;
       isMoonOpened = true;
+      
+      // Start BGM on user interaction
+      playBgm();
       
       const moon = document.getElementById('moon');
       moon.classList.add('clicked');
@@ -388,6 +409,55 @@ export function generateNocturnalJournalHtml(config: PublishedConfig): string {
     let audio = null;
     let isPlaying = false;
     
+    // Background Music (BGM) Logic
+    let bgmAudio = null;
+    let isBgmPlaying = false;
+    let isBgmMuted = false;
+
+    function getBgmAudio() {
+      if (!bgmAudio) {
+        bgmAudio = document.getElementById('bgm-audio-element');
+      }
+      return bgmAudio;
+    }
+
+    function playBgm() {
+      const player = getBgmAudio();
+      if (player && !isBgmMuted && !isPlaying) {
+        player.play().catch(e => console.error("BGM Autoplay blocked:", e));
+        isBgmPlaying = true;
+        const icon = document.getElementById('bgm-icon');
+        if (icon) icon.innerText = '🎵';
+      }
+    }
+
+    function pauseBgm() {
+      const player = getBgmAudio();
+      if (player && isBgmPlaying) {
+        player.pause();
+        isBgmPlaying = false;
+      }
+    }
+
+    function toggleBgm() {
+      const player = getBgmAudio();
+      const icon = document.getElementById('bgm-icon');
+      if (!player) return;
+      if (isBgmMuted) {
+        isBgmMuted = false;
+        if (icon) icon.innerText = '🎵';
+        if (!isPlaying) {
+          player.play().catch(e => console.error(e));
+          isBgmPlaying = true;
+        }
+      } else {
+        isBgmMuted = true;
+        if (icon) icon.innerText = '🔇';
+        player.pause();
+        isBgmPlaying = false;
+      }
+    }
+
     function getAudioElement() {
       if (!audio) audio = document.getElementById('audio-element');
       return audio;
@@ -409,7 +479,9 @@ export function generateNocturnalJournalHtml(config: PublishedConfig): string {
         player.pause();
         playIcon.innerText = '▶';
         isPlaying = false;
+        playBgm();
       } else {
+        pauseBgm();
         player.play().catch(e => console.error(e));
         playIcon.innerText = '⏸';
         isPlaying = true;
@@ -432,6 +504,7 @@ export function generateNocturnalJournalHtml(config: PublishedConfig): string {
         progress.style.width = '0%';
         current.innerText = '0:00';
         isPlaying = false;
+        playBgm();
       }
     }
 

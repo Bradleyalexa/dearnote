@@ -12,6 +12,12 @@ const ALLOWED_VOICE_TYPES = [
   "audio/webm",
   "audio/wave",
   "audio/ogg",
+  "audio/mp4",
+  "audio/aac",
+  "audio/x-aac",
+  "audio/opus",
+  "video/webm",
+  "video/ogg",
 ];
 
 const MAX_PHOTO_SIZE = 5 * 1024 * 1024; // 5 MB raw limit
@@ -37,9 +43,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const cleanContentType = contentType.split(";")[0].trim().toLowerCase();
+
     // 2. Strict security validation
     if (kind === "photo") {
-      if (!ALLOWED_PHOTO_TYPES.includes(contentType.toLowerCase())) {
+      if (!ALLOWED_PHOTO_TYPES.includes(cleanContentType)) {
         return NextResponse.json(
           { error: "Unsupported image format. Allowed: JPG, PNG, WEBP" },
           { status: 400 }
@@ -52,9 +60,9 @@ export async function POST(req: NextRequest) {
         );
       }
     } else {
-      if (!ALLOWED_VOICE_TYPES.includes(contentType.toLowerCase())) {
+      if (!ALLOWED_VOICE_TYPES.includes(cleanContentType)) {
         return NextResponse.json(
-          { error: "Unsupported audio format. Allowed: MP3, WAV, M4A, WEBM" },
+          { error: `Unsupported audio format: ${contentType}. Allowed: MP3, WAV, M4A, WEBM, OGG, MP4` },
           { status: 400 }
         );
       }

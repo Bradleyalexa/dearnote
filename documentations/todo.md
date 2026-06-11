@@ -11,15 +11,15 @@
 * [x] Hosting: Vercel
 * [x] API: Next.js Route Handlers
 * [x] Payment: DOKU Checkout
-* [x] QRIS/e-wallet price: Rp3.000
+* [x] QRIS/e-wallet price: Rp5.000
 * [x] Bank/card price: Rp8.000
 * [x] Max photos: 5
 * [x] Voice note: allowed
 * [x] Secret code: cosmetic only
 * [x] Edit after publish: no
-* [x] Card expiry: 180 days
+* [x] Card expiry: 90 days
 * [x] Watermark: no
-* [x] Public URL format: `https://pub.dearnote.asia/cards/{cardId}/index.html`
+* [x] Public URL format: `https://pub.dearnote.asia/cards/{cardId}/notes.html`
 * [x] Templates: 3
 
 ---
@@ -285,7 +285,7 @@ Tasks:
 
 Payment group selector:
 
-* [ ] QRIS / e-wallets — Rp3.000
+* [ ] QRIS / e-wallets — Rp5.000
 * [ ] Banks / cards — Rp8.000
 
 Copy requirement:
@@ -443,7 +443,7 @@ Tasks:
 * [ ] Validate paid status.
 * [ ] Set status `publishing`.
 * [ ] Calculate `publishedAt`.
-* [ ] Calculate `expiresAt = publishedAt + 180 days`.
+* [ ] Calculate `expiresAt = publishedAt + 90 days`.
 * [ ] Generate `config.json`.
 * [ ] Generate `index.html`.
 * [ ] Generate `qr.svg`.
@@ -546,7 +546,7 @@ Sections:
 Pricing display:
 
 ```txt
-QRIS & e-wallets: Rp3.000
+QRIS & e-wallets: Rp5.000
 Banks & cards: Rp8.000
 ```
 
@@ -574,7 +574,7 @@ Terms must mention:
 
 * No account.
 * No edit after publish.
-* Card active for 180 days.
+* Card active for 90 days.
 * Anyone with link can view.
 * Secret code is cosmetic.
 * User is responsible for uploaded content.
@@ -687,7 +687,7 @@ Public card errors:
 ### DOKU Sandbox
 
 * [ ] Create checkout for QRIS/e-wallet group.
-* [ ] Amount is Rp3.000.
+* [ ] Amount is Rp5.000.
 * [ ] Create checkout for bank/card group.
 * [ ] Amount is Rp8.000.
 * [ ] Successful payment triggers webhook.

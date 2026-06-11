@@ -7,9 +7,9 @@ import { CardDraft, PublishedConfig } from "../schemas/card-draft";
 export function generateConfig(cardId: string, draft: CardDraft): PublishedConfig {
   const publishedAt = new Date();
   
-  // Set card expiry to exactly 180 days in the future
+  // Set card expiry to exactly 90 days in the future
   const expiresAt = new Date();
-  expiresAt.setDate(publishedAt.getDate() + 180);
+  expiresAt.setDate(publishedAt.getDate() + 90);
 
   return {
     cardId,
@@ -28,6 +28,12 @@ export function generateConfig(cardId: string, draft: CardDraft): PublishedConfi
       ? {
           src: `./assets/voice-note.mp3`, // Hardcoded relative mapping
           durationSeconds: draft.voiceNote.durationSeconds,
+        }
+      : undefined,
+    bgMusic: draft.bgMusic
+      ? {
+          src: `./assets/bg-music.mp3`, // Hardcoded relative mapping
+          durationSeconds: draft.bgMusic.durationSeconds,
         }
       : undefined,
     finalMessage: draft.finalMessage || undefined,

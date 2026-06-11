@@ -398,7 +398,7 @@ Request:
 Payment group rules:
 
 ```txt
-qris_ewallet → Rp3.000
+qris_ewallet → Rp5.000
 bank_card → Rp8.000
 ```
 
@@ -672,12 +672,12 @@ NEXT_PUBLIC_CARD_PRICE_BANK_CARD_IDR=8000
 
 ## 14. Expiry Handling
 
-Each card expires 180 days after publish.
+Each card expires 90 days after publish.
 
 Publish module must calculate:
 
 ```txt
-expiresAt = publishedAt + 180 days
+expiresAt = publishedAt + 90 days
 ```
 
 Expiry can be handled by:

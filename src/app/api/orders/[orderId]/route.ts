@@ -58,7 +58,7 @@ export async function GET(
       return NextResponse.json({
         orderId: order.orderId,
         status: order.status,
-        cardUrl: `${cleanBaseUrl}/cards/${order.cardId}/index.html`,
+        cardUrl: `${cleanBaseUrl}/cards/${order.cardId}/notes.html`,
         qrPngUrl: `${cleanBaseUrl}/cards/${order.cardId}/qr.png`,
         qrSvgUrl: `${cleanBaseUrl}/cards/${order.cardId}/qr.svg`,
       });
