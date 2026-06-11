@@ -1,0 +1,1300 @@
+This project knowledge from GPT advisor
+
+Gas. Stack kamu sudah oke:
+
+```txt id="nph8wg"
+Frontend + Backend:
+Next.js on Vercel
+
+API:
+Next.js Route Handlers
+
+Storage:
+Cloudflare R2
+
+Payment:
+DOKU Checkout
+
+Renderer:
+Static HTML + config.json + JS animation
+
+QR:
+qrcode package
+
+Database:
+none
+
+Auth:
+none
+```
+
+Sekarang next step-nya jangan langsung coding random. Kamu butuh 3 hal dulu:
+
+```txt id="sktqkb"
+1. Setup infra/account
+2. Define product flow + file structure
+3. Siapkan PRD/spec tipis supaya vibe coding-nya terarah
+```
+
+---
+
+# 0. Keputusan arsitektur final
+
+Versi V0 yang paling masuk akal:
+
+```txt id="lj33kv"
+No login
+No account
+No Supabase
+No dashboard user
+User bikin card
+User bayar
+Webhook sukses
+Card static di R2
+User dapat link
+```
+
+Flow final:
+
+```txt id="s9o0y4"
+User buka /create
+↓
+Customize card
+↓
+Upload foto/audio
+↓
+Klik Pay & Publish
+↓
+POST /api/orders
+↓
+API create DOKU Checkout
+↓
+User bayar di DOKU
+↓
+DOKU webhook ke /api/webhooks/doku
+↓
+API verify payment
+↓
+API generate static card
+↓
+Upload ke R2
+↓
+Success page tampilkan card URL
+```
+
+DOKU Checkout cocok buat V0 karena payment page di-host oleh DOKU, jadi kamu tidak perlu bikin payment page sendiri; dokumentasi DOKU juga menyebut Checkout sebagai cara termudah/tercepat karena bisa redirect/embed ke payment page DOKU. ([DOKU Docs][1])
+
+---
+
+# 1. Setup akun yang perlu dibuat
+
+## A. Vercel
+
+Buat project Next.js di Vercel.
+
+Vercel akan host:
+
+```txt id="la2lgm"
+/
+/create
+/preview
+/success
+/api/orders
+/api/upload-url
+/api/orders/[orderId]
+/api/webhooks/doku
+```
+
+Next.js Route Handlers memang dipakai untuk bikin custom request handlers di `app/api/.../route.ts`, support method seperti GET/POST, dan hanya tersedia di `app` directory. ([Next.js][2])
+
+Jadi yes: **frontend dan API routes bisa satu project di Vercel.**
+
+---
+
+## B. Cloudflare R2
+
+Buat R2 bucket, misalnya:
+
+```txt id="brkq2x"
+love-cards-prod
+love-cards-staging
+```
+
+R2 akan menyimpan:
+
+```txt id="7olhj5"
+pending draft
+uploaded photos
+uploaded audio
+generated static HTML
+config.json
+QR
+published cards
+```
+
+R2 mendukung S3-compatible API, jadi di Next.js kamu bisa pakai AWS S3 SDK dengan endpoint R2. ([Cloudflare Docs][3])
+
+---
+
+## C. Public domain untuk R2
+
+Idealnya kamu punya 2 domain/subdomain:
+
+```txt id="wrieed"
+app.yourdomain.com
+→ Vercel app
+
+pub.yourdomain.com
+→ R2 public bucket
+```
+
+Contoh:
+
+```txt id="f7l9ug"
+https://app.lovething.id/create
+https://pub.lovething.id/cards/c5aa9556/index.html
+```
+
+Cloudflare R2 public buckets bisa dihubungkan ke custom domain dari dashboard R2; kalau domain sudah dikelola Cloudflare, kamu bisa langsung connect bucket ke custom domain. ([Cloudflare Docs][4])
+
+Untuk V0, public URL boleh begini:
+
+```txt id="m3ykvn"
+https://pub.yourdomain.com/cards/{cardId}/index.html
+```
+
+Nanti kalau mau URL cantik:
+
+```txt id="vndz7w"
+https://yourdomain.com/card/{cardId}
+```
+
+baru tambahkan routing layer.
+
+---
+
+## D. DOKU
+
+Buat akun merchant DOKU dan aktifkan sandbox.
+
+Yang perlu kamu ambil dari DOKU:
+
+```txt id="jvtdii"
+CLIENT_ID
+SECRET_KEY
+API endpoint sandbox
+API endpoint production
+merchant/payment channel settings
+```
+
+DOKU pricing page menyebut no setup fee, no recurring fee, dan charge berdasarkan transaksi sukses; angka publik yang terlihat antara lain QRIS 0.7%, e-wallet sekitar 1.5%, VA Rp4.000, dan kartu 2.80% + Rp2.000. ([Doku][5])
+
+Untuk produk Rp5.000, payment method V0:
+
+```txt id="a7srkx"
+Aktifkan:
+QRIS
+e-wallet jika perlu
+
+Matikan dulu:
+VA
+Credit card
+PayLater
+Convenience store
+```
+
+Karena VA Rp4.000 akan membunuh margin Rp5.000.
+
+---
+
+# 2. Setup webhook DOKU
+
+Kamu perlu webhook URL:
+
+```txt id="vx5mvj"
+https://app.yourdomain.com/api/webhooks/doku
+```
+
+DOKU webhook/payment notification dipakai supaya DOKU bisa mengirim update status pembayaran real-time ke sistem merchant, jadi kamu tidak perlu polling terus-menerus. ([DOKU Docs][6])
+
+Di backend, webhook wajib:
+
+```txt id="z5n3bl"
+1. Verify signature dari DOKU
+2. Check order id
+3. Check amount
+4. Check payment status
+5. Publish card kalau paid
+6. Return 2xx
+```
+
+DOKU best practice juga menekankan HTTP Notification harus diverifikasi dengan signature di request header. ([DOKU API][7])
+
+Tambahkan juga fallback endpoint:
+
+```txt id="t9uhwn"
+GET /api/orders/[orderId]
+```
+
+Kalau webhook telat, success page bisa polling. DOKU juga punya Check Status API untuk cek status transaksi, dengan catatan hit setelah 60 detik setelah payment completion. ([DOKU API][8])
+
+---
+
+# 3. Apakah perlu “publisher” lagi?
+
+**Perlu sebagai module, bukan service terpisah.**
+
+Jangan bayangin ada server publisher sendiri. Cukup bikin function:
+
+```txt id="22dymq"
+publishCard(orderId)
+```
+
+Lokasinya:
+
+```txt id="mxq4n0"
+src/lib/publisher/publish-card.ts
+```
+
+Dipanggil dari webhook:
+
+```txt id="kk53io"
+/api/webhooks/doku
+↓
+verify payment
+↓
+publishCard(orderId)
+```
+
+Publisher melakukan:
+
+```txt id="hc6tr5"
+1. Load pending draft dari R2
+2. Load assets dari R2
+3. Generate config.json
+4. Generate index.html
+5. Generate qr.svg / qr.png
+6. Copy/move assets ke folder cards/
+7. Write status published
+```
+
+Jadi komponen “publisher” tetap ada, tapi cuma kode internal.
+
+---
+
+# 4. R2 file structure
+
+Gunakan R2 sebagai “database file-based”.
+
+```txt id="t4v6h9"
+r2://love-cards-prod/
+
+orders/
+  order_abc123.json
+
+pending/
+  order_abc123/
+    draft.json
+    assets/
+      photo-1.webp
+      photo-2.webp
+      voice-note.mp3
+
+cards/
+  card_c5aa9556/
+    index.html
+    config.json
+    qr.svg
+    qr.png
+    status.json
+    assets/
+      photo-1.webp
+      photo-2.webp
+      voice-note.mp3
+
+events/
+  doku/
+    order_abc123/
+      webhook_001.json
+```
+
+Contoh `orders/order_abc123.json`:
+
+```json id="j8m8ju"
+{
+  "orderId": "order_abc123",
+  "cardId": "card_c5aa9556",
+  "amount": 5000,
+  "currency": "IDR",
+  "status": "pending_payment",
+  "paymentProvider": "doku",
+  "paymentUrl": "https://...",
+  "createdAt": "2026-06-07T10:00:00.000Z"
+}
+```
+
+Contoh `pending/order_abc123/draft.json`:
+
+```json id="a3ajv6"
+{
+  "template": "flower_secret_letter",
+  "from": "Ardi",
+  "to": "Nadya",
+  "secretCode": "1402",
+  "letter": "Aku cuma mau bilang...",
+  "photos": [
+    {
+      "key": "pending/order_abc123/assets/photo-1.webp",
+      "caption": "First date"
+    }
+  ],
+  "voiceNote": {
+    "key": "pending/order_abc123/assets/voice-note.mp3"
+  }
+}
+```
+
+Contoh `cards/card_c5aa9556/status.json`:
+
+```json id="uhygzd"
+{
+  "cardId": "card_c5aa9556",
+  "orderId": "order_abc123",
+  "status": "published",
+  "url": "https://pub.yourdomain.com/cards/card_c5aa9556/index.html",
+  "publishedAt": "2026-06-07T10:05:00.000Z"
+}
+```
+
+---
+
+# 5. Endpoint yang perlu dibuat
+
+## 1. `POST /api/upload-url`
+
+Untuk upload foto/audio langsung ke R2.
+
+Kenapa perlu? Supaya file besar tidak lewat Vercel.
+
+Flow:
+
+```txt id="cpvqvh"
+Frontend minta signed upload URL
+↓
+API generate pre-signed R2 URL
+↓
+Browser upload file langsung ke R2
+↓
+Frontend simpan key file
+```
+
+Request:
+
+```json id="zy2p72"
+{
+  "fileName": "photo-1.jpg",
+  "contentType": "image/webp",
+  "fileSize": 850000
+}
+```
+
+Response:
+
+```json id="id5vpv"
+{
+  "uploadUrl": "https://...",
+  "key": "pending_uploads/tmp_abc/photo-1.webp"
+}
+```
+
+Untuk V0 super cepat, kamu bisa skip ini dan upload via `/api/orders`, tapi gue sarankan langsung pakai signed upload URL.
+
+---
+
+## 2. `POST /api/orders`
+
+Tugas:
+
+```txt id="vn2p1f"
+Generate orderId
+Generate cardId
+Validate draft
+Save draft.json ke R2
+Create DOKU Checkout
+Save order.json ke R2
+Return paymentUrl
+```
+
+Response:
+
+```json id="qp0k0w"
+{
+  "orderId": "order_abc123",
+  "cardId": "card_c5aa9556",
+  "amount": 5000,
+  "paymentUrl": "https://checkout.doku.com/..."
+}
+```
+
+---
+
+## 3. `POST /api/webhooks/doku`
+
+Tugas:
+
+```txt id="dzh8mq"
+Receive webhook
+Save raw webhook event ke R2
+Verify DOKU signature
+Check status paid/success
+Check amount = 5000
+Check order exists
+Check not already published
+Call publishCard(orderId)
+Return 200
+```
+
+Webhook harus idempotent.
+
+Artinya kalau DOKU kirim event yang sama beberapa kali:
+
+```txt id="9qtkqm"
+kalau sudah published → return 200
+jangan generate ulang terus
+```
+
+---
+
+## 4. `GET /api/orders/[orderId]`
+
+Untuk success page.
+
+Response kalau masih pending:
+
+```json id="lmjq4t"
+{
+  "status": "pending_payment"
+}
+```
+
+Response kalau published:
+
+```json id="v8abcn"
+{
+  "status": "published",
+  "cardUrl": "https://pub.yourdomain.com/cards/card_c5aa9556/index.html"
+}
+```
+
+---
+
+# 6. Frontend page yang perlu dibuat
+
+```txt id="34lowc"
+/                     landing page
+/create               builder
+/preview              optional, bisa inline di create
+/checkout/[orderId]   redirect/holding page
+/success/[orderId]    payment result + card link
+```
+
+Untuk V0, bisa lebih simple:
+
+```txt id="hfq69i"
+/create
+/success/[orderId]
+```
+
+Di `/create`, user bisa:
+
+```txt id="kj4lws"
+pilih template
+isi from/to
+isi secret code kosmetik
+tulis letter
+upload max 5 foto
+upload optional voice note
+preview
+klik Pay & Publish
+```
+
+---
+
+# 7. Renderer static
+
+Renderer final card bisa 2 pendekatan.
+
+## Opsi A — inline renderer per card
+
+`index.html` berisi semua CSS/JS basic.
+
+Pros:
+
+```txt id="xpeagt"
+simple
+tidak perlu asset renderer global
+semua self-contained
+```
+
+Cons:
+
+```txt id="mjg6t7"
+index.html lebih besar
+kalau update renderer, card lama tidak ikut update
+```
+
+## Opsi B — shared renderer global
+
+`index.html` kecil:
+
+```html id="fa0l19"
+<div id="app"></div>
+<script>
+  window.__CARD_CONFIG_URL__ = "./config.json";
+</script>
+<script src="https://pub.yourdomain.com/renderer/v1/app.js"></script>
+```
+
+Pros:
+
+```txt id="5wi15r"
+lebih rapi
+bisa reusable
+index.html kecil
+```
+
+Cons:
+
+```txt id="u516kc"
+perlu build renderer terpisah
+kalau renderer v1 rusak, semua card v1 kena
+```
+
+Rekomendasi gue:
+
+```txt id="x4xi3c"
+V0: inline/simple renderer dulu
+V1: shared renderer /renderer/v1/app.js
+```
+
+Biar cepat launch.
+
+---
+
+# 8. Config/environment variables
+
+Di local:
+
+```txt id="v9h3a4"
+.env.local
+```
+
+Di Vercel dashboard:
+
+```txt id="exnl22"
+Project Settings → Environment Variables
+```
+
+Next.js support `.env.local` untuk local env, dan variable yang mau diekspos ke browser harus pakai prefix `NEXT_PUBLIC_`; secret seperti DOKU secret/R2 credentials jangan pakai `NEXT_PUBLIC_`. ([Next.js][9])
+
+Env yang kamu butuh:
+
+```env id="bfx1wm"
+APP_URL=https://app.yourdomain.com
+PUBLIC_CARD_BASE_URL=https://pub.yourdomain.com
+
+R2_ACCOUNT_ID=...
+R2_BUCKET=love-cards-prod
+R2_ACCESS_KEY_ID=...
+R2_SECRET_ACCESS_KEY=...
+R2_ENDPOINT=https://<account-id>.r2.cloudflarestorage.com
+
+DOKU_ENV=sandbox
+DOKU_CLIENT_ID=...
+DOKU_SECRET_KEY=...
+DOKU_API_BASE_URL=https://api-sandbox.doku.com
+
+CARD_PRICE_IDR=5000
+
+ADMIN_SECRET=...
+```
+
+Jangan pernah expose ini ke frontend:
+
+```txt id="dkh2c7"
+R2_SECRET_ACCESS_KEY
+DOKU_SECRET_KEY
+ADMIN_SECRET
+```
+
+Yang boleh public:
+
+```txt id="vudt2x"
+NEXT_PUBLIC_APP_NAME
+NEXT_PUBLIC_CARD_PRICE_IDR
+NEXT_PUBLIC_PUBLIC_CARD_BASE_URL
+```
+
+---
+
+# 9. Setup R2 detail
+
+Checklist:
+
+```txt id="obn0g4"
+1. Create bucket love-cards-staging
+2. Create bucket love-cards-prod
+3. Create R2 API token
+4. Set bucket public read atau custom domain
+5. Set CORS untuk browser upload
+6. Test upload object
+7. Test public URL object
+```
+
+CORS minimal untuk direct upload:
+
+```json id="gv8sox"
+[
+  {
+    "AllowedOrigins": [
+      "http://localhost:3000",
+      "https://app.yourdomain.com"
+    ],
+    "AllowedMethods": ["PUT", "GET", "HEAD"],
+    "AllowedHeaders": ["*"],
+    "ExposeHeaders": ["ETag"],
+    "MaxAgeSeconds": 3600
+  }
+]
+```
+
+Untuk V0, kalau upload via API route, CORS R2 tidak terlalu penting. Tapi untuk direct-to-R2 upload, CORS wajib.
+
+---
+
+# 10. Setup DOKU detail
+
+Checklist:
+
+```txt id="ssgnto"
+1. Register DOKU merchant
+2. Aktifkan sandbox
+3. Ambil Client ID dan Secret Key
+4. Pilih DOKU Checkout
+5. Aktifkan QRIS/e-wallet yang kamu mau
+6. Set notification/webhook URL
+7. Test create checkout di local/staging
+8. Test webhook sandbox
+9. Test status API fallback
+10. Baru production
+```
+
+DOKU API docs menyediakan bagian seperti DOKU Checkout, Request Notification, Signature Component, Check Status API, simulator, dan Postman collection. ([DOKU API][10])
+
+Untuk V0, jangan custom payment UI dulu.
+
+Gunakan:
+
+```txt id="isg7cg"
+DOKU Checkout hosted page
+```
+
+Bukan:
+
+```txt id="ygzdyf"
+Direct API QRIS custom checkout
+```
+
+---
+
+# 11. Package yang perlu diinstall
+
+```bash id="s87i2o"
+pnpm add zod zustand react-hook-form @hookform/resolvers qrcode @aws-sdk/client-s3 @aws-sdk/s3-request-presigner nanoid
+```
+
+Untuk UI:
+
+```bash id="1iwy85"
+pnpm dlx shadcn@latest init
+```
+
+Tambahan optional:
+
+```bash id="ychj4g"
+pnpm add lottie-react framer-motion browser-image-compression
+```
+
+Kalau mau QR PNG/SVG server-side:
+
+```txt id="5fmeud"
+qrcode
+```
+
+Kalau mau generate image OG nanti:
+
+```txt id="bkhn6y"
+satori
+resvg-js
+```
+
+Skip dulu untuk V0 kalau mau cepat.
+
+---
+
+# 12. Repo structure
+
+Pakai satu Next.js app saja dulu.
+
+```txt id="pm25kd"
+love-card-app/
+  app/
+    page.tsx
+    create/
+      page.tsx
+    success/
+      [orderId]/
+        page.tsx
+    api/
+      upload-url/
+        route.ts
+      orders/
+        route.ts
+        [orderId]/
+          route.ts
+      webhooks/
+        doku/
+          route.ts
+
+  src/
+    components/
+      builder/
+      renderer-preview/
+      ui/
+
+    lib/
+      doku/
+        create-checkout.ts
+        verify-notification.ts
+        check-status.ts
+
+      r2/
+        client.ts
+        upload.ts
+        get-object.ts
+        put-json.ts
+
+      publisher/
+        publish-card.ts
+        generate-index-html.ts
+        generate-config.ts
+        generate-qr.ts
+
+      schemas/
+        card-schema.ts
+        order-schema.ts
+
+      utils/
+        ids.ts
+        money.ts
+        file.ts
+
+  public/
+    templates/
+    lottie/
+```
+
+---
+
+# 13. Data schema V0
+
+Gunakan Zod dari awal supaya AI/vibe coding tidak ngaco.
+
+```ts id="j9qrt6"
+import { z } from "zod"
+
+export const CardDraftSchema = z.object({
+  template: z.literal("flower_secret_letter"),
+  fromName: z.string().min(1).max(40),
+  toName: z.string().min(1).max(40),
+  secretCode: z.string().min(1).max(12),
+  letterTitle: z.string().max(80).optional(),
+  letterBody: z.string().min(1).max(3000),
+  photos: z.array(
+    z.object({
+      key: z.string(),
+      caption: z.string().max(120).optional()
+    })
+  ).max(5),
+  voiceNote: z.object({
+    key: z.string(),
+    durationSeconds: z.number().max(60).optional()
+  }).optional()
+})
+
+export type CardDraft = z.infer<typeof CardDraftSchema>
+```
+
+Order status:
+
+```ts id="uyhiyv"
+export const OrderStatusSchema = z.enum([
+  "draft_created",
+  "pending_payment",
+  "paid",
+  "publishing",
+  "published",
+  "failed"
+])
+```
+
+---
+
+# 14. State machine order
+
+Ini penting biar webhook tidak kacau.
+
+```txt id="wiu48o"
+draft_created
+↓
+pending_payment
+↓
+paid
+↓
+publishing
+↓
+published
+```
+
+Failure states:
+
+```txt id="eixbn0"
+payment_failed
+payment_expired
+publish_failed
+```
+
+Webhook logic:
+
+```txt id="zriywq"
+if unpaid → save event, return 200
+if already published → return 200
+if paid → publish
+if publish success → status published
+if publish fail → status publish_failed
+```
+
+---
+
+# 15. PRD mini yang perlu kamu siapkan
+
+Sebelum vibe coding, tulis PRD 1 halaman saja.
+
+Isi minimal:
+
+## Product
+
+```txt id="foduvv"
+No-account romantic card builder.
+User creates animated romantic card, pays Rp5.000, receives public share link.
+```
+
+## Target user
+
+```txt id="rub93f"
+Couples yang mau kirim surprise digital cepat via link/QR.
+```
+
+## MVP scope
+
+```txt id="ioz0nm"
+One template: Flower Secret Letter
+No account
+No edit after publish
+Max 5 photos
+Optional voice note max 60s
+Cosmetic secret code
+DOKU Checkout payment
+Static public URL
+```
+
+## Non-goals
+
+```txt id="4mbnu0"
+No account
+No dashboard
+No Canva-like editor
+No video upload
+No custom domain
+No real privacy/password protection
+No refund automation
+```
+
+## Success criteria
+
+```txt id="43fgk4"
+User can create card under 5 minutes
+Payment success triggers card publish
+Card URL opens on mobile
+Photos and audio load correctly
+QR opens same card URL
+```
+
+Ini cukup. Jangan bikin PRD 20 halaman.
+
+---
+
+# 16. Vibe coding preparation
+
+Kalau mau vibe coding dengan Cursor/Claude Code/GitHub Copilot, siapkan file-file ini dulu:
+
+```txt id="brwfwf"
+README.md
+ARCHITECTURE.md
+PRD.md
+TODO.md
+.env.example
+```
+
+## `ARCHITECTURE.md` isi:
+
+```txt id="gqj6mv"
+- Stack
+- Flow payment
+- R2 folder structure
+- API endpoints
+- Order state machine
+- Security rules
+```
+
+## `TODO.md` isi milestone:
+
+```txt id="81fst0"
+M1: Next.js scaffold + landing
+M2: Card builder form
+M3: Local preview renderer
+M4: R2 upload
+M5: Create DOKU checkout
+M6: Webhook verify + publish
+M7: Success page polling
+M8: Mobile polish
+M9: Production deploy
+```
+
+## `.env.example` isi:
+
+```env id="naywq3"
+APP_URL=
+PUBLIC_CARD_BASE_URL=
+
+R2_ACCOUNT_ID=
+R2_BUCKET=
+R2_ACCESS_KEY_ID=
+R2_SECRET_ACCESS_KEY=
+R2_ENDPOINT=
+
+DOKU_ENV=sandbox
+DOKU_CLIENT_ID=
+DOKU_SECRET_KEY=
+DOKU_API_BASE_URL=
+
+CARD_PRICE_IDR=5000
+ADMIN_SECRET=
+```
+
+---
+
+# 17. Build order yang gue sarankan
+
+Jangan mulai dari payment dulu. Mulai dari card output.
+
+## Milestone 1 — static card renderer lokal
+
+Goal:
+
+```txt id="ffvn7g"
+Bisa generate index.html + config.json secara lokal
+Bisa dibuka di browser
+Animasi jalan
+```
+
+Bikin sample:
+
+```txt id="d857h2"
+/tmp/cards/demo/index.html
+/tmp/cards/demo/config.json
+```
+
+Kalau ini belum beres, payment belum penting.
+
+---
+
+## Milestone 2 — builder form + preview
+
+Goal:
+
+```txt id="op6dqt"
+User isi form
+Preview langsung kelihatan
+No payment
+No upload real dulu
+```
+
+Pakai dummy foto dari `/public`.
+
+---
+
+## Milestone 3 — R2 upload
+
+Goal:
+
+```txt id="8cj02o"
+Upload generated static card ke R2
+Buka public URL
+```
+
+Manual dulu:
+
+```txt id="jr700m"
+Klik "Publish Test"
+↓
+Generate card
+↓
+Upload R2
+↓
+Show URL
+```
+
+Belum pakai DOKU.
+
+---
+
+## Milestone 4 — file upload
+
+Goal:
+
+```txt id="86zl7n"
+Upload photo/audio ke R2
+Preview pakai uploaded file
+Limit max 5 photos
+```
+
+Compression:
+
+```txt id="t65li9"
+foto compress di browser
+audio max 60 detik
+```
+
+---
+
+## Milestone 5 — DOKU Checkout
+
+Goal:
+
+```txt id="62duox"
+Create order
+Redirect ke DOKU Checkout
+Success page polling order
+```
+
+Belum perlu publish otomatis. Simpan status pending/paid.
+
+---
+
+## Milestone 6 — webhook publish
+
+Goal:
+
+```txt id="bdv2uc"
+DOKU webhook paid
+↓
+publishCard(orderId)
+↓
+card URL ready
+```
+
+Ini baru end-to-end.
+
+---
+
+## Milestone 7 — polish
+
+```txt id="lpw8qh"
+mobile responsive
+loading states
+payment pending state
+error state
+retry publish
+QR download
+basic analytics optional
+```
+
+---
+
+# 18. Admin/debug minimal tanpa database
+
+Karena no database, bikin endpoint admin kecil:
+
+```txt id="r75o8h"
+GET /api/admin/orders/[orderId]?secret=...
+POST /api/admin/orders/[orderId]/republish?secret=...
+POST /api/admin/orders/[orderId]/check-payment?secret=...
+```
+
+Ini jangan exposed di UI dulu.
+
+Gunanya:
+
+```txt id="ln0hnm"
+debug order gagal
+republish card
+manual check payment status
+```
+
+Lindungi dengan:
+
+```txt id="x8pxci"
+ADMIN_SECRET
+```
+
+---
+
+# 19. Security checklist V0
+
+Wajib:
+
+```txt id="quf81k"
+DOKU secret hanya server-side
+R2 secret hanya server-side
+Verify DOKU webhook signature
+Validate amount = 5000
+Validate orderId exists
+Webhook idempotent
+Limit file size
+Limit file type
+Compress images client-side
+Reject SVG upload
+Generate random cardId UUID
+No private info in URL
+Set CORS R2 only for app domain
+```
+
+Boleh nanti:
+
+```txt id="tkm2er"
+rate limit
+Turnstile CAPTCHA
+admin dashboard
+real database
+delete card request
+content moderation
+```
+
+---
+
+# 20. Keputusan yang perlu kamu lock sekarang
+
+Sebelum coding, jawab ini di PRD kamu:
+
+```txt id="7756yd"
+1. Harga V0: Rp5.000 atau Rp9.900?
+2. Payment method: QRIS only atau QRIS + e-wallet?
+3. Max foto: 5 atau 10?
+4. Voice note: ada di V0 atau V1?
+5. Secret code: kosmetik saja?
+6. Edit after publish: no?
+7. Card expiry: never atau 30 hari?
+8. Watermark: ada atau tidak?
+9. URL format: /cards/{cardId}/index.html oke?
+10. Template V0 cuma satu?
+```
+
+Rekomendasi gue:
+
+```txt id="l7ze92"
+Harga: Rp5.000 untuk validasi
+Payment: QRIS only
+Max foto: 5
+Voice note: V1, bukan V0
+Secret code: kosmetik
+Edit: no
+Expiry: no expiry dulu
+Watermark: kecil
+URL: direct R2 URL
+Template: 1 dulu
+```
+
+Kalau semua dibuat sekaligus, lambat.
+
+---
+
+# 21. Urutan setup hari pertama
+
+Lakukan ini dulu:
+
+```txt id="f0dop6"
+1. Beli/siapkan domain
+2. Create Next.js app
+3. Deploy kosong ke Vercel
+4. Create R2 bucket staging/prod
+5. Connect pub subdomain ke R2
+6. Tambah env R2 ke Vercel
+7. Bikin script upload test file ke R2
+8. Buka file via public URL
+9. Register DOKU sandbox
+10. Simpan DOKU env di Vercel
+```
+
+Kalau 10 langkah ini selesai, fondasinya siap.
+
+---
+
+# 22. Urutan coding pertama
+
+Setelah setup:
+
+```txt id="9qlv3j"
+1. Build CardDraftSchema
+2. Build /create form
+3. Build preview component
+4. Build generateIndexHtml()
+5. Build publishCardTest()
+6. Upload static card ke R2
+7. Add qrcode generation
+8. Add DOKU create checkout
+9. Add DOKU webhook
+10. End-to-end test
+```
+
+---
+
+# Rekomendasi final
+
+Untuk kamu sekarang, next step paling benar:
+
+```txt id="ta69sc"
+1. Setup Vercel project
+2. Setup R2 bucket + public domain
+3. Setup DOKU sandbox
+4. Tulis PRD.md + ARCHITECTURE.md + .env.example
+5. Build renderer lokal dulu
+6. Baru payment
+```
+
+Jangan mulai dari DOKU dulu. Mulai dari bukti bahwa:
+
+> **draft card → generated static HTML → uploaded to R2 → opened by public URL**
+
+Kalau itu sudah jalan, DOKU tinggal jadi gate sebelum publish.
+
+[1]: https://docs.doku.com/accept-payments/integration-tools/doku-checkout?utm_source=chatgpt.com "DOKU Checkout | DOKU Docs"
+[2]: https://nextjs.org/docs/app/getting-started/route-handlers?utm_source=chatgpt.com "Getting Started: Route Handlers | Next.js"
+[3]: https://developers.cloudflare.com/r2/get-started/s3/?utm_source=chatgpt.com "S3 · Cloudflare R2 docs"
+[4]: https://developers.cloudflare.com/r2/buckets/public-buckets/?utm_source=chatgpt.com "Public buckets · Cloudflare R2 docs"
+[5]: https://www.doku.com/en-us/pricing?utm_source=chatgpt.com "Harga Payment Gateway, WAAS & Payout DOKU | Transparan & Fleksibel"
+[6]: https://docs.doku.com/get-started/manage-business/set-up-integration/webhook-payment-notification?utm_source=chatgpt.com "Webhook / Payment Notification | DOKU Docs"
+[7]: https://developers.doku.com/get-started-with-doku-api/notification/best-practice?utm_source=chatgpt.com "Best Practice | API Reference - DOKU"
+[8]: https://developers.doku.com/get-started-with-doku-api/check-status-api/non-snap?utm_source=chatgpt.com "Non-SNAP | API Reference - DOKU"
+[9]: https://nextjs.org/docs/pages/guides/environment-variables?utm_source=chatgpt.com "Guides: Environment Variables | Next.js"
+[10]: https://developers.doku.com/?utm_source=chatgpt.com "Get Started with DOKU API | API Reference"
