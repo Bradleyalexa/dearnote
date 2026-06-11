@@ -213,19 +213,19 @@ export default function VoiceNoteUploader({ value, onChange }: VoiceNoteUploader
   };
 
   return (
-    <div className="space-y-4">
-      <label className="block text-sm font-semibold text-gray-700">
+    <div className="space-y-4 font-sans">
+      <label className="block text-sm font-semibold text-zinc-700">
         Pesan Suara (Opsional, Maksimal 60 Detik)
       </label>
 
       {localAudioUrl ? (
-        <div className="bg-rose-50/50 border border-rose-100 rounded-xl p-4 flex items-center justify-between">
+        <div className="bg-zinc-50/50 border border-zinc-200/60 rounded-xl p-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="text-2xl">🎙</span>
             <div>
-              <p className="text-xs font-semibold text-gray-700">Rekaman Suara Tersimpan</p>
+              <p className="text-xs font-semibold text-zinc-700">Rekaman Suara Tersimpan</p>
               {value?.durationSeconds && (
-                <p className="text-[10px] text-gray-400 font-medium">
+                <p className="text-[10px] text-zinc-400 font-medium">
                   Durasi: {formatTime(value.durationSeconds)}
                 </p>
               )}
@@ -236,7 +236,7 @@ export default function VoiceNoteUploader({ value, onChange }: VoiceNoteUploader
             <button
               type="button"
               onClick={removeVoiceNote}
-              className="text-xs text-rose-500 hover:text-red-700 font-bold px-2 py-1"
+              className="text-xs text-zinc-500 hover:text-zinc-755 font-bold px-2 py-1"
             >
               Hapus
             </button>
@@ -245,13 +245,13 @@ export default function VoiceNoteUploader({ value, onChange }: VoiceNoteUploader
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* Mic Recorder */}
-          <div className="flex flex-col items-center justify-center p-4 border border-rose-100 rounded-xl bg-white text-center shadow-sm">
+          <div className="flex flex-col items-center justify-center p-4 border border-zinc-200/60 rounded-xl bg-white text-center shadow-sm">
             {recording ? (
               <div className="space-y-3">
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-red-100 text-red-500 animate-pulse text-lg">
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-red-50 text-red-500 animate-pulse text-lg">
                   🔴
                 </div>
-                <p className="text-sm font-bold text-gray-700">Merekam: {formatTime(seconds)}</p>
+                <p className="text-sm font-bold text-zinc-700">Merekam: {formatTime(seconds)}</p>
                 <button
                   type="button"
                   onClick={stopRecording}
@@ -263,12 +263,12 @@ export default function VoiceNoteUploader({ value, onChange }: VoiceNoteUploader
             ) : (
               <div className="space-y-3">
                 <span className="text-2xl">🎙</span>
-                <p className="text-xs font-semibold text-gray-700">Rekam langsung dari browser</p>
+                <p className="text-xs font-semibold text-zinc-700">Rekam langsung dari browser</p>
                 <button
                   type="button"
                   disabled={uploading}
                   onClick={startRecording}
-                  className="px-4 py-2 bg-rose-400 hover:bg-rose-500 disabled:bg-gray-300 text-white text-xs font-semibold rounded-lg shadow-sm transition-all"
+                  className="px-4 py-2 bg-zinc-800 hover:bg-zinc-900 disabled:bg-zinc-350 text-white text-xs font-semibold rounded-lg shadow-sm transition-all"
                 >
                   Mulai Rekam
                 </button>
@@ -277,13 +277,13 @@ export default function VoiceNoteUploader({ value, onChange }: VoiceNoteUploader
           </div>
 
           {/* File Upload */}
-          <div className="flex flex-col items-center justify-center p-4 border border-rose-100 rounded-xl bg-white text-center shadow-sm relative cursor-pointer">
+          <div className="flex flex-col items-center justify-center p-4 border border-zinc-200/60 rounded-xl bg-white text-center shadow-sm relative cursor-pointer">
             <label className="w-full h-full flex flex-col items-center justify-center cursor-pointer">
               <span className="text-2xl mb-1">{uploading ? "⏳" : "📤"}</span>
-              <p className="text-xs font-semibold text-gray-700">
+              <p className="text-xs font-semibold text-zinc-700">
                 {uploading ? "Mengunggah..." : "Unggah Berkas Audio"}
               </p>
-              <p className="text-[10px] text-gray-400 mt-1">
+              <p className="text-[10px] text-zinc-400 mt-1">
                 Format: MP3, WAV, M4A (Maks 5MB)
               </p>
               <input
@@ -299,7 +299,7 @@ export default function VoiceNoteUploader({ value, onChange }: VoiceNoteUploader
       )}
 
       {error && (
-        <p className="text-xs text-red-500 font-medium transition-all">{error}</p>
+        <p className="text-xs text-red-550 font-medium transition-all">{error}</p>
       )}
     </div>
   );

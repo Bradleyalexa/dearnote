@@ -73,25 +73,25 @@ export default function LivePreview({ draft }: LivePreviewProps) {
   return (
     <div className="flex flex-col items-center space-y-4 w-full h-full max-w-sm mx-auto">
       {/* Preview Tabs */}
-      <div className="flex bg-rose-50 p-1 rounded-xl w-full border border-rose-100/50 shadow-sm font-sans">
+      <div className="flex bg-zinc-100 p-1 rounded-xl w-full border border-zinc-200/50 shadow-sm font-sans">
         <button
           type="button"
           onClick={() => setActiveTab("inside")}
           className={`flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all ${
             activeTab === "inside"
-              ? "bg-rose-400 text-white shadow-sm"
-              : "text-rose-600 hover:text-rose-800"
+              ? "bg-zinc-850 text-white shadow-sm bg-zinc-800"
+              : "text-zinc-500 hover:text-zinc-800"
           }`}
         >
-          Isi Surat (Preview)
+          Isi Catatan (Preview)
         </button>
         <button
           type="button"
           onClick={() => setActiveTab("cover")}
           className={`flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all ${
             activeTab === "cover"
-              ? "bg-rose-400 text-white shadow-sm"
-              : "text-rose-600 hover:text-rose-800"
+              ? "bg-zinc-850 text-white shadow-sm bg-zinc-800"
+              : "text-zinc-500 hover:text-zinc-800"
           }`}
         >
           Layar Pembuka
@@ -126,7 +126,7 @@ export default function LivePreview({ draft }: LivePreviewProps) {
       <button
         type="button"
         onClick={reloadPreview}
-        className="text-xs text-rose-500 hover:text-rose-700 font-semibold flex items-center gap-1.5 font-sans"
+        className="text-xs text-zinc-500 hover:text-zinc-800 font-semibold flex items-center gap-1.5 font-sans"
       >
         <span>🔄</span> Reset Animasi
       </button>

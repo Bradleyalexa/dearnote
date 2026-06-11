@@ -1,8 +1,8 @@
 import { PublishedConfig } from "../../schemas/card-draft";
 
-export function generateFlowerSecretLetterHtml(config: PublishedConfig): string {
+export function generateClassicEditorialHtml(config: PublishedConfig): string {
   const hasSecretCode = !!config.secretCode;
-  const letterTitle = config.letterTitle || "A Special Message For You";
+  const letterTitle = config.letterTitle || "A Special Note For You";
   
   // Format the letter body to preserve line breaks
   const escapedLetterBody = JSON.stringify(config.letterBody);
@@ -19,12 +19,12 @@ export function generateFlowerSecretLetterHtml(config: PublishedConfig): string 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>For You - DearNote</title>
+  <title>A Keepsake Note - DearNote</title>
   <meta name="robots" content="noindex, nofollow">
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -32,9 +32,8 @@ export function generateFlowerSecretLetterHtml(config: PublishedConfig): string 
       theme: {
         extend: {
           fontFamily: {
-            vibes: ['"Great Vibes"', 'cursive'],
-            playfair: ['"Playfair Display"', 'serif'],
-            sans: ['Montserrat', 'sans-serif'],
+            lora: ['Lora', 'serif'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
           }
         }
       }
@@ -43,7 +42,9 @@ export function generateFlowerSecretLetterHtml(config: PublishedConfig): string 
   <style>
     /* Custom CSS animations and styles */
     body {
-      background: linear-gradient(135deg, #ffe5ec 0%, #ffc2d1 50%, #f7aef8 100%);
+      background-color: #FAF9F6;
+      background-image: radial-gradient(rgba(197, 168, 128, 0.05) 1px, transparent 0);
+      background-size: 24px 24px;
       min-height: 100vh;
       overflow-x: hidden;
     }
@@ -53,24 +54,23 @@ export function generateFlowerSecretLetterHtml(config: PublishedConfig): string 
       width: 6px;
     }
     ::-webkit-scrollbar-track {
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(24, 24, 27, 0.03);
     }
     ::-webkit-scrollbar-thumb {
-      background: rgba(229, 152, 155, 0.5);
+      background: rgba(197, 168, 128, 0.3);
       border-radius: 3px;
     }
     
-    /* Petal falling animation */
-    .petal {
+    /* Elegant dust particles */
+    .dust {
       position: absolute;
-      background: radial-gradient(circle at 30% 30%, #ffb3c1, #ff85a1);
-      border-radius: 150% 0 150% 150%;
-      opacity: 0.8;
-      z-index: 1;
+      background: rgba(197, 168, 128, 0.15);
+      border-radius: 50%;
       pointer-events: none;
-      animation: fall linear infinite;
+      z-index: 1;
+      animation: drift linear infinite;
     }
-    @keyframes fall {
+    @keyframes drift {
       0% {
         transform: translate(0, -10px) rotate(0deg) scale(0.8);
         opacity: 0;
@@ -82,19 +82,19 @@ export function generateFlowerSecretLetterHtml(config: PublishedConfig): string 
         opacity: 0.8;
       }
       100% {
-        transform: translate(100px, 105vh) rotate(360deg) scale(0.5);
+        transform: translate(80px, 105vh) rotate(180deg) scale(0.4);
         opacity: 0;
       }
     }
-
+    
     /* Envelope styling */
     .envelope-wrapper {
       position: relative;
       width: 340px;
       height: 220px;
-      background-color: #f08080;
+      background-color: #52525B; /* zinc-600 */
       border-radius: 0 0 8px 8px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
       cursor: pointer;
       transform-style: preserve-3d;
       transition: transform 0.5s ease;
@@ -109,7 +109,7 @@ export function generateFlowerSecretLetterHtml(config: PublishedConfig): string 
       height: 0;
       border-left: 170px solid transparent;
       border-right: 170px solid transparent;
-      border-top: 110px solid #cd5c5c;
+      border-top: 110px solid #3F3F46; /* zinc-700 */
       transform-origin: top;
       transition: transform 0.4s ease 0.4s;
       z-index: 30;
@@ -121,9 +121,9 @@ export function generateFlowerSecretLetterHtml(config: PublishedConfig): string 
       left: 0;
       width: 0;
       height: 0;
-      border-left: 170px solid #e9967a;
-      border-right: 170px solid #e9967a;
-      border-bottom: 110px solid #e9967a;
+      border-left: 170px solid #71717A; /* zinc-500 */
+      border-right: 170px solid #71717A;
+      border-bottom: 110px solid #71717A;
       border-radius: 0 0 8px 8px;
       z-index: 25;
     }
@@ -137,41 +137,41 @@ export function generateFlowerSecretLetterHtml(config: PublishedConfig): string 
       left: 10px;
       right: 10px;
       bottom: 10px;
-      background: #fff8f8;
+      background: #FAF9F6;
+      border: 1px solid rgba(197, 168, 128, 0.2);
       border-radius: 4px;
       padding: 20px;
       z-index: 15;
       transition: transform 0.6s ease;
       transform: translateY(0);
-      box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
+      box-shadow: 0 -5px 15px rgba(0,0,0,0.03);
     }
     .envelope-wrapper.open .envelope-card {
       transform: translateY(-120px);
       z-index: 35;
     }
-
+    
     /* Wax seal pulse */
     .wax-seal {
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 50px;
-      height: 50px;
-      background: radial-gradient(circle, #e63946, #c1121f);
+      width: 54px;
+      height: 54px;
+      background: radial-gradient(circle, #C5A880, #B0926A); /* warm bronze */
       border-radius: 50%;
       transform: translate(-50%, -50%);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2), inset 0 2px 4px rgba(255,255,255,0.4);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.18), inset 0 2px 4px rgba(255,255,255,0.3);
       z-index: 40;
       transition: all 0.3s ease;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 20px;
-      color: #fff;
+      font-size: 22px;
+      color: #FFF;
     }
     .wax-seal::after {
-      content: '❤';
-      font-family: sans-serif;
+      content: '✉'; /* Clean envelope icon */
     }
     .envelope-wrapper.open .wax-seal {
       opacity: 0;
@@ -179,53 +179,54 @@ export function generateFlowerSecretLetterHtml(config: PublishedConfig): string 
       pointer-events: none;
     }
     .wax-seal:hover {
-      transform: translate(-50%, -50%) scale(1.1);
-      box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+      transform: translate(-50%, -50%) scale(1.08);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.25);
     }
-
-    /* Glassmorphism containers */
-    .glass-card {
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      box-shadow: 0 10px 30px rgba(181, 101, 118, 0.15);
+    
+    /* Keepsake Card */
+    .keepsake-card {
+      background: #FFFFFF;
+      border: 1px solid rgba(197, 168, 128, 0.25);
+      box-shadow: 0 16px 40px rgba(28, 25, 23, 0.05);
+    }
+    .accent-border {
+      border: 1px solid rgba(197, 168, 128, 0.3);
     }
   </style>
 </head>
 <body class="flex items-center justify-center p-4 relative min-h-screen">
 
-  <!-- Floating Petals Container -->
-  <div id="petals-container" class="absolute inset-0 overflow-hidden pointer-events-none z-0"></div>
+  <!-- Floating Dust Container -->
+  <div id="dust-container" class="absolute inset-0 overflow-hidden pointer-events-none z-0"></div>
 
-  <!-- SECTION 1: COSMETIC SECRET CODE -->
+  <!-- SECTION 1: CODE LOCK ACCESS SCREEN -->
   ${
     hasSecretCode
       ? `
-  <div id="code-section" class="w-full max-w-md glass-card rounded-2xl p-8 text-center z-10 transition-all duration-500 transform scale-100">
+  <div id="code-section" class="w-full max-w-md keepsake-card rounded-2xl p-8 text-center z-10 transition-all duration-500 transform scale-100 border border-zinc-100">
     <div class="mb-6">
-      <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-rose-100 text-rose-500 text-3xl mb-4">
+      <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-zinc-50 text-zinc-500 border border-zinc-100 text-2xl mb-4">
         🔒
       </div>
-      <h2 class="font-playfair text-2xl font-bold text-gray-800 mb-2">Pesan Rahasia</h2>
-      <p class="text-sm text-gray-500">Ada pesan khusus dari <span class="font-semibold text-rose-500">${config.fromName}</span> untuk <span class="font-semibold text-rose-500">${config.toName}</span>. Masukkan kode rahasia untuk membuka.</p>
+      <h2 class="font-lora text-2xl font-semibold text-zinc-800 mb-2">Masukkan Kode Akses</h2>
+      <p class="text-xs text-zinc-400 font-medium">Ada sebuah catatan khusus untuk Anda. Silakan masukkan kode akses untuk membacanya.</p>
     </div>
     
     <div class="space-y-4">
       <input 
         type="text" 
         id="secret-code-input" 
-        placeholder="Masukkan Kode Rahasia" 
+        placeholder="Kode Akses Keamanan" 
         maxlength="12"
-        class="w-full px-4 py-3 rounded-xl border border-rose-200 text-center font-semibold text-gray-700 focus:outline-none focus:ring-2 focus:ring-rose-400 uppercase tracking-widest placeholder:tracking-normal placeholder:font-normal"
+        class="w-full px-4 py-3 rounded-xl border border-zinc-200 text-center font-bold text-zinc-700 focus:outline-none focus:ring-2 focus:ring-zinc-400 uppercase tracking-widest placeholder:tracking-normal placeholder:font-normal text-sm"
       >
       <button 
         onclick="verifyCode()"
-        class="w-full py-3 bg-gradient-to-r from-rose-400 to-pink-500 hover:from-rose-500 hover:to-pink-600 text-white font-semibold rounded-xl shadow-lg transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+        class="w-full py-3 bg-zinc-800 hover:bg-zinc-900 text-white font-semibold rounded-xl shadow-md transition-all text-sm uppercase tracking-wider"
       >
-        Buka Pesan
+        Buka Catatan
       </button>
-      <p id="code-error" class="text-xs text-red-500 opacity-0 transition-opacity font-medium">Kode rahasia tidak cocok. Silakan coba lagi.</p>
+      <p id="code-error" class="text-xs text-red-500 opacity-0 transition-opacity font-semibold">Kode tidak cocok. Silakan coba kembali.</p>
     </div>
   </div>
   `
@@ -237,40 +238,40 @@ export function generateFlowerSecretLetterHtml(config: PublishedConfig): string 
     hasSecretCode ? "hidden" : ""
   } flex-col items-center justify-center z-10 transition-all duration-500">
     <div class="text-center mb-8">
-      <h3 class="font-vibes text-4xl text-rose-700 mb-1">Dear ${
-        config.toName
-      }</h3>
-      <p class="text-xs text-rose-600 font-semibold uppercase tracking-wider">Sebuah surat manis untukmu</p>
+      <h3 class="font-lora text-2xl font-semibold text-zinc-700 mb-1">Kepada: ${config.toName}</h3>
+      <p class="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">Sebuah Catatan Kenangan Untukmu</p>
     </div>
     
     <div id="envelope" class="envelope-wrapper" onclick="openEnvelope()">
       <div class="wax-seal"></div>
       <div class="envelope-card flex flex-col justify-between items-center text-center">
-        <span class="font-vibes text-3xl text-rose-500">Dari ${
-          config.fromName
-        }</span>
-        <span class="text-[10px] uppercase font-bold tracking-widest text-rose-400">Ketuk untuk Membaca</span>
+        <span class="font-lora text-xl font-medium text-zinc-600">Dari: ${config.fromName}</span>
+        <span class="text-[9px] uppercase font-bold tracking-widest text-amber-600/80">Ketuk untuk Membuka</span>
       </div>
     </div>
   </div>
 
   <!-- SECTION 3: MAIN LETTER CONTENT -->
-  <div id="letter-section" class="hidden w-full max-w-2xl glass-card rounded-3xl p-6 sm:p-10 my-8 z-10 opacity-0 transition-all duration-1000 transform translate-y-10">
+  <div id="letter-section" class="hidden w-full max-w-2xl keepsake-card rounded-3xl p-6 sm:p-10 my-8 z-10 opacity-0 transition-all duration-1000 transform translate-y-10 border border-zinc-100">
+    
     <!-- Letter Header -->
-    <div class="text-center border-b border-rose-100 pb-6 mb-8">
-      <h1 class="font-vibes text-5xl text-rose-500 mb-2">${letterTitle}</h1>
-      <div class="flex items-center justify-between text-xs font-semibold text-rose-400 uppercase tracking-widest px-2">
+    <div class="text-center border-b border-zinc-100 pb-6 mb-8">
+      <h1 class="font-lora text-3xl font-semibold text-zinc-800 mb-3">${letterTitle}</h1>
+      <div class="flex items-center justify-between text-[10px] font-bold text-zinc-400 uppercase tracking-widest px-2">
         <span>Untuk: ${config.toName}</span>
         <span>Dari: ${config.fromName}</span>
       </div>
     </div>
 
     <!-- Letter Body (Typewriter effect container) -->
-    <div class="font-playfair text-gray-700 leading-relaxed text-base sm:text-lg mb-8 whitespace-pre-wrap min-h-[120px]" id="letter-body-content"></div>
+    <div class="font-lora text-zinc-700 leading-loose text-base sm:text-lg mb-8 whitespace-pre-wrap min-h-[120px]" id="letter-body-content"></div>
 
     <!-- Photos Gallery -->
     <div id="gallery-container" class="hidden space-y-6 mb-8 transition-opacity duration-1000 opacity-0">
-      <h3 class="font-playfair text-xl font-bold text-center text-rose-600 mb-4">Galeri Kenangan Kita</h3>
+      <div class="text-center border-t border-zinc-100 pt-8 pb-4">
+        <h3 class="font-lora text-xl font-semibold text-zinc-800">Lampiran Foto Kenangan</h3>
+        <p class="text-[9px] text-zinc-400 font-bold uppercase tracking-widest mt-1">Dokumentasi Momen Bersama</p>
+      </div>
       <div id="photos-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
     </div>
 
@@ -278,20 +279,20 @@ export function generateFlowerSecretLetterHtml(config: PublishedConfig): string 
     ${
       hasVoiceNote
         ? `
-    <div id="voice-section" class="hidden bg-rose-50/80 border border-rose-100 rounded-2xl p-4 sm:p-6 mb-8 transition-opacity duration-1000 opacity-0">
-      <h4 class="font-playfair text-sm font-semibold text-rose-700 mb-3 text-center flex items-center justify-center gap-2">
-        <span>🎙</span> Pesan Suara Untukmu
+    <div id="voice-section" class="hidden bg-zinc-50 border border-zinc-200/50 rounded-2xl p-4 sm:p-6 mb-8 transition-opacity duration-1000 opacity-0">
+      <h4 class="font-lora text-sm font-semibold text-zinc-700 mb-3 text-center flex items-center justify-center gap-2">
+        <span>🎙</span> Lampiran Pesan Suara
       </h4>
       <div class="flex flex-col sm:flex-row items-center gap-4">
         <!-- Custom Audio Player UI -->
-        <button id="play-btn" onclick="toggleAudio()" class="w-12 h-12 rounded-full bg-rose-400 hover:bg-rose-500 text-white flex items-center justify-center shadow-md transition-all">
-          <span id="play-icon" class="text-xl">▶</span>
+        <button id="play-btn" onclick="toggleAudio()" class="w-12 h-12 rounded-full bg-zinc-800 hover:bg-zinc-900 text-white flex items-center justify-center shadow-sm transition-all">
+          <span id="play-icon" class="text-lg">▶</span>
         </button>
         <div class="flex-1 w-full">
-          <div class="relative h-2 bg-rose-200 rounded-full cursor-pointer" id="progress-bar-container" onclick="seekAudio(event)">
-            <div class="absolute top-0 left-0 h-full bg-rose-400 rounded-full w-0" id="audio-progress"></div>
+          <div class="relative h-2 bg-zinc-200 rounded-full cursor-pointer" id="progress-bar-container" onclick="seekAudio(event)">
+            <div class="absolute top-0 left-0 h-full bg-zinc-800 rounded-full w-0" id="audio-progress"></div>
           </div>
-          <div class="flex justify-between text-xs text-rose-500 font-semibold mt-2">
+          <div class="flex justify-between text-[10px] text-zinc-400 font-bold uppercase mt-2">
             <span id="current-time">0:00</span>
             <span id="duration">0:00</span>
           </div>
@@ -307,22 +308,21 @@ export function generateFlowerSecretLetterHtml(config: PublishedConfig): string 
     ${
       config.finalMessage
         ? `
-    <div id="final-message-container" class="hidden text-center mt-10 pt-8 border-t border-rose-100 transition-opacity duration-1000 opacity-0">
-      <p class="font-vibes text-4xl text-rose-500 mb-1">${config.finalMessage}</p>
-      <p class="text-[10px] font-bold uppercase tracking-wider text-rose-400">Selamanya Bersamamu</p>
+    <div id="final-message-container" class="hidden text-center mt-10 pt-8 border-t border-zinc-100 transition-opacity duration-1000 opacity-0">
+      <p class="font-lora text-2xl italic text-zinc-800 mb-2">"${config.finalMessage}"</p>
+      <p class="text-[9px] font-bold uppercase tracking-wider text-zinc-400">Salam Hangat</p>
     </div>
     `
         : ""
     }
 
     <!-- Footer branding -->
-    <div class="text-center mt-8 text-[10px] font-semibold text-rose-400 uppercase tracking-widest">
-      Made with DearNote
+    <div class="text-center mt-8 text-[9px] font-bold text-zinc-300 uppercase tracking-widest border-t border-zinc-50 pt-4">
+      DearNote Keepsake Journal
     </div>
   </div>
 
   <script>
-    // Config variables passed from publisher
     const config = {
       secretCode: "${config.secretCode || ""}",
       letterBody: ${escapedLetterBody},
@@ -330,47 +330,35 @@ export function generateFlowerSecretLetterHtml(config: PublishedConfig): string 
       hasVoiceNote: ${hasVoiceNote}
     };
 
-    // 1. Generate Floating Petals
-    const petalsContainer = document.getElementById('petals-container');
-    const petalColors = ['#ffb3c1', '#ffc2d1', '#ffe5ec', '#ff85a1'];
+    // 1. Generate Floating Dust Particles
+    const dustContainer = document.getElementById('dust-container');
     
-    function createPetal() {
-      const petal = document.createElement('div');
-      petal.classList.add('petal');
+    function createDustParticle() {
+      const particle = document.createElement('div');
+      particle.classList.add('dust');
       
-      // Random sizes, speeds, angles, positions
-      const size = Math.random() * 12 + 8;
+      const size = Math.random() * 4 + 2;
       const left = Math.random() * window.innerWidth;
-      const duration = Math.random() * 8 + 5;
-      const delay = Math.random() * 5;
-      const color = petalColors[Math.floor(Math.random() * petalColors.length)];
+      const duration = Math.random() * 10 + 6;
+      const delay = Math.random() * 4;
       
-      petal.style.width = size + 'px';
-      petal.style.height = size + 'px';
-      petal.style.left = left + 'px';
-      petal.style.animationDuration = duration + 's';
-      petal.style.animationDelay = delay + 's';
-      petal.style.background = 'radial-gradient(circle at 30% 30%, ' + color + ', #e5989b)';
+      particle.style.width = size + 'px';
+      particle.style.height = size + 'px';
+      particle.style.left = left + 'px';
+      particle.style.animationDuration = duration + 's';
+      particle.style.animationDelay = delay + 's';
       
-      // Random shape variants
-      if (Math.random() > 0.5) {
-        petal.style.borderRadius = '50% 0 50% 50%';
-      }
+      dustContainer.appendChild(particle);
       
-      petalsContainer.appendChild(petal);
-      
-      // Remove petal after animation completes
       setTimeout(() => {
-        petal.remove();
+        particle.remove();
       }, (duration + delay) * 1000);
     }
     
-    // Spawn initial petals
-    for (let i = 0; i < 20; i++) {
-      createPetal();
+    for (let i = 0; i < 15; i++) {
+      createDustParticle();
     }
-    // Continuously spawn petals
-    setInterval(createPetal, 400);
+    setInterval(createDustParticle, 800);
 
     // 2. Secret Code Validation
     function verifyCode() {
@@ -379,7 +367,6 @@ export function generateFlowerSecretLetterHtml(config: PublishedConfig): string 
       const errorMsg = document.getElementById('code-error');
       
       if (input === actualCode) {
-        // Transition to envelope section
         const codeSection = document.getElementById('code-section');
         codeSection.classList.add('scale-95', 'opacity-0');
         setTimeout(() => {
@@ -390,7 +377,6 @@ export function generateFlowerSecretLetterHtml(config: PublishedConfig): string 
         }, 500);
       } else {
         errorMsg.classList.remove('opacity-0');
-        // Shake input effect
         const inputEl = document.getElementById('secret-code-input');
         inputEl.classList.add('border-red-400', 'animate-bounce');
         setTimeout(() => {
@@ -399,7 +385,6 @@ export function generateFlowerSecretLetterHtml(config: PublishedConfig): string 
       }
     }
 
-    // Enter key support for secret code
     if (document.getElementById('secret-code-input')) {
       document.getElementById('secret-code-input').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
@@ -417,7 +402,6 @@ export function generateFlowerSecretLetterHtml(config: PublishedConfig): string 
       const envelope = document.getElementById('envelope');
       envelope.classList.add('open');
       
-      // Wait for envelope animation to finish, then slide in the letter
       setTimeout(() => {
         const envSection = document.getElementById('envelope-section');
         envSection.classList.add('scale-90', 'opacity-0');
@@ -426,7 +410,6 @@ export function generateFlowerSecretLetterHtml(config: PublishedConfig): string 
           envSection.remove();
           const letterSection = document.getElementById('letter-section');
           letterSection.classList.remove('hidden');
-          // Trigger CSS transition
           setTimeout(() => {
             letterSection.classList.remove('opacity-0', 'translate-y-10');
             startTypewriter();
@@ -435,60 +418,51 @@ export function generateFlowerSecretLetterHtml(config: PublishedConfig): string 
       }, 1500);
     }
 
-    // 4. Typewriter Animation for Letter Body
+    // 4. Typewriter Animation
     function startTypewriter() {
       const container = document.getElementById('letter-body-content');
       const text = config.letterBody;
       let index = 0;
-      const speed = 25; // millisecond delay per character
+      const speed = 25;
       
       function type() {
         if (index < text.length) {
           container.innerHTML += text.charAt(index);
           index++;
-          
-          // Auto scroll letter window down on mobile if it expands
           if (window.innerHeight + window.scrollY < document.body.offsetHeight) {
             window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
           }
-          
           setTimeout(type, speed);
         } else {
-          // Completed typing, reveal other sections
           revealExtraSections();
         }
       }
-      
       type();
     }
 
-    // 5. Reveal Extra Sections (Photos, Audio, Final Message)
+    // 5. Reveal Extra Sections
     function revealExtraSections() {
-      // 1. Photos
       if (config.photos && config.photos.length > 0) {
         const gallery = document.getElementById('gallery-container');
         const grid = document.getElementById('photos-grid');
         
         config.photos.forEach(photo => {
           const item = document.createElement('div');
-          item.className = 'flex flex-col bg-white border border-rose-50 rounded-xl overflow-hidden shadow-sm p-3 transform transition hover:scale-[1.02] duration-300';
+          item.className = 'flex flex-col bg-zinc-50 border border-zinc-100 rounded-xl overflow-hidden shadow-sm p-3 transform transition hover:scale-[1.01] duration-300';
           
-          // Image
           const img = document.createElement('img');
           img.src = photo.src;
-          img.alt = photo.caption || 'Memory';
+          img.alt = photo.caption || 'Memory Photo';
           img.className = 'w-full h-48 sm:h-60 object-cover rounded-lg mb-2';
           
           item.appendChild(img);
           
-          // Caption
           if (photo.caption) {
             const cap = document.createElement('p');
-            cap.className = 'font-playfair text-sm text-center text-gray-600 italic px-2 py-1';
+            cap.className = 'font-sans text-xs text-center text-zinc-500 italic px-2 py-1';
             cap.innerText = photo.caption;
             item.appendChild(cap);
           }
-          
           grid.appendChild(item);
         });
         
@@ -496,14 +470,12 @@ export function generateFlowerSecretLetterHtml(config: PublishedConfig): string 
         setTimeout(() => { gallery.classList.add('opacity-100'); }, 100);
       }
       
-      // 2. Voice note
       if (config.hasVoiceNote) {
         const voice = document.getElementById('voice-section');
         voice.classList.remove('hidden');
         setTimeout(() => { voice.classList.add('opacity-100'); }, 300);
       }
       
-      // 3. Final message
       const finalMsg = document.getElementById('final-message-container');
       if (finalMsg) {
         finalMsg.classList.remove('hidden');
@@ -511,7 +483,7 @@ export function generateFlowerSecretLetterHtml(config: PublishedConfig): string 
       }
     }
 
-    // 6. Custom Audio Player Logic
+    // 6. Custom Audio Player
     let audio = null;
     let isPlaying = false;
     
@@ -539,9 +511,7 @@ export function generateFlowerSecretLetterHtml(config: PublishedConfig): string 
         playIcon.innerText = '▶';
         isPlaying = false;
       } else {
-        player.play().catch(e => {
-          console.error("Audio playback error:", e);
-        });
+        player.play().catch(e => console.error(e));
         playIcon.innerText = '⏸';
         isPlaying = true;
       }
@@ -558,7 +528,6 @@ export function generateFlowerSecretLetterHtml(config: PublishedConfig): string 
         current.innerText = formatTime(player.currentTime);
       }
       
-      // Audio ended
       if (player.ended) {
         document.getElementById('play-icon').innerText = '▶';
         progress.style.width = '0%';
@@ -585,12 +554,10 @@ export function generateFlowerSecretLetterHtml(config: PublishedConfig): string 
       return m + ':' + (s < 10 ? '0' : '') + s;
     }
     
-    // In case duration loads after meta
     window.addEventListener('load', () => {
       setTimeout(initAudioMetadata, 1000);
     });
   </script>
-
 </body>
 </html>`;
 }

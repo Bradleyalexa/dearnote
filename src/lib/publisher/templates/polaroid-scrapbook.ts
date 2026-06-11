@@ -1,8 +1,8 @@
 import { PublishedConfig } from "../../schemas/card-draft";
 
-export function generatePolaroidMemoryNoteHtml(config: PublishedConfig): string {
+export function generatePolaroidScrapbookHtml(config: PublishedConfig): string {
   const hasSecretCode = !!config.secretCode;
-  const letterTitle = config.letterTitle || "Our Story So Far";
+  const letterTitle = config.letterTitle || "A Memory Log";
   const escapedLetterBody = JSON.stringify(config.letterBody);
   const photosJson = JSON.stringify(config.photos);
   const hasVoiceNote = !!config.voiceNote;
@@ -13,12 +13,12 @@ export function generatePolaroidMemoryNoteHtml(config: PublishedConfig): string 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Our Memory - DearNote</title>
+  <title>Memory Scrapbook - DearNote</title>
   <meta name="robots" content="noindex, nofollow">
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Montserrat:wght@400;500;600&family=Special+Elite&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Plus+Jakarta+Sans:wght@400;500;600&family=Special+Elite&display=swap" rel="stylesheet">
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -28,7 +28,7 @@ export function generatePolaroidMemoryNoteHtml(config: PublishedConfig): string 
           fontFamily: {
             handwritten: ['Caveat', 'cursive'],
             typewriter: ['"Special Elite"', 'monospace'],
-            sans: ['Montserrat', 'sans-serif'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
           }
         }
       }
@@ -37,8 +37,8 @@ export function generatePolaroidMemoryNoteHtml(config: PublishedConfig): string 
   <style>
     /* Custom CSS animations and styles */
     body {
-      background-color: #f5ebe0;
-      background-image: radial-gradient(#e3d5ca 1px, transparent 1px);
+      background-color: #F5EBE0;
+      background-image: radial-gradient(#E3D5CA 1px, transparent 1px);
       background-size: 20px 20px;
       min-height: 100vh;
       overflow-x: hidden;
@@ -58,37 +58,37 @@ export function generatePolaroidMemoryNoteHtml(config: PublishedConfig): string 
 
     /* Polaroid card scatter */
     .polaroid {
-      background: #ffffff;
+      background: #FFFFFF;
       padding: 12px 12px 28px 12px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-      border: 1px solid rgba(0,0,0,0.04);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+      border: 1px solid rgba(0,0,0,0.03);
       transform-style: preserve-3d;
       transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
     .polaroid:hover {
-      transform: scale(1.05) rotate(0deg) !important;
-      box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+      transform: scale(1.03) rotate(0deg) !important;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.12);
       z-index: 50;
     }
 
-    /* Paper texture for main card */
+    /* Paper texture for scrapbook paper */
     .scrapbook-paper {
-      background-color: #fefae0;
+      background-color: #FEFAE0;
       background-image: 
-        linear-gradient(rgba(0, 0, 0, 0.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(221, 190, 169, 0.2) 2px, transparent 2px);
+        linear-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(221, 190, 169, 0.15) 2px, transparent 2px);
       background-size: 100% 28px, 100% 100%;
       line-height: 28px !important;
-      border: 1px solid #dda15e;
-      box-shadow: 0 10px 30px rgba(96, 108, 56, 0.1);
+      border: 1px solid #DDA15E;
+      box-shadow: 0 10px 30px rgba(96, 108, 56, 0.06);
     }
 
     /* Tape overlay */
     .tape {
       position: absolute;
-      background: rgba(218, 165, 32, 0.3);
-      backdrop-filter: blur(1px);
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      background: rgba(197, 168, 128, 0.35);
+      backdrop-filter: blur(0.5px);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
       transform: rotate(-3deg);
     }
 
@@ -97,9 +97,9 @@ export function generatePolaroidMemoryNoteHtml(config: PublishedConfig): string 
       position: relative;
       width: 320px;
       height: 440px;
-      background: linear-gradient(135deg, #d3a297, #b5838d);
+      background: linear-gradient(135deg, #A89F91, #7C7267); /* Neutral Sand Leather Look */
       border-radius: 8px 24px 24px 8px;
-      box-shadow: 10px 15px 35px rgba(0,0,0,0.18);
+      box-shadow: 10px 15px 35px rgba(0,0,0,0.15);
       cursor: pointer;
       transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
       transform-origin: left center;
@@ -111,34 +111,34 @@ export function generatePolaroidMemoryNoteHtml(config: PublishedConfig): string 
 </head>
 <body class="flex items-center justify-center p-4 relative min-h-screen">
 
-  <!-- SECTION 1: COSMETIC SECRET CODE -->
+  <!-- SECTION 1: CODE LOCK ACCESS SCREEN -->
   ${
     hasSecretCode
       ? `
-  <div id="code-section" class="w-full max-w-md bg-white border border-[#dda15e]/30 rounded-2xl p-8 text-center z-10 transition-all duration-500 transform scale-100 shadow-xl">
+  <div id="code-section" class="w-full max-w-md bg-white border border-[#DDA15E]/30 rounded-2xl p-8 text-center z-10 transition-all duration-500 transform scale-100 shadow-xl">
     <div class="mb-6">
-      <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#f5ebe0] text-[#b5838d] text-3xl mb-4">
-        🔑
+      <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#F5EBE0] text-[#7C7267] text-2xl mb-4">
+        🔒
       </div>
-      <h2 class="font-typewriter text-xl font-bold text-gray-800 mb-2">Private Note</h2>
-      <p class="text-sm text-gray-600 font-sans">Surat kenangan dari <span class="font-semibold text-[#b5838d]">${config.fromName}</span> untuk <span class="font-semibold text-[#b5838d]">${config.toName}</span>. Masukkan kode untuk membuka album.</p>
+      <h2 class="font-typewriter text-xl font-bold text-gray-800 mb-2">Akses Jurnal</h2>
+      <p class="text-xs text-gray-500 font-sans">Ada sebuah catatan kenangan dari <span class="font-semibold text-[#7C7267]">${config.fromName}</span> untuk <span class="font-semibold text-[#7C7267]">${config.toName}</span>. Masukkan kode untuk membuka.</p>
     </div>
     
     <div class="space-y-4 font-sans">
       <input 
         type="text" 
         id="secret-code-input" 
-        placeholder="Kode Rahasia" 
+        placeholder="Kode Akses" 
         maxlength="12"
-        class="w-full px-4 py-3 rounded-xl border border-gray-300 text-center font-bold text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#b5838d] uppercase tracking-widest"
+        class="w-full px-4 py-3 rounded-xl border border-gray-300 text-center font-bold text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#7C7267] uppercase tracking-widest text-sm"
       >
       <button 
         onclick="verifyCode()"
-        class="w-full py-3 bg-[#b5838d] hover:bg-[#a2727c] text-white font-semibold rounded-xl shadow-md transition-all"
+        class="w-full py-3 bg-[#7C7267] hover:bg-[#6A6056] text-white font-semibold rounded-xl shadow-md transition-all text-sm uppercase tracking-wider"
       >
-        Buka Album
+        Buka Scrapbook
       </button>
-      <p id="code-error" class="text-xs text-red-500 opacity-0 transition-opacity font-medium">Kode salah, coba cek kembali kodenya.</p>
+      <p id="code-error" class="text-xs text-red-500 opacity-0 transition-opacity font-semibold">Kode salah, silakan coba kembali.</p>
     </div>
   </div>
   `
@@ -154,20 +154,20 @@ export function generatePolaroidMemoryNoteHtml(config: PublishedConfig): string 
       <div class="absolute top-0 left-0 bottom-0 w-6 bg-black/10 rounded-l-lg"></div>
       
       <div class="self-end border-b border-white/20 pb-2 text-right">
-        <span class="font-sans text-[10px] uppercase tracking-widest font-semibold opacity-80">Memory Scrapbook</span>
+        <span class="font-sans text-[10px] uppercase tracking-widest font-bold opacity-80">Memory Scrapbook</span>
       </div>
       
       <div class="text-center my-auto">
-        <h3 class="font-handwritten text-5xl font-bold mb-2">Dear ${
+        <h3 class="font-handwritten text-5xl font-bold mb-2">Untuk: ${
           config.toName
         }</h3>
-        <p class="font-sans text-xs uppercase tracking-widest opacity-80">Kenangan Dari ${
+        <p class="font-sans text-xs uppercase tracking-widest opacity-80">Catatan Kenangan Dari ${
           config.fromName
         }</p>
       </div>
       
       <div class="text-center border-t border-white/20 pt-4">
-        <span class="font-sans text-[10px] uppercase tracking-widest font-bold animate-pulse">Ketuk Buku untuk Membuka</span>
+        <span class="font-sans text-[9px] uppercase tracking-widest font-bold animate-pulse">Ketuk Jurnal untuk Membuka</span>
       </div>
     </div>
   </div>
@@ -182,9 +182,9 @@ export function generatePolaroidMemoryNoteHtml(config: PublishedConfig): string 
       <div class="tape bottom-[-8px] right-[20%] w-20 h-6"></div>
 
       <!-- Letter Header -->
-      <div class="border-b border-dashed border-[#dda15e] pb-4 mb-6 font-handwritten text-3xl text-gray-800">
+      <div class="border-b border-dashed border-[#DDA15E] pb-4 mb-6 font-handwritten text-3xl text-gray-800">
         <div class="flex justify-between items-center">
-          <span>Untuk: ${config.toName}</span>
+          <span>Kepada: ${config.toName}</span>
           <span>Dari: ${config.fromName}</span>
         </div>
       </div>
@@ -196,7 +196,7 @@ export function generatePolaroidMemoryNoteHtml(config: PublishedConfig): string 
       ${
         config.finalMessage
           ? `
-      <div id="final-message-container" class="hidden font-handwritten text-3xl text-center text-[#b5838d] font-bold mt-10 pt-6 border-t border-dashed border-[#dda15e] transition-opacity duration-1000 opacity-0">
+      <div id="final-message-container" class="hidden font-handwritten text-3xl text-center text-[#7C7267] font-bold mt-10 pt-6 border-t border-dashed border-[#DDA15E] transition-opacity duration-1000 opacity-0">
         "${config.finalMessage}"
       </div>
       `
@@ -208,7 +208,7 @@ export function generatePolaroidMemoryNoteHtml(config: PublishedConfig): string 
     <div id="gallery-container" class="hidden space-y-6 mb-8 transition-opacity duration-1000 opacity-0">
       <div class="text-center relative py-4">
         <div class="tape top-0 left-[45%] w-16 h-5 opacity-70"></div>
-        <h3 class="font-handwritten text-4xl font-bold text-gray-800">Album Foto Kenangan</h3>
+        <h3 class="font-handwritten text-4xl font-bold text-gray-800">Album Foto Lampiran</h3>
       </div>
       <div id="polaroid-grid" class="flex flex-wrap items-center justify-center gap-8 py-6"></div>
     </div>
@@ -217,22 +217,22 @@ export function generatePolaroidMemoryNoteHtml(config: PublishedConfig): string 
     ${
       hasVoiceNote
         ? `
-    <div id="voice-section" class="hidden bg-white/70 border border-[#dda15e]/30 rounded-2xl p-4 sm:p-6 mb-8 shadow-md relative transition-opacity duration-1000 opacity-0">
+    <div id="voice-section" class="hidden bg-white/70 border border-[#DDA15E]/30 rounded-2xl p-4 sm:p-6 mb-8 shadow-md relative transition-opacity duration-1000 opacity-0">
       <!-- Tape effect -->
       <div class="tape top-[-6px] left-[10%] w-16 h-5"></div>
       
       <h4 class="font-handwritten text-2xl font-bold text-gray-800 mb-4 text-center">
-        🔊 Dengar Pesan Suara Ini
+        🔊 Putar Pesan Suara
       </h4>
       <div class="flex flex-col sm:flex-row items-center gap-4 font-sans">
-        <button id="play-btn" onclick="toggleAudio()" class="w-12 h-12 rounded-full bg-[#b5838d] hover:bg-[#a2727c] text-white flex items-center justify-center shadow-md transition-all">
+        <button id="play-btn" onclick="toggleAudio()" class="w-12 h-12 rounded-full bg-[#7C7267] hover:bg-[#6A6056] text-white flex items-center justify-center shadow-md transition-all">
           <span id="play-icon" class="text-lg">▶</span>
         </button>
         <div class="flex-1 w-full">
           <div class="relative h-2 bg-gray-200 rounded-full cursor-pointer" id="progress-bar-container" onclick="seekAudio(event)">
-            <div class="absolute top-0 left-0 h-full bg-[#b5838d] rounded-full w-0" id="audio-progress"></div>
+            <div class="absolute top-0 left-0 h-full bg-[#7C7267] rounded-full w-0" id="audio-progress"></div>
           </div>
-          <div class="flex justify-between text-xs text-gray-500 font-semibold mt-2">
+          <div class="flex justify-between text-xs text-zinc-400 font-semibold mt-2">
             <span id="current-time">0:00</span>
             <span id="duration">0:00</span>
           </div>
@@ -245,8 +245,8 @@ export function generatePolaroidMemoryNoteHtml(config: PublishedConfig): string 
     }
 
     <!-- Footer branding -->
-    <div class="text-center mt-12 mb-6 text-xs font-semibold uppercase tracking-widest text-[#dda15e]">
-      Made with DearNote
+    <div class="text-center mt-12 mb-6 text-[10px] font-bold uppercase tracking-widest text-zinc-400">
+      DearNote Keepsake Journal
     </div>
   </div>
 
@@ -288,7 +288,6 @@ export function generatePolaroidMemoryNoteHtml(config: PublishedConfig): string 
       isCoverOpened = true;
       
       const cover = document.getElementById('scrapbook-cover');
-      // Flip open cover page effect
       cover.style.transform = 'perspective(1000px) rotateY(-150deg)';
       cover.style.opacity = '0';
       
@@ -333,12 +332,9 @@ export function generatePolaroidMemoryNoteHtml(config: PublishedConfig): string 
 
     // 4. Polaroid Scatter and Fades
     function revealExtraSections() {
-      // 1. Photos (Polaroid layout)
       if (config.photos && config.photos.length > 0) {
         const gallery = document.getElementById('gallery-container');
         const grid = document.getElementById('polaroid-grid');
-        
-        // Define random rotations for polaroids to create scattered look
         const rotations = [-5, 4, -3, 5, -4];
         
         config.photos.forEach((photo, idx) => {
@@ -347,7 +343,6 @@ export function generatePolaroidMemoryNoteHtml(config: PublishedConfig): string 
           item.className = 'polaroid w-64 max-w-full relative';
           item.style.transform = 'rotate(' + rot + 'deg)';
           
-          // Random tiny tape effect on some polaroids
           if (Math.random() > 0.4) {
             const tape = document.createElement('div');
             tape.className = 'tape absolute w-16 h-5 opacity-80';
@@ -357,21 +352,18 @@ export function generatePolaroidMemoryNoteHtml(config: PublishedConfig): string 
             item.appendChild(tape);
           }
 
-          // Image
           const img = document.createElement('img');
           img.src = photo.src;
           img.alt = photo.caption || 'Memory';
           img.className = 'w-full h-48 object-cover border border-gray-100';
           item.appendChild(img);
           
-          // Caption
           if (photo.caption) {
             const cap = document.createElement('p');
             cap.className = 'font-handwritten text-xl text-center text-gray-700 italic mt-3 leading-tight';
             cap.innerText = photo.caption;
             item.appendChild(cap);
           }
-          
           grid.appendChild(item);
         });
         
@@ -379,14 +371,12 @@ export function generatePolaroidMemoryNoteHtml(config: PublishedConfig): string 
         setTimeout(() => { gallery.classList.add('opacity-100'); }, 100);
       }
       
-      // 2. Voice note
       if (config.hasVoiceNote) {
         const voice = document.getElementById('voice-section');
         voice.classList.remove('hidden');
         setTimeout(() => { voice.classList.add('opacity-100'); }, 300);
       }
       
-      // 3. Final message
       const finalMsg = document.getElementById('final-message-container');
       if (finalMsg) {
         finalMsg.classList.remove('hidden');
@@ -420,7 +410,7 @@ export function generatePolaroidMemoryNoteHtml(config: PublishedConfig): string 
         playIcon.innerText = '▶';
         isPlaying = false;
       } else {
-        player.play().catch(e => console.error("Audio error:", e));
+        player.play().catch(e => console.error(e));
         playIcon.innerText = '⏸';
         isPlaying = true;
       }
@@ -467,7 +457,6 @@ export function generatePolaroidMemoryNoteHtml(config: PublishedConfig): string 
       setTimeout(initAudioMetadata, 1000);
     });
   </script>
-
 </body>
 </html>`;
 }

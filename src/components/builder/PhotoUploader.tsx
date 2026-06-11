@@ -112,10 +112,10 @@ export default function PhotoUploader({ value, onChange }: PhotoUploaderProps) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <label className="block text-sm font-semibold text-gray-700">
+        <label className="block text-sm font-semibold text-zinc-700">
           Foto Kenangan (Maksimal 5)
         </label>
-        <span className="text-xs text-gray-400 font-medium">{value.length}/5 Foto</span>
+        <span className="text-xs text-zinc-400 font-medium">{value.length}/5 Foto</span>
       </div>
 
       {/* Photo Grid Previews */}
@@ -124,7 +124,7 @@ export default function PhotoUploader({ value, onChange }: PhotoUploaderProps) {
           {value.map((photo, idx) => (
             <div
               key={photo.key}
-              className="flex flex-col bg-white border border-rose-100 rounded-xl overflow-hidden shadow-sm p-3 relative group"
+              className="flex flex-col bg-white border border-zinc-200/60 rounded-xl overflow-hidden shadow-sm p-3 relative group"
             >
               {/* Delete button */}
               <button
@@ -147,7 +147,7 @@ export default function PhotoUploader({ value, onChange }: PhotoUploaderProps) {
                 value={photo.caption || ""}
                 onChange={(e) => updateCaption(idx, e.target.value)}
                 maxLength={120}
-                className="w-full px-2 py-1.5 text-xs border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-rose-400 font-medium text-gray-600"
+                className="w-full px-2 py-1.5 text-xs border border-zinc-200 rounded-md focus:outline-none focus:ring-1 focus:ring-zinc-400 font-medium text-zinc-650"
               />
             </div>
           ))}
@@ -160,16 +160,16 @@ export default function PhotoUploader({ value, onChange }: PhotoUploaderProps) {
           <label
             className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-xl cursor-pointer transition-all ${
               uploading
-                ? "border-rose-300 bg-rose-50/20 cursor-not-allowed"
-                : "border-rose-200 bg-rose-50/5 hover:bg-rose-50/10 hover:border-rose-300"
+                ? "border-zinc-350 bg-zinc-50/20 cursor-not-allowed"
+                : "border-zinc-200 bg-zinc-50/5 hover:bg-zinc-50/10 hover:border-zinc-350"
             }`}
           >
             <div className="flex flex-col items-center justify-center pt-5 pb-6 text-center px-4">
               <span className="text-3xl mb-2">{uploading ? "⏳" : "📸"}</span>
-              <p className="text-sm font-semibold text-gray-700">
+              <p className="text-sm font-semibold text-zinc-700">
                 {uploading ? "Mengompres & Mengunggah..." : "Pilih/Tarik Foto"}
               </p>
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-xs text-zinc-400 mt-1">
                 Format: JPG, PNG, WEBP (Otomatis dikompres)
               </p>
             </div>

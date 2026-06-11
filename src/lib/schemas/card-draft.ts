@@ -2,9 +2,9 @@ import { z } from "zod";
 
 // Available templates in the application
 export const TEMPLATES = [
-  "flower_secret_letter",
-  "polaroid_memory_note",
-  "moonlight_voice_letter",
+  "classic_editorial",
+  "polaroid_scrapbook",
+  "nocturnal_journal",
 ] as const;
 
 export const TemplateSchema = z.enum(TEMPLATES);

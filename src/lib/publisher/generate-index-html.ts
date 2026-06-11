@@ -1,21 +1,21 @@
 import { PublishedConfig } from "../schemas/card-draft";
-import { generateFlowerSecretLetterHtml } from "./templates/flower-secret-letter";
-import { generatePolaroidMemoryNoteHtml } from "./templates/polaroid-memory-note";
-import { generateMoonlightVoiceLetterHtml } from "./templates/moonlight-voice-letter";
+import { generateClassicEditorialHtml } from "./templates/classic-editorial";
+import { generatePolaroidScrapbookHtml } from "./templates/polaroid-scrapbook";
+import { generateNocturnalJournalHtml } from "./templates/nocturnal-journal";
 
 /**
  * Main coordinator that returns the HTML page content based on the selected template.
  */
 export function generateIndexHtml(config: PublishedConfig): string {
   switch (config.template) {
-    case "flower_secret_letter":
-      return generateFlowerSecretLetterHtml(config);
-    case "polaroid_memory_note":
-      return generatePolaroidMemoryNoteHtml(config);
-    case "moonlight_voice_letter":
-      return generateMoonlightVoiceLetterHtml(config);
+    case "classic_editorial":
+      return generateClassicEditorialHtml(config);
+    case "polaroid_scrapbook":
+      return generatePolaroidScrapbookHtml(config);
+    case "nocturnal_journal":
+      return generateNocturnalJournalHtml(config);
     default:
-      // Fallback in case of type bypass
-      return generateFlowerSecretLetterHtml(config);
+      // Fallback
+      return generateClassicEditorialHtml(config);
   }
 }
