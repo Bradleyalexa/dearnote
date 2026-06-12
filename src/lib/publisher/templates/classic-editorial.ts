@@ -252,16 +252,16 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
   <!-- SECTION 2: ENVELOPE OPENING UX -->
   <div id="envelope-section" class="${
     hasSecretCode ? "hidden" : ""
-  } flex-col items-center justify-center z-10 transition-all duration-500">
+  } flex-col items-center justify-center z-10 transition-all duration-500 px-4">
     <div class="text-center mb-8">
-      <h3 class="font-lora text-2xl font-semibold text-zinc-700 mb-1">Kepada: ${config.toName}</h3>
-      <p class="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">Sebuah Catatan Kenangan Untukmu</p>
+      <h3 class="font-lora text-2xl font-semibold text-zinc-700 mb-1 break-words">Kepada: ${config.toName}</h3>
+      <p class="text-[10px] text-zinc-400 font-bold uppercase tracking-widest break-words">Sebuah Catatan Kenangan Untukmu</p>
     </div>
     
     <div id="envelope" class="envelope-wrapper" onclick="openEnvelope()">
       <div class="wax-seal"></div>
-      <div class="envelope-card flex flex-col justify-between items-center text-center">
-        <span class="font-lora text-xl font-medium text-zinc-600">Dari: ${config.fromName}</span>
+      <div class="envelope-card flex flex-col justify-between items-center text-center p-4">
+        <span class="font-lora text-lg font-medium text-zinc-600 break-words w-full px-2">Dari: ${config.fromName}</span>
         <span class="text-[9px] uppercase font-bold tracking-widest text-amber-600/80">Ketuk untuk Membuka</span>
       </div>
     </div>
@@ -273,9 +273,9 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
     <!-- Letter Header -->
     <div class="text-center border-b border-zinc-100 pb-6 mb-8">
       <h1 class="font-lora text-3xl font-semibold text-zinc-800 mb-3">${letterTitle}</h1>
-      <div class="flex items-center justify-between text-[10px] font-bold text-zinc-400 uppercase tracking-widest px-2">
-        <span>Untuk: ${config.toName}</span>
-        <span>Dari: ${config.fromName}</span>
+      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 text-[10px] font-bold text-zinc-400 uppercase tracking-widest px-2 text-center sm:text-left">
+        <span class="break-all sm:break-normal">Untuk: ${config.toName}</span>
+        <span class="break-all sm:break-normal">Dari: ${config.fromName}</span>
       </div>
     </div>
 

@@ -173,13 +173,9 @@ export function generatePolaroidScrapbookHtml(config: PublishedConfig): string {
         <span class="font-sans text-[10px] uppercase tracking-widest font-bold opacity-80">Memory Scrapbook</span>
       </div>
       
-      <div class="text-center my-auto">
-        <h3 class="font-handwritten text-5xl font-bold mb-2">Untuk: ${
-          config.toName
-        }</h3>
-        <p class="font-sans text-xs uppercase tracking-widest opacity-80">Catatan Kenangan Dari ${
-          config.fromName
-        }</p>
+      <div class="text-center my-auto px-4">
+        <h3 class="font-handwritten text-4xl sm:text-5xl font-bold mb-2 break-words">Untuk: ${config.toName}</h3>
+        <p class="font-sans text-xs uppercase tracking-widest opacity-80 break-words">Catatan Kenangan Dari ${config.fromName}</p>
       </div>
       
       <div class="text-center border-t border-white/20 pt-4">
@@ -198,10 +194,10 @@ export function generatePolaroidScrapbookHtml(config: PublishedConfig): string {
       <div class="tape bottom-[-8px] right-[20%] w-20 h-6"></div>
 
       <!-- Letter Header -->
-      <div class="border-b border-dashed border-[#DDA15E] pb-4 mb-6 font-handwritten text-3xl text-gray-800">
-        <div class="flex justify-between items-center">
-          <span>Kepada: ${config.toName}</span>
-          <span>Dari: ${config.fromName}</span>
+      <div class="border-b border-dashed border-[#DDA15E] pb-4 mb-6 font-handwritten text-2xl sm:text-3xl text-gray-800">
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
+          <span class="break-all sm:break-normal">Kepada: ${config.toName}</span>
+          <span class="break-all sm:break-normal">Dari: ${config.fromName}</span>
         </div>
       </div>
 

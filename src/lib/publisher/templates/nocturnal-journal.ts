@@ -162,12 +162,10 @@ export function generateNocturnalJournalHtml(config: PublishedConfig): string {
   <!-- SECTION 2: GLOWING MOON REVEAL -->
   <div id="moon-section" class="${
     hasSecretCode ? "hidden" : ""
-  } flex flex-col items-center justify-center z-10 transition-all duration-700">
+  } flex flex-col items-center justify-center z-10 transition-all duration-700 px-4">
     <div class="text-center mb-12">
-      <h3 class="font-serif text-3xl text-zinc-200 mb-2">Kepada: ${
-        config.toName
-      }</h3>
-      <p class="font-sans text-[10px] uppercase tracking-widest opacity-80 text-zinc-400">Jurnal Kenangan Dari ${config.fromName}</p>
+      <h3 class="font-serif text-3xl text-zinc-200 mb-2 break-words">Kepada: ${config.toName}</h3>
+      <p class="font-sans text-[10px] uppercase tracking-widest opacity-80 text-zinc-400 break-words">Jurnal Kenangan Dari ${config.fromName}</p>
     </div>
     
     <div id="moon" class="moon-button" onclick="openMoon()"></div>
@@ -182,9 +180,9 @@ export function generateNocturnalJournalHtml(config: PublishedConfig): string {
     <!-- Letter Header -->
     <div class="text-center border-b border-white/10 pb-6 mb-8">
       <h1 class="font-serif text-3xl text-white mb-2">${letterTitle}</h1>
-      <div class="flex items-center justify-between text-[10px] font-bold text-zinc-400 uppercase tracking-widest px-2 font-sans">
-        <span>Untuk: ${config.toName}</span>
-        <span>Dari: ${config.fromName}</span>
+      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 text-[10px] font-bold text-zinc-400 uppercase tracking-widest px-2 font-sans text-center sm:text-left">
+        <span class="break-all sm:break-normal">Untuk: ${config.toName}</span>
+        <span class="break-all sm:break-normal">Dari: ${config.fromName}</span>
       </div>
     </div>
 
