@@ -156,7 +156,7 @@ export default function BackgroundMusicSelector({ value, onChange }: BackgroundM
         >
           {/* Modal Card */}
           <div 
-            className="w-full max-w-md bg-white/95 backdrop-blur-md rounded-3xl shadow-[0_24px_60px_rgba(0,0,0,0.15)] border border-zinc-100 flex flex-col max-h-[90vh] md:max-h-[85vh] animate-modal-scale overflow-hidden my-auto"
+            className="w-full max-w-md sm:max-w-2xl bg-white/95 backdrop-blur-md rounded-3xl shadow-[0_24px_60px_rgba(0,0,0,0.15)] border border-zinc-100 flex flex-col max-h-[90vh] md:max-h-[85vh] animate-modal-scale overflow-hidden my-auto"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
