@@ -100,11 +100,23 @@ export function generateNocturnalJournalHtml(config: PublishedConfig): string {
 
     /* Moonlight glass card */
     .moonlight-card {
-      background: rgba(24, 24, 27, 0.75);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(244, 244, 245, 0.1);
-      box-shadow: 0 15px 45px rgba(0, 0, 0, 0.4);
+      background: rgba(15, 15, 18, 0.78);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+      position: relative;
+    }
+    .moonlight-card::after {
+      content: "";
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      border: 1px dashed rgba(255, 255, 255, 0.06);
+      border-radius: 20px;
+      pointer-events: none;
     }
   </style>
 </head>
@@ -343,15 +355,16 @@ export function generateNocturnalJournalHtml(config: PublishedConfig): string {
       const container = document.getElementById('letter-body-content');
       const text = config.letterBody;
       let index = 0;
-      const speed = 30;
+      const speed = 25;
       
       function type() {
         if (index < text.length) {
           container.innerHTML += text.charAt(index);
           index++;
           
-          if (window.innerHeight + window.scrollY < document.body.offsetHeight) {
-            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+          // Auto-scroll instantly only when close to the bottom to avoid smooth scroll reflow lag
+          if (index % 4 === 0 && (window.innerHeight + window.scrollY < document.body.scrollHeight - 50)) {
+            window.scrollTo(0, document.body.scrollHeight);
           }
           setTimeout(type, speed);
         } else {
@@ -401,6 +414,12 @@ export function generateNocturnalJournalHtml(config: PublishedConfig): string {
         finalMsg.classList.remove('hidden');
         setTimeout(() => { finalMsg.classList.add('opacity-100'); }, 500);
       }
+
+      // Smoothly scroll down to show the newly revealed content (gallery/audio/final message)
+      setTimeout(() => {
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+      }, 500);
+    }
     }
 
     // 6. Audio Player Logic

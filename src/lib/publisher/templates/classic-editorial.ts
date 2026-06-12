@@ -160,22 +160,27 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 54px;
-      height: 54px;
-      background: radial-gradient(circle, #C5A880, #B0926A); /* warm bronze */
+      width: 60px;
+      height: 60px;
+      background: radial-gradient(circle at 30% 30%, #b22234 0%, #7d0d1b 60%, #4a020a 100%);
       border-radius: 50%;
       transform: translate(-50%, -50%);
-      box-shadow: 0 6px 14px rgba(0,0,0,0.18), inset 0 2px 4px rgba(255,255,255,0.3);
+      box-shadow: 
+        0 8px 20px rgba(0, 0, 0, 0.35), 
+        inset 0 4px 6px rgba(255, 255, 255, 0.45), 
+        inset 0 -4px 6px rgba(0, 0, 0, 0.5);
       z-index: 40;
-      transition: all 0.3s ease;
+      transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 22px;
-      color: #FFF;
+      cursor: pointer;
     }
     .wax-seal::after {
-      content: '✉'; /* Clean envelope icon */
+      content: '⚜️'; /* Elegant Royal Fleur-de-lis stamp */
+      font-size: 24px;
+      filter: drop-shadow(0 2px 2px rgba(0,0,0,0.4)) brightness(1.2);
+      opacity: 0.95;
     }
     .envelope-wrapper.open .wax-seal {
       opacity: 0;
@@ -184,14 +189,28 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
     }
     .wax-seal:hover {
       transform: translate(-50%, -50%) scale(1.08);
-      box-shadow: 0 8px 18px rgba(0,0,0,0.25);
+      box-shadow: 0 8px 22px rgba(0,0,0,0.4);
     }
     
     /* Keepsake Card */
     .keepsake-card {
-      background: #FFFFFF;
-      border: 1px solid rgba(197, 168, 128, 0.25);
-      box-shadow: 0 16px 40px rgba(28, 25, 23, 0.05);
+      background: #FAF9F6;
+      border: 1px solid rgba(197, 168, 128, 0.35);
+      box-shadow: 
+        0 24px 60px rgba(28, 25, 23, 0.08), 
+        0 2px 4px rgba(197, 168, 128, 0.1);
+      position: relative;
+    }
+    .keepsake-card::after {
+      content: "";
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      border: 1px solid rgba(197, 168, 128, 0.15);
+      border-radius: 20px;
+      pointer-events: none;
     }
     .accent-border {
       border: 1px solid rgba(197, 168, 128, 0.3);
@@ -444,14 +463,16 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
       const container = document.getElementById('letter-body-content');
       const text = config.letterBody;
       let index = 0;
-      const speed = 25;
+      const speed = 20;
       
       function type() {
         if (index < text.length) {
           container.innerHTML += text.charAt(index);
           index++;
-          if (window.innerHeight + window.scrollY < document.body.offsetHeight) {
-            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+          
+          // Auto-scroll instantly only when close to the bottom to avoid smooth scroll reflow lag
+          if (index % 4 === 0 && (window.innerHeight + window.scrollY < document.body.scrollHeight - 50)) {
+            window.scrollTo(0, document.body.scrollHeight);
           }
           setTimeout(type, speed);
         } else {
@@ -502,6 +523,11 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
         finalMsg.classList.remove('hidden');
         setTimeout(() => { finalMsg.classList.add('opacity-100'); }, 600);
       }
+
+      // Smoothly scroll down to show the newly revealed content (gallery/audio/final message)
+      setTimeout(() => {
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+      }, 600);
     }
 
     // 6. Custom Audio Player
