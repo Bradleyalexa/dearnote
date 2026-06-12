@@ -1,6 +1,6 @@
 import { PublishedConfig } from "../../schemas/card-draft";
 
-export function generatePolaroidScrapbookHtml(config: PublishedConfig): string {
+export function generateScrapbookHtml(config: PublishedConfig): string {
   const hasSecretCode = !!config.secretCode;
   const letterTitle = config.letterTitle || "A Memory Log";
   const escapedLetterBody = JSON.stringify(config.letterBody);

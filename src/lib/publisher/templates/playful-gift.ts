@@ -130,7 +130,7 @@ export function generatePlayfulGiftHtml(config: PublishedConfig): string {
       position: absolute;
       bottom: 132px;
       z-index: 10;
-      transition: transform 1s cubic-bezier(0.175, 0.885, 0.32, 1.5), opacity 0.6s ease;
+      transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
     }
 
     .lid-ribbon {
@@ -151,7 +151,7 @@ export function generatePlayfulGiftHtml(config: PublishedConfig): string {
       height: 50px;
       bottom: 166px;
       z-index: 15;
-      transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.5), opacity 0.5s ease;
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
     }
 
     .bow-loop-l, .bow-loop-r {
@@ -198,7 +198,7 @@ export function generatePlayfulGiftHtml(config: PublishedConfig): string {
       background: radial-gradient(circle, rgba(179,245,252,0.8) 0%, rgba(255,242,117,0.3) 50%, rgba(0,0,0,0) 70%);
       pointer-events: none;
       opacity: 0;
-      transition: opacity 0.8s ease, transform 0.8s ease;
+      transition: opacity 0.5s ease, transform 0.5s ease;
       z-index: 4;
       border-radius: 50%;
     }
@@ -239,7 +239,7 @@ export function generatePlayfulGiftHtml(config: PublishedConfig): string {
     .bounce-up-active {
       opacity: 1;
       transform: translateY(0) scale(1);
-      transition: all 1.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
   </style>
 </head>
@@ -577,16 +577,17 @@ export function generatePlayfulGiftHtml(config: PublishedConfig): string {
       
       setTimeout(() => {
         // Pop effect
-        boxContainer.style.transform = 'scale(0.9, 1.15) translateY(-20px)';
+        boxContainer.style.transform = 'scale(0.9, 1.15) translateY(-15px)';
         boxContainer.classList.add('opening');
         
         // Trigger bubbles/hearts explosion
         triggerBoxExplosion();
-      }, 250);
+      }, 150);
 
-      // Fade out and show content
+      // Fade out and show content (snappier transition)
       setTimeout(() => {
         const giftSection = document.getElementById('gift-box-section');
+        giftSection.style.transition = 'all 0.4s ease';
         giftSection.classList.add('scale-90', 'opacity-0');
         
         setTimeout(() => {
@@ -598,10 +599,10 @@ export function generatePlayfulGiftHtml(config: PublishedConfig): string {
             contentSection.classList.add('bounce-up-active');
             contentSection.classList.remove('bounce-up-enter');
             
-            setTimeout(startTypewriter, 400);
+            setTimeout(startTypewriter, 200);
           }, 50);
-        }, 800);
-      }, 1800);
+        }, 400);
+      }, 700);
     }
 
     function startTypewriter() {

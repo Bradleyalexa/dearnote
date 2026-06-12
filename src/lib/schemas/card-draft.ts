@@ -4,9 +4,15 @@ import { z } from "zod";
 export const TEMPLATES = [
   "classic_editorial",
   "polaroid_scrapbook",
+  "scrapbook",
+  "pink_book_folds",
+  "apology_letter",
+  "open_when_cards",
   "nocturnal_journal",
   "gift_box_reveal",
   "playful_gift",
+  "playful_dog",
+  "playful_pooh",
 ] as const;
 
 export const TemplateSchema = z.enum(TEMPLATES);

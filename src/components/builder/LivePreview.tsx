@@ -54,13 +54,12 @@ export default function LivePreview({ draft }: LivePreviewProps) {
           window.addEventListener('load', () => {
             // Disable actual fetching from local folder, use pre-injected config
             // Auto bypass code screen
-            const codeInput = document.getElementById('secret-code-input');
-            const codeBtn = document.querySelector('#code-section button');
-            if (codeInput && codeBtn) {
+            const codeInput = document.getElementById('secret-code-input') || document.getElementById('code-input');
+            if (codeInput) {
               codeInput.value = config.secretCode || '123';
-              verifyCode();
+              if (typeof verifyCode === 'function') verifyCode();
             }
-            // Auto bypass envelope/moon/giftbox opening screen
+            // Auto bypass envelope/moon/giftbox opening screen or wake up dog
             setTimeout(() => {
               const envelope = document.getElementById('envelope');
               if (envelope) openEnvelope();
@@ -68,6 +67,7 @@ export default function LivePreview({ draft }: LivePreviewProps) {
               if (moon) openMoon();
               const ribbon = document.getElementById('ribbon');
               if (ribbon) openGiftBox();
+              if (typeof triggerWakeup === 'function') triggerWakeup();
             }, 300);
           });
         </script>

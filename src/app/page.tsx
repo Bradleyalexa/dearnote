@@ -85,11 +85,11 @@ export default function Home() {
             {/* Tabs (Left on desktop) */}
             <div className="flex md:flex-col gap-3 w-full md:w-64 justify-center">
               {[
-                { id: "classic", label: "✒️ Classic Editorial", desc: "Kertas linen bertekstur cream lembut, font serif elegan, wax seal klasik, serta serpihan kertas mengambang lembut." },
-                { id: "polaroid", label: "📷 Polaroid Scrapbook", desc: "Kertas kerajinan kraft cokelat hangat, foto polaroid berselotip, serta nuansa tulisan mesin tik klasik." },
-                { id: "nocturnal", label: "🌌 Nocturnal Journal", desc: "Kanvas hitam legam malam sunyi, garis rasi bintang bersinar redup, font monospace, dan aksen pemutar suara yang berpendar." },
-                { id: "giftbox", label: "🎁 Gift Box Reveal", desc: "Kotak hadiah 3D dengan pita interaktif, confetti perayaan hangat, dan unwrapping ritual yang memorable." },
-                { id: "playfulbox", label: "🎈 Playful Cute Gift", desc: "Kotak kado pink pastel imut dengan balon & gelembung ceria, bounciness, dan sticker menggemaskan." }
+                { id: "classic", label: "Classic Editorial", desc: "Kertas linen bertekstur cream lembut, font serif elegan, wax seal klasik, serta serpihan kertas mengambang lembut." },
+                { id: "polaroid", label: "Polaroid Scrapbook", desc: "Kertas kerajinan kraft cokelat hangat, foto polaroid berselotip, serta nuansa tulisan mesin tik klasik." },
+                { id: "nocturnal", label: "Nocturnal Journal", desc: "Kanvas hitam legam malam sunyi, garis rasi bintang bersinar redup, font monospace, dan aksen pemutar suara yang berpendar." },
+                { id: "giftbox", label: "Gift Box Reveal", desc: "Kotak hadiah 3D dengan pita interaktif, confetti perayaan hangat, dan unwrapping ritual yang memorable." },
+                { id: "playfulbox", label: "Playful Cute Gift", desc: "Kotak kado pink pastel imut dengan balon & gelembung ceria, bounciness, dan sticker menggemaskan." }
               ].map((tab) => (
                 <button
                   key={tab.id}
