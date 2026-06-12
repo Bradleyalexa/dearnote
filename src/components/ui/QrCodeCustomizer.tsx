@@ -364,13 +364,13 @@ export default function QrCodeCustomizer({ cardUrl, orderId, onClose }: QrCodeCu
   };
 
   return (
-    <div className="fixed inset-0 bg-zinc-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
-      <div className="bg-[#FAF9F6] border border-zinc-200/80 shadow-2xl rounded-3xl max-w-4xl w-full flex flex-col md:flex-row p-6 sm:p-8 gap-8 animate-fade-in relative text-left">
+    <div className="fixed inset-0 bg-zinc-900/60 backdrop-blur-sm z-50 flex items-start justify-center p-4 overflow-y-auto md:items-center py-6 sm:py-10">
+      <div className="bg-[#FAF9F6] border border-zinc-200/80 shadow-2xl rounded-3xl max-w-4xl w-full flex flex-col md:flex-row p-6 sm:p-8 gap-8 animate-fade-in relative text-left my-auto">
         
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 w-9 h-9 rounded-full bg-zinc-100 hover:bg-zinc-200/80 text-zinc-500 hover:text-zinc-800 transition-all flex items-center justify-center font-bold text-lg cursor-pointer"
+          className="absolute top-4 right-4 w-9 h-9 rounded-full bg-zinc-100 hover:bg-zinc-200/80 text-zinc-500 hover:text-zinc-800 transition-all flex items-center justify-center font-bold text-lg cursor-pointer z-10"
         >
           ✕
         </button>

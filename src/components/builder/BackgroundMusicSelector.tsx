@@ -149,15 +149,15 @@ export default function BackgroundMusicSelector({ value, onChange }: BackgroundM
       {isOpen && (
         <div 
           onClick={handleClose}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/45 backdrop-blur-sm animate-modal-fade"
+          className="fixed inset-0 z-50 flex items-start justify-center p-4 bg-zinc-950/45 backdrop-blur-sm animate-modal-fade overflow-y-auto md:items-center"
         >
           {/* Modal Card */}
           <div 
-            className="w-full max-w-md bg-white/95 backdrop-blur-md rounded-3xl shadow-[0_24px_60px_rgba(0,0,0,0.15)] border border-zinc-100 flex flex-col max-h-[85vh] animate-modal-scale overflow-hidden"
+            className="w-full max-w-md bg-white/95 backdrop-blur-md rounded-3xl shadow-[0_24px_60px_rgba(0,0,0,0.15)] border border-zinc-100 flex flex-col max-h-[90vh] md:max-h-[85vh] animate-modal-scale overflow-hidden my-auto"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-6 pt-5 pb-3 border-b-0">
+            <div className="flex items-center justify-between px-4 sm:px-6 pt-4 sm:pt-5 pb-3 border-b-0">
               <div className="space-y-0.5">
                 <h3 className="font-serif text-lg font-bold text-zinc-800 text-left">Pilih Musik Latar</h3>
                 <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider text-left font-sans">Background Music</p>
@@ -165,14 +165,14 @@ export default function BackgroundMusicSelector({ value, onChange }: BackgroundM
               <button
                 type="button"
                 onClick={handleClose}
-                className="w-8 h-8 rounded-full hover:bg-zinc-200/50 flex items-center justify-center text-zinc-455 hover:text-zinc-700 transition-all text-sm cursor-pointer font-bold"
+                className="w-8 h-8 rounded-full hover:bg-zinc-200/50 flex items-center justify-center text-zinc-400 hover:text-zinc-700 transition-all text-sm cursor-pointer font-bold"
               >
                 ✕
               </button>
             </div>
 
             {/* Horizontal Scrollable Categories/Genre Buttons */}
-            <div className="flex gap-2 px-6 pb-3 overflow-x-auto scrollbar-none border-b border-zinc-100">
+            <div className="flex gap-2 px-4 sm:px-6 pb-3 overflow-x-auto scrollbar-none border-b border-zinc-100">
               {CATEGORIES.map((cat) => (
                 <button
                   key={cat.id}
@@ -190,27 +190,27 @@ export default function BackgroundMusicSelector({ value, onChange }: BackgroundM
             </div>
 
             {/* Scrollable Tracks List */}
-            <div className="p-6 overflow-y-auto space-y-3 max-h-[50vh]">
-              {/* Option: None (Always persistent at the top of the scrollable list for convenience) */}
+            <div className="p-4 sm:p-6 overflow-y-auto space-y-3 max-h-[45vh] sm:max-h-[50vh]">
+              {/* Option: None */}
               <div
                 onClick={() => handleSelect(null)}
-                className={`border-2 rounded-2xl p-4 flex items-center justify-between cursor-pointer transition-all ${
+                className={`border-2 rounded-2xl p-4 flex items-center justify-between cursor-pointer transition-all gap-3 ${
                   selectedTrackId === null
                     ? "border-zinc-800 bg-zinc-50/50 shadow-sm"
                     : "border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50/20"
                 }`}
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-full bg-zinc-50 border border-zinc-200 flex items-center justify-center text-zinc-400 text-sm">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div className="w-9 h-9 shrink-0 rounded-full bg-zinc-50 border border-zinc-200 flex items-center justify-center text-zinc-400 text-sm">
                     🔇
                   </div>
-                  <div className="text-left font-sans">
-                    <p className="text-xs font-bold text-zinc-700">Tanpa Musik Latar</p>
+                  <div className="text-left font-sans min-w-0">
+                    <p className="text-xs font-bold text-zinc-700 truncate">Tanpa Musik Latar</p>
                     <p className="text-[10px] text-zinc-400 font-medium">Hening saat jurnal dibuka</p>
                   </div>
                 </div>
 
-                <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${
+                <div className={`w-4 h-4 shrink-0 rounded-full border flex items-center justify-center ${
                   selectedTrackId === null ? "border-zinc-800" : "border-gray-300"
                 }`}>
                   {selectedTrackId === null && <div className="w-2 h-2 rounded-full bg-zinc-800" />}
@@ -226,18 +226,18 @@ export default function BackgroundMusicSelector({ value, onChange }: BackgroundM
                     <div
                       key={track.id}
                       onClick={() => handleSelect(track.id)}
-                      className={`border-2 rounded-2xl p-4 flex items-center justify-between cursor-pointer transition-all ${
+                      className={`border-2 rounded-2xl p-4 flex items-center justify-between cursor-pointer transition-all gap-3 ${
                         isSelected
                           ? "border-zinc-800 bg-zinc-50/50 shadow-sm"
                           : "border-zinc-200 hover:border-zinc-300 hover:bg-zinc-50/20"
                       }`}
                     >
-                      <div className="flex items-center gap-3 font-sans">
+                      <div className="flex items-center gap-3 font-sans min-w-0">
                         {/* Play/Pause Button */}
                         <button
                           type="button"
                           onClick={(e) => handlePlayPause(track.id, track.src, e)}
-                          className={`w-9 h-9 rounded-full flex items-center justify-center text-xs transition-all shadow-sm cursor-pointer ${
+                          className={`w-9 h-9 shrink-0 rounded-full flex items-center justify-center text-xs transition-all shadow-sm cursor-pointer ${
                             isPlaying
                               ? "bg-zinc-800 text-white hover:bg-zinc-900"
                               : "bg-zinc-100 hover:bg-zinc-200 text-zinc-700"
@@ -246,8 +246,8 @@ export default function BackgroundMusicSelector({ value, onChange }: BackgroundM
                         >
                           {isPlaying ? "⏸" : "▶"}
                         </button>
-                        <div className="text-left">
-                          <p className="text-xs font-bold text-zinc-700">
+                        <div className="text-left min-w-0">
+                          <p className="text-xs font-bold text-zinc-700 truncate">
                             {track.icon} {track.label}
                           </p>
                           <p className="text-[10px] text-zinc-400 font-medium">Durasi Loop: {track.duration}s</p>
@@ -255,7 +255,7 @@ export default function BackgroundMusicSelector({ value, onChange }: BackgroundM
                       </div>
 
                       {/* Radio circle indicator */}
-                      <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${
+                      <div className={`w-4 h-4 shrink-0 rounded-full border flex items-center justify-center ${
                         isSelected ? "border-zinc-800" : "border-gray-300"
                       }`}>
                         {isSelected && <div className="w-2 h-2 rounded-full bg-zinc-800" />}
