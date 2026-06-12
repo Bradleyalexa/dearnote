@@ -136,9 +136,9 @@ export default function Home() {
                         Hari ini langkah barumu resmi dimulai. Aku sangat bangga atas semua usaha dan kerja kerasmu untuk mencapai titik ini...
                       </p>
 
-                      {/* Mock Image Box */}
-                      <div className="w-full aspect-[4/3] bg-zinc-200 rounded-lg overflow-hidden border border-zinc-200 shadow-inner relative">
-                        <div className="absolute inset-0 bg-gradient-to-tr from-zinc-300 to-zinc-100 flex items-center justify-center text-zinc-400 text-lg">📷</div>
+                      {/* Real Photo Box - Graduation */}
+                      <div className="w-full aspect-[4/3] rounded-lg overflow-hidden border border-zinc-200 shadow-inner relative">
+                        <img src="/img/graduation_pic_mockup.png" alt="Foto wisuda" className="w-full h-full object-cover object-top" />
                         <span className="absolute bottom-1.5 left-1.5 px-2 py-0.5 bg-white/80 rounded text-[9px] font-bold">1 / 5</span>
                       </div>
                     </div>
@@ -181,8 +181,8 @@ export default function Home() {
                         {/* Tape Strip representation */}
                         <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 w-14 h-4 bg-amber-100/60 border border-amber-250/20 backdrop-blur-[1px] rotate-2" />
                         
-                        <div className="w-full aspect-square bg-zinc-350 shadow-inner flex items-center justify-center text-zinc-500 text-lg rounded-sm relative overflow-hidden">
-                          <div className="absolute inset-0 bg-gradient-to-br from-zinc-300 to-zinc-200 flex items-center justify-center">🌇</div>
+                        <div className="w-full aspect-square shadow-inner rounded-sm relative overflow-hidden">
+                          <img src="/img/holiday_bali_pic_mockup.png" alt="Foto liburan Bali" className="w-full h-full object-cover object-center" />
                         </div>
                         <div className="font-serif text-[10px] text-center font-bold tracking-tight italic">
                           "Liburan di Bali tempo hari"

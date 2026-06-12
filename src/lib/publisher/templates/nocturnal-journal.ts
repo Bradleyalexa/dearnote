@@ -40,7 +40,7 @@ export function generateNocturnalJournalHtml(config: PublishedConfig): string {
   <style>
     /* Custom CSS animations and styles */
     body {
-      background: linear-gradient(to bottom, #09090b 0%, #18181b 50%, #27272a 100%);
+      background: linear-gradient(to bottom, #050508 0%, #0d0d12 40%, #151520 100%);
       min-height: 100vh;
       overflow-x: hidden;
       color: #f4f4f5;
@@ -51,72 +51,112 @@ export function generateNocturnalJournalHtml(config: PublishedConfig): string {
       width: 6px;
     }
     ::-webkit-scrollbar-track {
-      background: rgba(9, 9, 11, 0.5);
+      background: rgba(5, 5, 8, 0.5);
     }
     ::-webkit-scrollbar-thumb {
       background: rgba(244, 244, 245, 0.2);
       border-radius: 3px;
     }
 
-    /* Twinkling Star background */
-    .star {
+    /* Orbit System around moon cover */
+    .moon-system {
+      position: relative;
+      width: 260px;
+      height: 260px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+    .orbit-ring {
       position: absolute;
-      background: #ffffff;
+      border: 1px dashed rgba(255, 255, 255, 0.12);
       border-radius: 50%;
       pointer-events: none;
-      animation: twinkle linear infinite;
+      animation: rotateRing linear infinite;
     }
-    @keyframes twinkle {
-      0%, 100% { opacity: 0.15; transform: scale(0.8); }
-      50% { opacity: 0.8; transform: scale(1.2); }
+    .orbit-ring-1 {
+      width: 170px;
+      height: 170px;
+      animation-duration: 25s;
+    }
+    .orbit-ring-2 {
+      width: 210px;
+      height: 210px;
+      border: 1px dashed rgba(244, 210, 160, 0.1);
+      animation-duration: 40s;
+      animation-direction: reverse;
+    }
+    .orbit-ring-3 {
+      width: 250px;
+      height: 250px;
+      animation-duration: 60s;
+    }
+    @keyframes rotateRing {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
 
     /* Glowing Moon style */
     .moon-button {
-      position: relative;
-      width: 130px;
-      height: 130px;
-      background: radial-gradient(circle at 30% 30%, #ffffff 0%, #f4f4f5 70%, #a1a1aa 100%);
+      width: 120px;
+      height: 120px;
+      background: radial-gradient(circle at 35% 35%, #ffffff 0%, #eaeaea 40%, #c8c8cb 75%, #8e8e93 100%);
       border-radius: 50%;
       box-shadow: 
-        0 0 30px rgba(255,255,255,0.25),
-        0 0 70px rgba(244,244,245,0.12),
-        inset -10px -10px 20px rgba(0,0,0,0.15);
+        0 0 40px rgba(255, 255, 255, 0.4), 
+        0 0 80px rgba(255, 255, 255, 0.15),
+        inset -12px -12px 25px rgba(0, 0, 0, 0.25),
+        inset 4px 4px 10px rgba(255, 255, 255, 0.6);
       cursor: pointer;
-      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-      z-index: 10;
+      transition: all 2.0s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 15;
     }
     .moon-button:hover {
-      transform: scale(1.05);
+      transform: scale(1.08);
       box-shadow: 
-        0 0 45px rgba(255,255,255,0.4),
-        0 0 100px rgba(244,244,245,0.2);
+        0 0 55px rgba(255,255,255,0.6),
+        0 0 110px rgba(244, 210, 160, 0.25),
+        inset -8px -8px 20px rgba(0, 0, 0, 0.2);
     }
     .moon-button.clicked {
-      transform: scale(3);
+      transform: scale(3.5);
       opacity: 0;
       pointer-events: none;
     }
 
     /* Moonlight glass card */
     .moonlight-card {
-      background: rgba(15, 15, 18, 0.78);
+      background: rgba(12, 12, 16, 0.7);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.08);
       position: relative;
+      overflow: hidden;
+      box-shadow: 
+        0 30px 60px rgba(0, 0, 0, 0.6), 
+        inset 0 1px 1px rgba(255, 255, 255, 0.1),
+        0 0 80px rgba(99, 102, 241, 0.04);
     }
-    .moonlight-card::after {
+    .moonlight-card::before {
       content: "";
       position: absolute;
-      top: 10px;
-      left: 10px;
-      right: 10px;
-      bottom: 10px;
-      border: 1px dashed rgba(255, 255, 255, 0.06);
-      border-radius: 20px;
-      pointer-events: none;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.4), rgba(244, 210, 160, 0.4), transparent);
+      z-index: 10;
+    }
+
+    /* Equalizer Soundwave bars */
+    .bar {
+      display: inline-block;
+      width: 3px;
+      height: 4px;
+      background-color: rgba(255, 255, 255, 0.35);
+      border-radius: 2px;
+      transition: height 0.1s ease, background-color 0.2s ease;
     }
   </style>
 </head>
@@ -134,8 +174,8 @@ export function generateNocturnalJournalHtml(config: PublishedConfig): string {
       : ""
   }
 
-  <!-- Twinkling Stars Container -->
-  <div id="stars-container" class="absolute inset-0 overflow-hidden pointer-events-none z-0"></div>
+  <!-- Twinkling Starry Canvas Background -->
+  <canvas id="starry-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-0"></canvas>
 
   <!-- SECTION 1: CODE LOCK ACCESS SCREEN -->
   ${
@@ -143,7 +183,7 @@ export function generateNocturnalJournalHtml(config: PublishedConfig): string {
       ? `
   <div id="code-section" class="w-full max-w-md moonlight-card rounded-2xl p-8 text-center z-10 transition-all duration-500 transform scale-100">
     <div class="mb-6">
-      <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/5 text-zinc-200 text-2xl mb-4 shadow-inner">
+      <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/5 text-zinc-200 text-2xl mb-4 shadow-inner border border-white/5">
         🌙
       </div>
       <h2 class="font-serif text-2xl font-semibold text-white mb-2">Nocturnal Journal</h2>
@@ -175,14 +215,20 @@ export function generateNocturnalJournalHtml(config: PublishedConfig): string {
   <div id="moon-section" class="${
     hasSecretCode ? "hidden" : ""
   } flex flex-col items-center justify-center z-10 transition-all duration-700 px-4">
-    <div class="text-center mb-12">
+    <div class="text-center mb-6">
       <h3 class="font-serif text-3xl text-zinc-200 mb-2 break-words">Kepada: ${config.toName}</h3>
       <p class="font-sans text-[10px] uppercase tracking-widest opacity-80 text-zinc-400 break-words">Jurnal Kenangan Dari ${config.fromName}</p>
     </div>
     
-    <div id="moon" class="moon-button" onclick="openMoon()"></div>
+    <!-- Moon and its concentric orbits -->
+    <div class="moon-system">
+      <div class="orbit-ring orbit-ring-1"></div>
+      <div class="orbit-ring orbit-ring-2"></div>
+      <div class="orbit-ring orbit-ring-3"></div>
+      <div id="moon" class="moon-button" onclick="openMoon()"></div>
+    </div>
     
-    <div class="text-center mt-12">
+    <div class="text-center mt-6">
       <span class="font-sans text-[9px] uppercase tracking-widest text-zinc-500 animate-pulse">Ketuk Bulan untuk Membuka</span>
     </div>
   </div>
@@ -190,16 +236,22 @@ export function generateNocturnalJournalHtml(config: PublishedConfig): string {
   <!-- SECTION 3: MOONLIGHT CONTENT -->
   <div id="content-section" class="hidden w-full max-w-2xl moonlight-card rounded-3xl p-6 sm:p-10 my-8 z-10 opacity-0 transition-all duration-1000 transform translate-y-10">
     <!-- Letter Header -->
-    <div class="text-center border-b border-white/10 pb-6 mb-8">
-      <h1 class="font-serif text-3xl text-white mb-2">${letterTitle}</h1>
-      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 text-[10px] font-bold text-zinc-400 uppercase tracking-widest px-2 font-sans text-center sm:text-left">
-        <span class="break-all sm:break-normal">Untuk: ${config.toName}</span>
-        <span class="break-all sm:break-normal">Dari: ${config.fromName}</span>
+    <div class="text-center border-b border-white/15 pb-6 mb-8">
+      <h1 class="font-serif text-3xl sm:text-4xl text-white tracking-tight mb-4">${letterTitle}</h1>
+      <div class="flex flex-col gap-1.5 items-center justify-center text-[10px] font-bold text-zinc-400 uppercase tracking-widest px-2 font-sans">
+        <div class="flex flex-wrap items-center justify-center gap-1">
+          <span class="text-zinc-500 font-medium">Spesial Untuk:</span>
+          <span class="text-white font-semibold break-words max-w-[240px] sm:max-w-md">${config.toName}</span>
+        </div>
+        <div class="flex flex-wrap items-center justify-center gap-1">
+          <span class="text-zinc-500 font-medium">Jurnal Dari:</span>
+          <span class="text-white font-semibold break-words max-w-[240px] sm:max-w-md">${config.fromName}</span>
+        </div>
       </div>
     </div>
 
     <!-- Letter Body (Typewriter effect) -->
-    <div class="font-serif text-zinc-200 leading-loose text-base sm:text-lg mb-8 whitespace-pre-wrap min-h-[120px]" id="letter-body-content"></div>
+    <div class="font-serif text-zinc-200 leading-relaxed text-base sm:text-lg mb-8 whitespace-pre-wrap min-h-[120px]" id="letter-body-content"></div>
 
     <!-- Photos Grid (Glowing borders) -->
     <div id="gallery-container" class="hidden space-y-6 mb-8 transition-opacity duration-1000 opacity-0">
@@ -209,26 +261,40 @@ export function generateNocturnalJournalHtml(config: PublishedConfig): string {
       <div id="photos-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-6"></div>
     </div>
 
-    <!-- Voice Note Section (Primary Highlight) -->
+    <!-- Voice Note Section -->
     ${
       hasVoiceNote
         ? `
-    <div id="voice-section" class="hidden bg-white/5 border border-white/10 rounded-2xl p-4 sm:p-6 mb-8 transition-opacity duration-1000 opacity-0">
-      <h4 class="font-serif text-sm text-zinc-300 mb-4 text-center flex items-center justify-center gap-2 font-sans">
-        <span>🎙</span> Jurnal Pesan Suara
+    <div id="voice-section" class="hidden bg-white/5 border border-white/10 rounded-2xl p-5 sm:p-6 mb-8 transition-opacity duration-1000 opacity-0">
+      <h4 class="font-serif text-sm text-zinc-350 mb-4 text-center flex items-center justify-center gap-2 font-sans">
+        <span>🎙️</span> Jurnal Pesan Suara
       </h4>
-      <div class="flex flex-col sm:flex-row items-center gap-4 font-sans">
-        <button id="play-btn" onclick="toggleAudio()" class="w-12 h-12 rounded-full bg-zinc-200 hover:bg-white text-zinc-950 flex items-center justify-center shadow-lg transition-all">
-          <span id="play-icon" class="text-lg">▶</span>
+      <div class="flex flex-col sm:flex-row items-center gap-5 font-sans">
+        <button id="play-btn" onclick="toggleAudio()" class="w-12 h-12 rounded-full bg-zinc-100 hover:bg-white text-zinc-950 flex items-center justify-center shadow-lg transition-all focus:outline-none transform active:scale-95">
+          <span id="play-icon" class="text-lg ml-0.5">▶</span>
         </button>
         <div class="flex-1 w-full">
-          <div class="relative h-2 bg-white/10 rounded-full cursor-pointer" id="progress-bar-container" onclick="seekAudio(event)">
-            <div class="absolute top-0 left-0 h-full bg-zinc-200 rounded-full w-0" id="audio-progress"></div>
+          <div class="relative h-2 bg-white/10 rounded-full cursor-pointer group" id="progress-bar-container" onclick="seekAudio(event)">
+            <div class="absolute top-0 left-0 h-full bg-gradient-to-r from-zinc-200 to-white rounded-full w-0 transition-all duration-75 relative" id="audio-progress">
+              <!-- Glow indicator -->
+              <div class="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            </div>
           </div>
-          <div class="flex justify-between text-[10px] text-zinc-400 font-bold uppercase mt-2">
+          <div class="flex justify-between text-[10px] text-zinc-400 font-bold uppercase mt-2.5 tracking-wider">
             <span id="current-time">0:00</span>
             <span id="duration">0:00</span>
           </div>
+        </div>
+        <!-- Glowing soundwave equalizer -->
+        <div class="flex items-center gap-1 h-8 px-3 py-1 bg-white/5 rounded-lg border border-white/5" id="equalizer">
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
+          <span class="bar"></span>
         </div>
         <audio id="audio-element" src="${voiceNoteSrc}" ontimeupdate="updateProgress()" onloadedmetadata="initAudioMetadata()"></audio>
       </div>
@@ -263,33 +329,120 @@ export function generateNocturnalJournalHtml(config: PublishedConfig): string {
       hasVoiceNote: ${hasVoiceNote}
     };
 
-    // 1. Generate Twinkling Stars
-    const starsContainer = document.getElementById('stars-container');
+    // 1. Starry Canvas Background & Interactive Constellations
+    const canvas = document.getElementById('starry-canvas');
+    const ctx = canvas.getContext('2d');
     
-    function createStar() {
-      const star = document.createElement('div');
-      star.classList.add('star');
-      
-      const size = Math.random() * 2 + 0.5;
-      const top = Math.random() * window.innerHeight;
-      const left = Math.random() * window.innerWidth;
-      const duration = Math.random() * 3 + 2;
-      const delay = Math.random() * 4;
-      
-      star.style.width = size + 'px';
-      star.style.height = size + 'px';
-      star.style.top = top + 'px';
-      star.style.left = left + 'px';
-      star.style.animationDuration = duration + 's';
-      star.style.animationDelay = delay + 's';
-      
-      starsContainer.appendChild(star);
+    let stars = [];
+    let mouse = { x: null, y: null, radius: 90 };
+    
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      initStars();
     }
     
-    const starCount = Math.floor((window.innerWidth * window.innerHeight) / 10000);
-    for (let i = 0; i < starCount; i++) {
-      createStar();
+    class Star {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 1.5 + 0.5;
+        this.twinkleSpeed = Math.random() * 0.015 + 0.005;
+        this.alpha = Math.random();
+        this.dir = Math.random() > 0.5 ? 1 : -1;
+      }
+      
+      update() {
+        this.alpha += this.twinkleSpeed * this.dir;
+        if (this.alpha > 0.95) {
+          this.alpha = 0.95;
+          this.dir = -1;
+        } else if (this.alpha < 0.1) {
+          this.alpha = 0.1;
+          this.dir = 1;
+        }
+      }
+      
+      draw() {
+        ctx.fillStyle = \`rgba(255, 255, 255, \${this.alpha})\`;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
     }
+    
+    function initStars() {
+      stars = [];
+      const density = (canvas.width * canvas.height) / 8000;
+      for (let i = 0; i < density; i++) {
+        stars.push(new Star());
+      }
+    }
+    
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw constellations (lines connecting close stars)
+      for (let i = 0; i < stars.length; i++) {
+        stars[i].update();
+        stars[i].draw();
+        
+        for (let j = i + 1; j < stars.length; j++) {
+          const dx = stars[i].x - stars[j].x;
+          const dy = stars[i].y - stars[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          
+          if (dist < 70) {
+            ctx.strokeStyle = \`rgba(226, 232, 240, \${0.08 * (1 - dist / 70)})\`;
+            ctx.lineWidth = 0.5;
+            ctx.beginPath();
+            ctx.moveTo(stars[i].x, stars[i].y);
+            ctx.lineTo(stars[j].x, stars[j].y);
+            ctx.stroke();
+          }
+        }
+        
+        // Interactive golden threads to cursor
+        if (mouse.x !== null && mouse.y !== null) {
+          const dx = stars[i].x - mouse.x;
+          const dy = stars[i].y - mouse.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < mouse.radius) {
+            ctx.strokeStyle = \`rgba(244, 210, 160, \${0.15 * (1 - dist / mouse.radius)})\`;
+            ctx.lineWidth = 0.5;
+            ctx.beginPath();
+            ctx.moveTo(stars[i].x, stars[i].y);
+            ctx.lineTo(mouse.x, mouse.y);
+            ctx.stroke();
+          }
+        }
+      }
+      
+      requestAnimationFrame(animate);
+    }
+    
+    window.addEventListener('resize', resizeCanvas);
+    window.addEventListener('mousemove', (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    });
+    window.addEventListener('mouseleave', () => {
+      mouse.x = null;
+      mouse.y = null;
+    });
+    window.addEventListener('touchmove', (e) => {
+      if (e.touches.length > 0) {
+        mouse.x = e.touches[0].clientX;
+        mouse.y = e.touches[0].clientY;
+      }
+    });
+    window.addEventListener('touchend', () => {
+      mouse.x = null;
+      mouse.y = null;
+    });
+    
+    resizeCanvas();
+    animate();
 
     // 2. Code Validation
     function verifyCode() {
@@ -346,8 +499,8 @@ export function generateNocturnalJournalHtml(config: PublishedConfig): string {
             contentSection.classList.remove('opacity-0', 'translate-y-10');
             startTypewriter();
           }, 50);
-        }, 600);
-      }, 500);
+        }, 1000);
+      }, 1500);
     }
 
     // 4. Elegant Typewriter effect
@@ -355,16 +508,15 @@ export function generateNocturnalJournalHtml(config: PublishedConfig): string {
       const container = document.getElementById('letter-body-content');
       const text = config.letterBody;
       let index = 0;
-      const speed = 25;
+      const speed = 30;
       
       function type() {
         if (index < text.length) {
           container.innerHTML += text.charAt(index);
           index++;
           
-          // Auto-scroll instantly only when close to the bottom to avoid smooth scroll reflow lag
-          if (index % 4 === 0 && (window.innerHeight + window.scrollY < document.body.scrollHeight - 50)) {
-            window.scrollTo(0, document.body.scrollHeight);
+          if (window.innerHeight + window.scrollY < document.body.offsetHeight) {
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
           }
           setTimeout(type, speed);
         } else {
@@ -414,17 +566,37 @@ export function generateNocturnalJournalHtml(config: PublishedConfig): string {
         finalMsg.classList.remove('hidden');
         setTimeout(() => { finalMsg.classList.add('opacity-100'); }, 500);
       }
-
-      // Smoothly scroll down to show the newly revealed content (gallery/audio/final message)
-      setTimeout(() => {
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-      }, 500);
-    }
     }
 
-    // 6. Audio Player Logic
+    // 6. Audio Player & Equalizer Logic
     let audio = null;
     let isPlaying = false;
+    let eqInterval = null;
+
+    function startEqualizer() {
+      const bars = document.querySelectorAll('.bar');
+      eqInterval = setInterval(() => {
+        bars.forEach(bar => {
+          const height = Math.floor(Math.random() * 24) + 4; // random 4px to 28px
+          bar.style.height = height + 'px';
+          bar.style.backgroundColor = 'rgba(255, 255, 255, 0.9)';
+          bar.style.boxShadow = '0 0 8px rgba(255,255,255,0.4)';
+        });
+      }, 100);
+    }
+
+    function stopEqualizer() {
+      if (eqInterval) {
+        clearInterval(eqInterval);
+        eqInterval = null;
+      }
+      const bars = document.querySelectorAll('.bar');
+      bars.forEach(bar => {
+        bar.style.height = '4px';
+        bar.style.backgroundColor = 'rgba(255, 255, 255, 0.35)';
+        bar.style.boxShadow = 'none';
+      });
+    }
     
     // Background Music (BGM) Logic
     let bgmAudio = null;
@@ -496,12 +668,14 @@ export function generateNocturnalJournalHtml(config: PublishedConfig): string {
         player.pause();
         playIcon.innerText = '▶';
         isPlaying = false;
+        stopEqualizer();
         playBgm();
       } else {
         pauseBgm();
         player.play().catch(e => console.error(e));
         playIcon.innerText = '⏸';
         isPlaying = true;
+        startEqualizer();
       }
     }
 
@@ -521,6 +695,7 @@ export function generateNocturnalJournalHtml(config: PublishedConfig): string {
         progress.style.width = '0%';
         current.innerText = '0:00';
         isPlaying = false;
+        stopEqualizer();
         playBgm();
       }
     }

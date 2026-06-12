@@ -24,15 +24,22 @@ export default function CardBuilder() {
     resolver: zodResolver(CardDraftSchema),
     defaultValues: {
       template: "classic_editorial",
-      fromName: "",
-      toName: "",
-      secretCode: "",
-      letterTitle: "",
-      letterBody: "",
-      photos: [],
-      voiceNote: undefined,
+      fromName: "Bradley",
+      toName: "Alexa",
+      secretCode: "1234",
+      letterTitle: "A Premium Keepsake",
+      letterBody: "Ini adalah surat kenangan yang sangat premium dan mahal. Semoga kamu menyukainya! Geser foto polaroid di bawah untuk merapikannya.",
+      photos: [
+        { key: "mock_photo_1", src: "https://picsum.photos/id/1025/600/400", caption: "Momen Indah Bersama" },
+        { key: "mock_photo_2", src: "https://picsum.photos/id/1043/600/400", caption: "Tertawa Lepas" }
+      ],
+      voiceNote: {
+        key: "mock_voice_note",
+        src: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+        durationSeconds: 30
+      },
       bgMusic: undefined,
-      finalMessage: "",
+      finalMessage: "Terima kasih untuk semuanya ❤️",
     },
   });
 

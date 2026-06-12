@@ -46,9 +46,13 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
   <style>
     /* Custom CSS animations and styles */
     body {
-      background-color: #FAF9F6;
-      background-image: radial-gradient(rgba(197, 168, 128, 0.05) 1px, transparent 0);
-      background-size: 24px 24px;
+      background-color: #f7f4eb; /* Warm cream linen base */
+      background-image: 
+        linear-gradient(90deg, rgba(139, 115, 85, 0.03) 1px, transparent 1px),
+        linear-gradient(rgba(139, 115, 85, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.6) 1px, transparent 1px),
+        linear-gradient(rgba(255, 255, 255, 0.6) 1px, transparent 1px);
+      background-size: 8px 8px, 8px 8px, 3px 3px, 3px 3px;
       min-height: 100vh;
       overflow-x: hidden;
     }
@@ -58,35 +62,40 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
       width: 6px;
     }
     ::-webkit-scrollbar-track {
-      background: rgba(24, 24, 27, 0.03);
+      background: rgba(24, 24, 27, 0.02);
     }
     ::-webkit-scrollbar-thumb {
-      background: rgba(197, 168, 128, 0.3);
+      background: rgba(197, 168, 128, 0.45);
       border-radius: 3px;
     }
     
-    /* Elegant dust particles */
-    .dust {
+    /* Elegant glowing embers */
+    .ember {
       position: absolute;
-      background: rgba(197, 168, 128, 0.15);
+      background: radial-gradient(circle, rgba(245, 190, 100, 0.9) 0%, rgba(212, 175, 55, 0.35) 50%, rgba(139, 115, 85, 0) 100%);
+      box-shadow: 0 0 8px rgba(245, 190, 100, 0.6), 0 0 16px rgba(212, 175, 55, 0.3);
       border-radius: 50%;
       pointer-events: none;
       z-index: 1;
-      animation: drift linear infinite;
+      animation: riseAndFlicker linear infinite;
     }
-    @keyframes drift {
+    @keyframes riseAndFlicker {
       0% {
-        transform: translate(0, -10px) rotate(0deg) scale(0.8);
+        transform: translateY(110vh) translateX(0) scale(0.5);
         opacity: 0;
       }
       10% {
         opacity: 0.8;
       }
+      50% {
+        transform: translateY(50vh) translateX(15px) scale(1.1);
+        opacity: 0.9;
+      }
       90% {
         opacity: 0.8;
       }
       100% {
-        transform: translate(80px, 105vh) rotate(180deg) scale(0.4);
+        transform: translateY(-10vh) translateX(-15px) scale(0.6);
         opacity: 0;
       }
     }
@@ -98,7 +107,7 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
       height: 220px;
       background-color: #52525B; /* zinc-600 */
       border-radius: 0 0 8px 8px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+      box-shadow: 0 24px 48px rgba(0, 0, 0, 0.16);
       cursor: pointer;
       transform-style: preserve-3d;
       transition: transform 0.5s ease;
@@ -115,7 +124,7 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
       border-right: 170px solid transparent;
       border-top: 110px solid #3F3F46; /* zinc-700 */
       transform-origin: top;
-      transition: transform 0.4s ease 0.15s;
+      transition: transform 0.9s ease;
       z-index: 30;
     }
     .envelope-wrapper::after {
@@ -134,6 +143,7 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
     .envelope-wrapper.open::before {
       transform: rotateX(180deg);
       z-index: 5;
+      transition-delay: 0.3s;
     }
     .envelope-card {
       position: absolute;
@@ -146,52 +156,115 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
       border-radius: 4px;
       padding: 20px;
       z-index: 15;
-      transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1) 0.55s;
+      transition: transform 1.5s cubic-bezier(0.25, 1, 0.5, 1);
       transform: translateY(0);
       box-shadow: 0 -5px 15px rgba(0,0,0,0.03);
     }
-    .envelope-wrapper.open .envelope-card {
-      transform: translateY(-120px);
+    .envelope-wrapper.card-up .envelope-card {
+      transform: translateY(-130px);
       z-index: 35;
     }
     
-    /* Wax seal pulse */
+    /* Wax seal 3D realistic styling & breaking effect */
     .wax-seal {
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 54px;
-      height: 54px;
-      background: radial-gradient(circle, #C5A880, #B0926A); /* warm bronze */
-      border-radius: 50%;
+      width: 64px;
+      height: 64px;
       transform: translate(-50%, -50%);
-      box-shadow: 0 6px 14px rgba(0,0,0,0.18), inset 0 2px 4px rgba(255,255,255,0.3);
       z-index: 40;
+      cursor: pointer;
+      pointer-events: auto;
       transition: all 0.3s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      color: #FFF;
-    }
-    .wax-seal::after {
-      content: '✉'; /* Clean envelope icon */
-    }
-    .envelope-wrapper.open .wax-seal {
-      opacity: 0;
-      transform: translate(-50%, -50%) scale(0);
-      pointer-events: none;
     }
     .wax-seal:hover {
       transform: translate(-50%, -50%) scale(1.08);
-      box-shadow: 0 8px 18px rgba(0,0,0,0.25);
+    }
+    .wax-seal-half {
+      position: absolute;
+      top: 0;
+      width: 33px;
+      height: 64px;
+      background: radial-gradient(circle at center, #e2c28a 0%, #aa820a 60%, #755502 100%);
+      box-shadow: 
+        0 6px 14px rgba(0, 0, 0, 0.3), 
+        inset 0 2px 4px rgba(255, 255, 255, 0.4),
+        inset -1px -2px 4px rgba(0, 0, 0, 0.4);
+      transition: all 1.8s cubic-bezier(0.25, 1, 0.5, 1);
+      border: 1px solid #aa820a;
+    }
+    .wax-seal-half.left {
+      left: 0;
+      border-radius: 32px 0 0 32px;
+      clip-path: polygon(0% 0%, 100% 0%, 85% 30%, 100% 50%, 80% 70%, 100% 100%, 0% 100%);
+      border-right: none;
+    }
+    .wax-seal-half.right {
+      right: 0;
+      border-radius: 0 32px 32px 0;
+      clip-path: polygon(15% 0%, 100% 0%, 100% 100%, 15% 100%, 0% 70%, 20% 50%, 0% 30%);
+      border-left: none;
+      box-shadow: 
+        0 6px 14px rgba(0, 0, 0, 0.3), 
+        inset 0 2px 4px rgba(255, 255, 255, 0.4),
+        inset 2px -2px 4px rgba(0, 0, 0, 0.4);
+    }
+    .wax-seal-stamp {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 64px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      color: rgba(255, 255, 255, 0.95);
+      text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+      pointer-events: none;
+      z-index: 45;
+      transition: all 0.5s ease;
+    }
+    /* Splitting effect */
+    .envelope-wrapper.open .wax-seal-half.left {
+      transform: translateX(-40px) translateY(-10px) rotate(-35deg);
+      opacity: 0;
+    }
+    .envelope-wrapper.open .wax-seal-half.right {
+      transform: translateX(40px) translateY(10px) rotate(35deg);
+      opacity: 0;
+    }
+    .envelope-wrapper.open .wax-seal-stamp {
+      transform: scale(0.5);
+      opacity: 0;
     }
     
-    /* Keepsake Card */
+    /* Keepsake Card - Textured Cardstock & Gold Double Frame */
     .keepsake-card {
-      background: #FFFFFF;
+      background-color: #fffdf9;
+      background-image: 
+        linear-gradient(90deg, rgba(197, 168, 128, 0.02) 1px, transparent 1px),
+        linear-gradient(rgba(197, 168, 128, 0.02) 1px, transparent 1px);
+      background-size: 4px 4px;
+      box-shadow: 
+        0 30px 70px rgba(27, 23, 19, 0.08), 
+        0 10px 30px rgba(27, 23, 19, 0.04),
+        inset 0 0 40px rgba(197, 168, 128, 0.05);
       border: 1px solid rgba(197, 168, 128, 0.25);
-      box-shadow: 0 16px 40px rgba(28, 25, 23, 0.05);
+      position: relative;
+    }
+    .keepsake-card::after {
+      content: "";
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      right: 12px;
+      bottom: 12px;
+      border: 3px double #c5a880; /* Burnished gold-leaf double border */
+      pointer-events: none;
+      border-radius: 20px;
+      box-shadow: inset 0 0 10px rgba(197, 168, 128, 0.15);
     }
     .accent-border {
       border: 1px solid rgba(197, 168, 128, 0.3);
@@ -207,7 +280,7 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
   ${
     hasBgMusic
       ? `
-  <button id="bgm-toggle-btn" onclick="toggleBgm()" class="fixed top-4 right-4 z-50 w-10 h-10 rounded-full bg-white/80 backdrop-blur-md border border-zinc-200 shadow-md flex items-center justify-center text-zinc-650 hover:bg-white transition-all" title="Matikan Musik Latar">
+  <button id="bgm-toggle-btn" onclick="toggleBgm()" class="fixed top-4 right-4 z-50 w-10 h-10 rounded-full bg-white/80 backdrop-blur-md border border-[#c5a880]/30 shadow-md flex items-center justify-center text-amber-900/70 hover:bg-white hover:text-amber-900 transition-all" title="Matikan Musik Latar">
     <span id="bgm-icon" class="text-sm">🎵</span>
   </button>
   <audio id="bgm-audio-element" src="${bgMusicSrc}" loop></audio>
@@ -219,13 +292,13 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
   ${
     hasSecretCode
       ? `
-  <div id="code-section" class="w-full max-w-md keepsake-card rounded-2xl p-8 text-center z-10 transition-all duration-500 transform scale-100 border border-zinc-100">
+  <div id="code-section" class="w-full max-w-md keepsake-card rounded-2xl p-8 text-center z-10 transition-all duration-500 transform scale-100 border border-[#c5a880]/20">
     <div class="mb-6">
-      <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-zinc-50 text-zinc-500 border border-zinc-100 text-2xl mb-4">
+      <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-amber-50 text-amber-700 border border-amber-100 text-2xl mb-4 shadow-sm">
         🔒
       </div>
-      <h2 class="font-lora text-2xl font-semibold text-zinc-800 mb-2">Masukkan Kode Akses</h2>
-      <p class="text-xs text-zinc-400 font-medium">Ada sebuah catatan khusus untuk Anda. Silakan masukkan kode akses untuk membacanya.</p>
+      <h2 class="font-lora text-2xl font-semibold text-amber-950 mb-2">Masukkan Kode Akses</h2>
+      <p class="text-xs text-amber-800/70 font-medium">Ada sebuah catatan khusus untuk Anda. Silakan masukkan kode akses untuk membacanya.</p>
     </div>
     
     <div class="space-y-4">
@@ -234,15 +307,15 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
         id="secret-code-input" 
         placeholder="Passkey" 
         maxlength="12"
-        class="w-full px-4 py-3 rounded-xl border border-zinc-200 text-center font-bold text-zinc-700 focus:outline-none focus:ring-2 focus:ring-zinc-400 uppercase tracking-widest placeholder:tracking-normal placeholder:font-normal text-sm"
+        class="w-full px-4 py-3 rounded-xl border border-amber-200/60 bg-[#fffdf9] text-center font-bold text-amber-950 focus:outline-none focus:ring-2 focus:ring-amber-500 uppercase tracking-widest placeholder:tracking-normal placeholder:font-normal text-sm"
       >
       <button 
         onclick="verifyCode()"
-        class="w-full py-3 bg-zinc-800 hover:bg-zinc-900 text-white font-semibold rounded-xl shadow-md transition-all text-sm uppercase tracking-wider"
+        class="w-full py-3 bg-gradient-to-r from-amber-700 to-amber-800 hover:from-amber-800 hover:to-amber-900 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all text-sm uppercase tracking-wider"
       >
         Buka Catatan
       </button>
-      <p id="code-error" class="text-xs text-red-500 opacity-0 transition-opacity font-semibold">Kode tidak cocok. Silakan coba kembali.</p>
+      <p id="code-error" class="text-xs text-red-650 opacity-0 transition-opacity font-semibold">Kode tidak cocok. Silakan coba kembali.</p>
     </div>
   </div>
   `
@@ -254,15 +327,22 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
     hasSecretCode ? "hidden" : ""
   } flex-col items-center justify-center z-10 transition-all duration-500 px-4">
     <div class="text-center mb-8">
-      <h3 class="font-lora text-2xl font-semibold text-zinc-700 mb-1 break-words">Kepada: ${config.toName}</h3>
-      <p class="text-[10px] text-zinc-400 font-bold uppercase tracking-widest break-words">Sebuah Catatan Kenangan Untukmu</p>
+      <h3 class="font-lora text-2xl font-semibold text-amber-950 mb-1.5 break-words px-4">Spesial Untuk: ${config.toName}</h3>
+      <p class="text-[10px] text-amber-800/60 font-bold uppercase tracking-widest">Sebuah Catatan Kenangan</p>
     </div>
     
     <div id="envelope" class="envelope-wrapper" onclick="openEnvelope()">
-      <div class="wax-seal"></div>
+      <div class="wax-seal">
+        <div class="wax-seal-half left"></div>
+        <div class="wax-seal-half right"></div>
+        <div class="wax-seal-stamp">⚜️</div>
+      </div>
       <div class="envelope-card flex flex-col justify-between items-center text-center p-4">
-        <span class="font-lora text-lg font-medium text-zinc-600 break-words w-full px-2">Dari: ${config.fromName}</span>
-        <span class="text-[9px] uppercase font-bold tracking-widest text-amber-600/80">Ketuk untuk Membuka</span>
+        <div class="my-auto">
+          <span class="block text-[10px] text-amber-800/60 uppercase font-bold tracking-widest mb-1.5">Dari Pengirim</span>
+          <span class="font-lora text-lg font-medium text-zinc-750 break-words w-full px-2 block leading-relaxed">${config.fromName}</span>
+        </div>
+        <span class="text-[9px] uppercase font-bold tracking-widest text-amber-650/80 animate-pulse">Ketuk untuk Membuka</span>
       </div>
     </div>
   </div>
@@ -271,22 +351,28 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
   <div id="letter-section" class="hidden w-full max-w-2xl keepsake-card rounded-3xl p-6 sm:p-10 my-8 z-10 opacity-0 transition-all duration-1000 transform translate-y-10 border border-zinc-100">
     
     <!-- Letter Header -->
-    <div class="text-center border-b border-zinc-100 pb-6 mb-8">
-      <h1 class="font-lora text-3xl font-semibold text-zinc-800 mb-3">${letterTitle}</h1>
-      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 text-[10px] font-bold text-zinc-400 uppercase tracking-widest px-2 text-center sm:text-left">
-        <span class="break-all sm:break-normal">Untuk: ${config.toName}</span>
-        <span class="break-all sm:break-normal">Dari: ${config.fromName}</span>
+    <div class="text-center border-b border-amber-850/10 pb-6 mb-8">
+      <h1 class="font-lora text-3xl sm:text-4xl font-semibold text-amber-950 tracking-tight mb-4">${letterTitle}</h1>
+      <div class="flex flex-col gap-1.5 items-center justify-center text-[10px] font-bold text-amber-900/60 uppercase tracking-widest px-2">
+        <div class="flex flex-wrap items-center justify-center gap-1">
+          <span class="text-amber-800/50 font-medium">Spesial Untuk:</span>
+          <span class="text-amber-950 font-bold break-words max-w-[240px] sm:max-w-md">${config.toName}</span>
+        </div>
+        <div class="flex flex-wrap items-center justify-center gap-1">
+          <span class="text-amber-800/50 font-medium">Dikirim Oleh:</span>
+          <span class="text-amber-950 font-bold break-words max-w-[240px] sm:max-w-md">${config.fromName}</span>
+        </div>
       </div>
     </div>
 
     <!-- Letter Body (Typewriter effect container) -->
-    <div class="font-lora text-zinc-700 leading-loose text-base sm:text-lg mb-8 whitespace-pre-wrap min-h-[120px]" id="letter-body-content"></div>
+    <div class="font-lora text-zinc-850 leading-relaxed text-base sm:text-lg mb-8 whitespace-pre-wrap min-h-[120px]" id="letter-body-content"></div>
 
     <!-- Photos Gallery -->
     <div id="gallery-container" class="hidden space-y-6 mb-8 transition-opacity duration-1000 opacity-0">
-      <div class="text-center border-t border-zinc-100 pt-8 pb-4">
-        <h3 class="font-lora text-xl font-semibold text-zinc-800">Lampiran Foto Kenangan</h3>
-        <p class="text-[9px] text-zinc-400 font-bold uppercase tracking-widest mt-1">Dokumentasi Momen Bersama</p>
+      <div class="text-center border-t border-amber-850/10 pt-8 pb-4">
+        <h3 class="font-lora text-xl font-semibold text-amber-950">Lampiran Foto Kenangan</h3>
+        <p class="text-[9px] text-amber-800/50 font-bold uppercase tracking-widest mt-1">Dokumentasi Momen Bersama</p>
       </div>
       <div id="photos-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
     </div>
@@ -295,20 +381,23 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
     ${
       hasVoiceNote
         ? `
-    <div id="voice-section" class="hidden bg-zinc-50 border border-zinc-200/50 rounded-2xl p-4 sm:p-6 mb-8 transition-opacity duration-1000 opacity-0">
-      <h4 class="font-lora text-sm font-semibold text-zinc-700 mb-3 text-center flex items-center justify-center gap-2">
-        <span>🎙</span> Lampiran Pesan Suara
+    <div id="voice-section" class="hidden bg-[#fdfcf7] border border-[#d4af37]/35 rounded-2xl p-5 sm:p-6 mb-8 shadow-sm transition-opacity duration-1000 opacity-0">
+      <h4 class="font-lora text-sm font-semibold text-amber-900/95 mb-4 text-center flex items-center justify-center gap-2">
+        <span class="text-amber-700">🎙️</span> Lampiran Pesan Suara
       </h4>
       <div class="flex flex-col sm:flex-row items-center gap-4">
-        <!-- Custom Audio Player UI -->
-        <button id="play-btn" onclick="toggleAudio()" class="w-12 h-12 rounded-full bg-zinc-800 hover:bg-zinc-900 text-white flex items-center justify-center shadow-sm transition-all">
-          <span id="play-icon" class="text-lg">▶</span>
+        <!-- Custom Audio Player UI with Gold Accent -->
+        <button id="play-btn" onclick="toggleAudio()" class="w-12 h-12 rounded-full bg-gradient-to-br from-[#d4af37] to-[#aa820a] hover:from-[#e5c158] hover:to-[#c59b27] text-white flex items-center justify-center shadow-md hover:shadow-lg transform active:scale-95 transition-all focus:outline-none">
+          <span id="play-icon" class="text-lg ml-0.5">▶</span>
         </button>
         <div class="flex-1 w-full">
-          <div class="relative h-2 bg-zinc-200 rounded-full cursor-pointer" id="progress-bar-container" onclick="seekAudio(event)">
-            <div class="absolute top-0 left-0 h-full bg-zinc-800 rounded-full w-0" id="audio-progress"></div>
+          <div class="relative h-2 bg-zinc-200/75 rounded-full cursor-pointer group" id="progress-bar-container" onclick="seekAudio(event)">
+            <div class="absolute top-0 left-0 h-full bg-gradient-to-r from-[#d4af37] to-[#aa820a] rounded-full w-0 transition-all duration-75 relative" id="audio-progress">
+              <!-- Dot on end of progress -->
+              <div class="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white border-2 border-[#d4af37] rounded-full shadow opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+            </div>
           </div>
-          <div class="flex justify-between text-[10px] text-zinc-400 font-bold uppercase mt-2">
+          <div class="flex justify-between text-[10px] text-amber-900/60 font-bold uppercase tracking-wider mt-2.5 font-sans">
             <span id="current-time">0:00</span>
             <span id="duration">0:00</span>
           </div>
@@ -324,16 +413,16 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
     ${
       config.finalMessage
         ? `
-    <div id="final-message-container" class="hidden text-center mt-10 pt-8 border-t border-zinc-100 transition-opacity duration-1000 opacity-0">
-      <p class="font-lora text-2xl italic text-zinc-800 mb-2">"${config.finalMessage}"</p>
-      <p class="text-[9px] font-bold uppercase tracking-wider text-zinc-400">Salam Hangat</p>
+    <div id="final-message-container" class="hidden text-center mt-10 pt-8 border-t border-amber-850/10 transition-opacity duration-1000 opacity-0">
+      <p class="font-lora text-2xl italic text-amber-950 mb-2">"${config.finalMessage}"</p>
+      <p class="text-[9px] font-bold uppercase tracking-wider text-amber-800/50">Salam Hangat</p>
     </div>
     `
         : ""
     }
 
     <!-- Footer branding -->
-    <div class="text-center mt-8 text-[9px] font-bold text-zinc-300 uppercase tracking-widest border-t border-zinc-50 pt-4">
+    <div class="text-center mt-8 text-[9px] font-bold text-amber-800/40 uppercase tracking-widest border-t border-amber-850/5 pt-4">
       DearNote Keepsake Journal
     </div>
   </div>
@@ -346,35 +435,36 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
       hasVoiceNote: ${hasVoiceNote}
     };
 
-    // 1. Generate Floating Dust Particles
+    // 1. Generate Floating Golden Embers
     const dustContainer = document.getElementById('dust-container');
     
-    function createDustParticle() {
-      const particle = document.createElement('div');
-      particle.classList.add('dust');
+    function createEmber() {
+      const ember = document.createElement('div');
+      ember.classList.add('ember');
       
-      const size = Math.random() * 4 + 2;
+      const size = Math.random() * 5 + 3; // 3px to 8px
       const left = Math.random() * window.innerWidth;
-      const duration = Math.random() * 10 + 6;
-      const delay = Math.random() * 4;
+      const duration = Math.random() * 12 + 8; // Slower rise: 8s to 20s
+      const delay = Math.random() * 5;
       
-      particle.style.width = size + 'px';
-      particle.style.height = size + 'px';
-      particle.style.left = left + 'px';
-      particle.style.animationDuration = duration + 's';
-      particle.style.animationDelay = delay + 's';
+      ember.style.width = size + 'px';
+      ember.style.height = size + 'px';
+      ember.style.left = left + 'px';
+      ember.style.animationDuration = duration + 's';
+      ember.style.animationDelay = delay + 's';
       
-      dustContainer.appendChild(particle);
+      dustContainer.appendChild(ember);
       
       setTimeout(() => {
-        particle.remove();
+        ember.remove();
       }, (duration + delay) * 1000);
     }
     
-    for (let i = 0; i < 15; i++) {
-      createDustParticle();
+    // Spawn initial embers
+    for (let i = 0; i < 20; i++) {
+      createEmber();
     }
-    setInterval(createDustParticle, 800);
+    setInterval(createEmber, 600);
 
     // 2. Secret Code Validation
     function verifyCode() {
@@ -421,8 +511,15 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
       playBgm();
       
       const envelope = document.getElementById('envelope');
+      // Step 1: Open wax seal and flap
       envelope.classList.add('open');
       
+      // Step 2: Pull card up
+      setTimeout(() => {
+        envelope.classList.add('card-up');
+      }, 1000);
+      
+      // Step 3: Transition to main letter
       setTimeout(() => {
         const envSection = document.getElementById('envelope-section');
         envSection.classList.add('scale-90', 'opacity-0');
@@ -433,11 +530,11 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
           letterSection.classList.remove('hidden');
           setTimeout(() => {
             letterSection.classList.remove('opacity-0', 'translate-y-10');
-            // Wait 500ms for the card fade/slide-up transition to finish before typing starts
-            setTimeout(startTypewriter, 500);
+            // Start typewriter right as the section begins to fade in
+            startTypewriter();
           }, 50);
-        }, 600);
-      }, 1500);
+        }, 1000);
+      }, 2600);
     }
 
     // 4. Typewriter Animation
@@ -470,7 +567,7 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
         
         config.photos.forEach(photo => {
           const item = document.createElement('div');
-          item.className = 'flex flex-col bg-zinc-50 border border-zinc-100 rounded-xl overflow-hidden shadow-sm p-3 transform transition hover:scale-[1.01] duration-300';
+          item.className = 'flex flex-col bg-[#fffdfa] border border-[#c5a880]/20 rounded-xl overflow-hidden shadow-sm p-3 transform transition hover:scale-[1.01] duration-300';
           
           const img = document.createElement('img');
           img.src = photo.src;
@@ -481,7 +578,7 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
           
           if (photo.caption) {
             const cap = document.createElement('p');
-            cap.className = 'font-sans text-xs text-center text-zinc-500 italic px-2 py-1';
+            cap.className = 'font-sans text-xs text-center text-amber-900/60 italic px-2 py-1';
             cap.innerText = photo.caption;
             item.appendChild(cap);
           }
@@ -635,3 +732,4 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
 </body>
 </html>`;
 }
+
