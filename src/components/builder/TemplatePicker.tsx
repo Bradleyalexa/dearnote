@@ -16,6 +16,14 @@ export const TEMPLATE_REGISTRY: {
   tags: string[];
 }[] = [
   {
+    id: "eternal_love",
+    name: "Eternal Love Cinema ✨",
+    description: "Template couple paling premium — chapter sinematik, partikel kanvas, typewriter, galeri polaroid & kembang api finale.",
+    category: "romantic",
+    accent: "linear-gradient(135deg, #2c1020, #c8936a)",
+    tags: ["Couple", "Anniversary", "Flagship"],
+  },
+  {
     id: "classic_editorial",
     name: "Classic Editorial",
     description: "Tipografi serif elegan, kertas krem hangat, partikel debu halus.",

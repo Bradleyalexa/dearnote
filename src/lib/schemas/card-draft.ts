@@ -13,6 +13,7 @@ export const TEMPLATES = [
   "playful_gift",
   "playful_dog",
   "playful_pooh",
+  "eternal_love",
 ] as const;
 
 export const TemplateSchema = z.enum(TEMPLATES);

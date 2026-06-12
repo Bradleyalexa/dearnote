@@ -9,6 +9,7 @@ import { generateGiftBoxRevealHtml } from "./templates/gift-box-reveal";
 import { generatePlayfulGiftHtml } from "./templates/playful-gift";
 import { generatePlayfulDogHtml } from "./templates/playful-dog";
 import { generatePlayfulPoohHtml } from "./templates/playful-pooh";
+import { generateEternalLoveHtml } from "./templates/eternal-love";
 
 /**
  * Main coordinator that returns the HTML page content based on the selected template.
@@ -50,6 +51,8 @@ export function generateIndexHtml(config: PublishedConfig): string {
       return generatePlayfulDogHtml(config);
     case "playful_pooh":
       return generatePlayfulPoohHtml(config);
+    case "eternal_love":
+      return generateEternalLoveHtml(config);
     default:
       return generateClassicEditorialHtml(config);
   }
