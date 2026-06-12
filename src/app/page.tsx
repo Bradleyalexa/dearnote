@@ -16,9 +16,12 @@ export default function Home() {
       
       {/* Navbar / Header */}
       <header className="w-full max-w-7xl mx-auto px-6 py-6 flex justify-between items-center z-10">
-        <Link href="/" className="flex items-center gap-2 group">
-          <span className="text-xl transition-transform group-hover:rotate-6">📓</span>
-          <span className="font-serif text-2xl font-bold tracking-tight text-zinc-800">DearNote</span>
+        <Link href="/" className="flex items-center group">
+          <img
+            src="/dearnote_logo.png"
+            alt="DearNote Logo"
+            className="h-10 w-auto object-contain transition-transform group-hover:scale-[1.02]"
+          />
         </Link>
         <div>
           <Link

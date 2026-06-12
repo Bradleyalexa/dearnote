@@ -6,9 +6,12 @@ export default function CreatePage() {
     <div className="min-h-screen bg-gradient-to-b from-[#FBFBF9] via-[#F4F3EF] to-[#EAE8E2] text-zinc-800 flex flex-col font-sans">
       {/* Header / Logo */}
       <header className="w-full max-w-7xl mx-auto px-6 py-4 flex justify-between items-center border-b border-zinc-200/50">
-        <Link href="/" className="flex items-center gap-2">
-          <span className="text-xl">📓</span>
-          <span className="font-serif text-xl font-bold tracking-tight text-zinc-800">DearNote</span>
+        <Link href="/" className="flex items-center group">
+          <img
+            src="/dearnote_logo.png"
+            alt="DearNote Logo"
+            className="h-8 w-auto object-contain transition-transform group-hover:scale-[1.02]"
+          />
         </Link>
         <Link href="/" className="text-xs text-zinc-500 hover:text-zinc-800 font-semibold uppercase tracking-wider flex items-center gap-1">
           <span>←</span> Kembali ke Home
