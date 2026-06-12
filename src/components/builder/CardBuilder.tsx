@@ -102,7 +102,7 @@ export default function CardBuilder() {
           <label className="block text-sm font-semibold text-zinc-700">
             Pilih Desain & Tata Letak Catatan
           </label>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 font-sans">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4 font-sans">
             {/* Template 1 */}
             <label
               className={`border-2 rounded-xl p-4 flex flex-col justify-between cursor-pointer transition-all ${
@@ -166,6 +166,50 @@ export default function CardBuilder() {
               <div>
                 <p className="text-xs font-bold text-zinc-800 leading-tight">Nocturnal Journal</p>
                 <p className="text-[9px] text-zinc-400 mt-1 leading-tight">Langit malam berbintang, gelap, tenang dan minimalis.</p>
+              </div>
+            </label>
+
+            {/* Template 4 */}
+            <label
+              className={`border-2 rounded-xl p-4 flex flex-col justify-between cursor-pointer transition-all ${
+                formValues.template === "gift_box_reveal"
+                  ? "border-zinc-800 bg-zinc-50/50 shadow-sm"
+                  : "border-gray-200 hover:border-zinc-300 hover:bg-zinc-50/10"
+              }`}
+            >
+              <input
+                type="radio"
+                value="gift_box_reveal"
+                checked={formValues.template === "gift_box_reveal"}
+                onChange={() => { setValue("template", "gift_box_reveal"); scrollToPreview(); }}
+                className="hidden"
+              />
+              <span className="text-2xl mb-2">🎁</span>
+              <div>
+                <p className="text-xs font-bold text-zinc-800 leading-tight">Gift Box Reveal</p>
+                <p className="text-[9px] text-zinc-400 mt-1 leading-tight">Kotak hadiah 3D, pita interaktif, confetti perayaan.</p>
+              </div>
+            </label>
+
+            {/* Template 5 */}
+            <label
+              className={`border-2 rounded-xl p-4 flex flex-col justify-between cursor-pointer transition-all ${
+                formValues.template === "playful_gift"
+                  ? "border-zinc-800 bg-zinc-50/50 shadow-sm"
+                  : "border-gray-200 hover:border-zinc-300 hover:bg-zinc-50/10"
+              }`}
+            >
+              <input
+                type="radio"
+                value="playful_gift"
+                checked={formValues.template === "playful_gift"}
+                onChange={() => { setValue("template", "playful_gift"); scrollToPreview(); }}
+                className="hidden"
+              />
+              <span className="text-2xl mb-2">🎈</span>
+              <div>
+                <p className="text-xs font-bold text-zinc-800 leading-tight">Playful Cute Gift</p>
+                <p className="text-[9px] text-zinc-400 mt-1 leading-tight">Kotak kado pink pastel imut, balon & gelembung ceria, bounce effect.</p>
               </div>
             </label>
           </div>

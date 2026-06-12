@@ -60,12 +60,14 @@ export default function LivePreview({ draft }: LivePreviewProps) {
               codeInput.value = config.secretCode || '123';
               verifyCode();
             }
-            // Auto bypass envelope/moon opening screen
+            // Auto bypass envelope/moon/giftbox opening screen
             setTimeout(() => {
               const envelope = document.getElementById('envelope');
               if (envelope) openEnvelope();
               const moon = document.getElementById('moon');
               if (moon) openMoon();
+              const ribbon = document.getElementById('ribbon');
+              if (ribbon) openGiftBox();
             }, 300);
           });
         </script>

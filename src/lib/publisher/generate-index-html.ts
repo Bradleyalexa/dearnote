@@ -2,6 +2,8 @@ import { PublishedConfig } from "../schemas/card-draft";
 import { generateClassicEditorialHtml } from "./templates/classic-editorial";
 import { generatePolaroidScrapbookHtml } from "./templates/polaroid-scrapbook";
 import { generateNocturnalJournalHtml } from "./templates/nocturnal-journal";
+import { generateGiftBoxRevealHtml } from "./templates/gift-box-reveal";
+import { generatePlayfulGiftHtml } from "./templates/playful-gift";
 
 /**
  * Main coordinator that returns the HTML page content based on the selected template.
@@ -14,6 +16,10 @@ export function generateIndexHtml(config: PublishedConfig): string {
       return generatePolaroidScrapbookHtml(config);
     case "nocturnal_journal":
       return generateNocturnalJournalHtml(config);
+    case "gift_box_reveal":
+      return generateGiftBoxRevealHtml(config);
+    case "playful_gift":
+      return generatePlayfulGiftHtml(config);
     default:
       // Fallback
       return generateClassicEditorialHtml(config);

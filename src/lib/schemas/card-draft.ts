@@ -5,6 +5,8 @@ export const TEMPLATES = [
   "classic_editorial",
   "polaroid_scrapbook",
   "nocturnal_journal",
+  "gift_box_reveal",
+  "playful_gift",
 ] as const;
 
 export const TemplateSchema = z.enum(TEMPLATES);

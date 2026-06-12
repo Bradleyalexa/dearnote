@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 
 export default function Home() {
-  const [activeTemplate, setActiveTemplate] = useState<"classic" | "polaroid" | "nocturnal">("classic");
+  const [activeTemplate, setActiveTemplate] = useState<"classic" | "polaroid" | "nocturnal" | "giftbox" | "playfulbox">("classic");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   const toggleFaq = (index: number) => {
@@ -87,7 +87,9 @@ export default function Home() {
               {[
                 { id: "classic", label: "✒️ Classic Editorial", desc: "Kertas linen bertekstur cream lembut, font serif elegan, wax seal klasik, serta serpihan kertas mengambang lembut." },
                 { id: "polaroid", label: "📷 Polaroid Scrapbook", desc: "Kertas kerajinan kraft cokelat hangat, foto polaroid berselotip, serta nuansa tulisan mesin tik klasik." },
-                { id: "nocturnal", label: "🌌 Nocturnal Journal", desc: "Kanvas hitam legam malam sunyi, garis rasi bintang bersinar redup, font monospace, dan aksen pemutar suara yang berpendar." }
+                { id: "nocturnal", label: "🌌 Nocturnal Journal", desc: "Kanvas hitam legam malam sunyi, garis rasi bintang bersinar redup, font monospace, dan aksen pemutar suara yang berpendar." },
+                { id: "giftbox", label: "🎁 Gift Box Reveal", desc: "Kotak hadiah 3D dengan pita interaktif, confetti perayaan hangat, dan unwrapping ritual yang memorable." },
+                { id: "playfulbox", label: "🎈 Playful Cute Gift", desc: "Kotak kado pink pastel imut dengan balon & gelembung ceria, bounciness, dan sticker menggemaskan." }
               ].map((tab) => (
                 <button
                   key={tab.id}
@@ -211,7 +213,7 @@ export default function Home() {
                 {/* 3. Nocturnal Journal Mockup */}
                 {activeTemplate === "nocturnal" && (
                   <div className="w-full h-full bg-[#121212] p-4 flex flex-col justify-between border border-zinc-800 relative overflow-hidden animate-fade-in text-zinc-200">
-                    
+
                     {/* Stars and Constellation representation */}
                     <div className="absolute top-12 left-10 w-1.5 h-1.5 bg-white rounded-full animate-ping" />
                     <div className="absolute bottom-32 right-12 w-1 h-1 bg-white/60 rounded-full animate-pulse" />
@@ -245,6 +247,106 @@ export default function Home() {
                       <button className="w-full py-2 bg-zinc-900 border border-zinc-800 text-zinc-300 font-bold rounded-xl text-[9px] uppercase tracking-wider animate-pulse">
                         🔮 Dengar Bisikan Suara
                       </button>
+                    </div>
+
+                  </div>
+                )}
+
+                {/* 4. Gift Box Reveal Mockup */}
+                {activeTemplate === "giftbox" && (
+                  <div className="w-full h-full bg-gradient-to-b from-[#1E1214] to-[#0F090A] p-4 flex flex-col justify-between border border-zinc-800 relative overflow-hidden animate-fade-in text-white">
+
+                    {/* Gold sparkle representation */}
+                    <div className="absolute top-8 left-12 w-1.5 h-1.5 bg-yellow-400 rounded-full animate-ping opacity-60" />
+                    <div className="absolute top-20 right-16 w-1 h-1 bg-yellow-200 rounded-full animate-pulse opacity-50" />
+                    <div className="absolute bottom-28 left-8 w-1.5 h-1.5 bg-yellow-500 rounded-full animate-bounce opacity-40" />
+
+                    <div className="space-y-3 pt-4 z-10">
+                      <div className="flex justify-between items-center text-[9px] font-bold text-yellow-500/60 uppercase tracking-widest">
+                        <span>Gift Box</span>
+                        <span>12.06.2026</span>
+                      </div>
+
+                      {/* Upgraded Luxury Gift Box Visual */}
+                      <div className="flex justify-center py-2">
+                        <div className="relative w-20 h-20 flex flex-col items-center justify-end">
+                          {/* Bow on top */}
+                          <div className="absolute -top-3 w-10 h-6 flex justify-between z-20">
+                            <div className="w-4 h-4 bg-gradient-to-br from-yellow-300 to-amber-500 rounded-full rotate-45"></div>
+                            <div className="w-4 h-4 bg-gradient-to-bl from-yellow-300 to-amber-500 rounded-full -rotate-45"></div>
+                          </div>
+                          {/* Gift box lid */}
+                          <div className="w-[86px] h-4 bg-gradient-to-r from-red-700 to-red-900 rounded-t border border-yellow-500/20 relative z-10">
+                            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3 h-full bg-gradient-to-r from-yellow-400 to-amber-500"></div>
+                          </div>
+                          {/* Gift box body */}
+                          <div className="w-20 h-14 bg-gradient-to-b from-red-800 to-red-950 rounded-b border border-yellow-500/20 relative shadow-lg">
+                            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3 h-full bg-gradient-to-r from-yellow-400 to-amber-500"></div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="text-center space-y-0.5">
+                        <h3 className="font-script text-lg text-yellow-300 leading-none">Spesial Untukmu:</h3>
+                        <h2 className="font-serif text-xs font-bold text-white tracking-wide">Nadia</h2>
+                      </div>
+                    </div>
+
+                    <div className="pb-2 text-center z-10 space-y-1.5">
+                      <p className="text-[8px] text-yellow-500/60 font-bold uppercase tracking-wide animate-pulse">Sentuh kado untuk membuka</p>
+                      <div className="w-full py-1.5 bg-gradient-to-r from-amber-500 to-yellow-600 text-white font-bold rounded-xl text-[9px] uppercase tracking-wider shadow-md">
+                        🎁 Buka Hadiah
+                      </div>
+                    </div>
+
+                  </div>
+                )}
+
+                {/* 5. Playful Cute Gift Mockup */}
+                {activeTemplate === "playfulbox" && (
+                  <div className="w-full h-full bg-gradient-to-b from-[#FFE5EC] to-[#F0E6FF] p-4 flex flex-col justify-between border border-pink-100 relative overflow-hidden animate-fade-in text-[#3D2C47]">
+
+                    {/* Cute bubbles floating */}
+                    <div className="absolute top-10 left-10 text-xs animate-bounce opacity-70">🎈</div>
+                    <div className="absolute top-24 right-12 text-[10px] animate-ping opacity-60">💖</div>
+                    <div className="absolute bottom-24 left-6 text-xs animate-pulse opacity-50">⭐</div>
+
+                    <div className="space-y-3 pt-4 z-10">
+                      <div className="flex justify-between items-center text-[9px] font-bold text-[#FF6B8B] uppercase tracking-widest font-sans">
+                        <span>Cute Gift</span>
+                        <span>12.06.2026</span>
+                      </div>
+
+                      {/* Cute Box Visual */}
+                      <div className="flex justify-center py-2">
+                        <div className="relative w-20 h-20 flex flex-col items-center justify-end animate-bounce">
+                          {/* Puffy bow */}
+                          <div className="absolute -top-2 w-10 h-5 flex justify-between z-20">
+                            <div className="w-4 h-4 bg-[#B3F5FC] rounded-full border border-white rotate-12 shadow-sm"></div>
+                            <div className="w-4 h-4 bg-[#B3F5FC] rounded-full border border-white -rotate-12 shadow-sm"></div>
+                          </div>
+                          {/* Lid */}
+                          <div className="w-[84px] h-4 bg-gradient-to-r from-[#FFA6C9] to-[#FF85A2] rounded border-2 border-white relative z-10">
+                            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3 h-full bg-[#B3F5FC]"></div>
+                          </div>
+                          {/* Body */}
+                          <div className="w-18 h-12 bg-gradient-to-b from-[#FF85A2] to-[#FF6B8B] rounded-b-xl border-2 border-white relative shadow-md">
+                            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3 h-full bg-[#B3F5FC]"></div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="text-center space-y-0.5">
+                        <h3 className="font-script text-lg text-[#FF6B8B] font-bold leading-none">Ada Kado Lucu Buat:</h3>
+                        <h2 className="font-sans text-xs font-bold text-[#3D2C47] tracking-wide">Nadia 💖</h2>
+                      </div>
+                    </div>
+
+                    <div className="pb-2 text-center z-10 space-y-1.5 font-sans">
+                      <p className="text-[8px] text-[#FF85A2] font-bold uppercase tracking-wide animate-pulse">Tap kado untuk membuka</p>
+                      <div className="w-full py-1.5 bg-gradient-to-r from-[#FF85A2] to-[#FF6B8B] text-white font-bold rounded-xl text-[9px] uppercase tracking-wider shadow-md">
+                        🎉 Buka Kado!
+                      </div>
                     </div>
 
                   </div>
