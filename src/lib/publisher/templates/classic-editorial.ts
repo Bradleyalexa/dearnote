@@ -115,7 +115,7 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
       border-right: 170px solid transparent;
       border-top: 110px solid #3F3F46; /* zinc-700 */
       transform-origin: top;
-      transition: transform 0.4s ease 0.4s;
+      transition: transform 0.4s ease 0.15s;
       z-index: 30;
     }
     .envelope-wrapper::after {
@@ -146,7 +146,7 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
       border-radius: 4px;
       padding: 20px;
       z-index: 15;
-      transition: transform 0.6s ease;
+      transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1) 0.55s;
       transform: translateY(0);
       box-shadow: 0 -5px 15px rgba(0,0,0,0.03);
     }
@@ -160,27 +160,22 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 60px;
-      height: 60px;
-      background: radial-gradient(circle at 30% 30%, #b22234 0%, #7d0d1b 60%, #4a020a 100%);
+      width: 54px;
+      height: 54px;
+      background: radial-gradient(circle, #C5A880, #B0926A); /* warm bronze */
       border-radius: 50%;
       transform: translate(-50%, -50%);
-      box-shadow: 
-        0 8px 20px rgba(0, 0, 0, 0.35), 
-        inset 0 4px 6px rgba(255, 255, 255, 0.45), 
-        inset 0 -4px 6px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.18), inset 0 2px 4px rgba(255,255,255,0.3);
       z-index: 40;
-      transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transition: all 0.3s ease;
       display: flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
+      font-size: 22px;
+      color: #FFF;
     }
     .wax-seal::after {
-      content: '⚜️'; /* Elegant Royal Fleur-de-lis stamp */
-      font-size: 24px;
-      filter: drop-shadow(0 2px 2px rgba(0,0,0,0.4)) brightness(1.2);
-      opacity: 0.95;
+      content: '✉'; /* Clean envelope icon */
     }
     .envelope-wrapper.open .wax-seal {
       opacity: 0;
@@ -189,28 +184,14 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
     }
     .wax-seal:hover {
       transform: translate(-50%, -50%) scale(1.08);
-      box-shadow: 0 8px 22px rgba(0,0,0,0.4);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.25);
     }
     
     /* Keepsake Card */
     .keepsake-card {
-      background: #FAF9F6;
-      border: 1px solid rgba(197, 168, 128, 0.35);
-      box-shadow: 
-        0 24px 60px rgba(28, 25, 23, 0.08), 
-        0 2px 4px rgba(197, 168, 128, 0.1);
-      position: relative;
-    }
-    .keepsake-card::after {
-      content: "";
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      right: 10px;
-      bottom: 10px;
-      border: 1px solid rgba(197, 168, 128, 0.15);
-      border-radius: 20px;
-      pointer-events: none;
+      background: #FFFFFF;
+      border: 1px solid rgba(197, 168, 128, 0.25);
+      box-shadow: 0 16px 40px rgba(28, 25, 23, 0.05);
     }
     .accent-border {
       border: 1px solid rgba(197, 168, 128, 0.3);
@@ -452,7 +433,8 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
           letterSection.classList.remove('hidden');
           setTimeout(() => {
             letterSection.classList.remove('opacity-0', 'translate-y-10');
-            startTypewriter();
+            // Wait 500ms for the card fade/slide-up transition to finish before typing starts
+            setTimeout(startTypewriter, 500);
           }, 50);
         }, 600);
       }, 1500);
@@ -463,16 +445,14 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
       const container = document.getElementById('letter-body-content');
       const text = config.letterBody;
       let index = 0;
-      const speed = 20;
+      const speed = 25;
       
       function type() {
         if (index < text.length) {
           container.innerHTML += text.charAt(index);
           index++;
-          
-          // Auto-scroll instantly only when close to the bottom to avoid smooth scroll reflow lag
-          if (index % 4 === 0 && (window.innerHeight + window.scrollY < document.body.scrollHeight - 50)) {
-            window.scrollTo(0, document.body.scrollHeight);
+          if (window.innerHeight + window.scrollY < document.body.offsetHeight) {
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
           }
           setTimeout(type, speed);
         } else {
@@ -523,11 +503,6 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
         finalMsg.classList.remove('hidden');
         setTimeout(() => { finalMsg.classList.add('opacity-100'); }, 600);
       }
-
-      // Smoothly scroll down to show the newly revealed content (gallery/audio/final message)
-      setTimeout(() => {
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-      }, 600);
     }
 
     // 6. Custom Audio Player
