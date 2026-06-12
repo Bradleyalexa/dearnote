@@ -20,7 +20,7 @@ export default function Home() {
           <img
             src="/dearnote_logo.png"
             alt="DearNote Logo"
-            className="h-20 w-auto object-contain transition-transform group-hover:scale-[1.02]"
+            className="h-14 w-auto object-contain transition-transform group-hover:scale-[1.02]"
           />
         </Link>
         <div>

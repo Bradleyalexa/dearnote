@@ -10,7 +10,7 @@ export default function CreatePage() {
           <img
             src="/dearnote_logo.png"
             alt="DearNote Logo"
-            className="h-16 w-auto object-contain transition-transform group-hover:scale-[1.02]"
+            className="h-12 w-auto object-contain transition-transform group-hover:scale-[1.02]"
           />
         </Link>
         <Link href="/" className="text-xs text-zinc-500 hover:text-zinc-800 font-semibold uppercase tracking-wider flex items-center gap-1">
