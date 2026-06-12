@@ -2,8 +2,24 @@ import { NextRequest, NextResponse } from "next/server";
 import { nanoid } from "nanoid";
 import { CardDraftSchema } from "@/lib/schemas/card-draft";
 import { putJson, getObject } from "@/lib/r2/client";
+import { rateLimit, getClientIp } from "@/lib/rate-limit";
 
 export async function POST(req: NextRequest) {
+  // --- Rate Limiting: max 5 orders per IP per 10 minutes ---
+  const ip = getClientIp(req);
+  const rl = rateLimit(`orders:${ip}`, { limit: 5, windowSeconds: 600 });
+  if (!rl.success) {
+    return NextResponse.json(
+      { error: "Too many requests. Please try again later." },
+      {
+        status: 429,
+        headers: {
+          "Retry-After": String(Math.ceil((rl.resetAt - Date.now()) / 1000)),
+        },
+      }
+    );
+  }
+
   try {
     const body = await req.json();
     const { paymentGroup, draft } = body;
@@ -32,7 +48,7 @@ export async function POST(req: NextRequest) {
 
     // 4. Generate Identifiers
     const orderId = `order_${nanoid(8)}`;
-    
+
     // Generate unique 6-digit numeric card ID
     let cardId = "";
     let isUnique = false;
@@ -90,7 +106,7 @@ export async function POST(req: NextRequest) {
   } catch (error: any) {
     console.error("Error creating order:", error);
     return NextResponse.json(
-      { error: "Internal Server Error", details: error.message },
+      { error: "Internal Server Error" },
       { status: 500 }
     );
   }

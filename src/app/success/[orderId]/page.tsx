@@ -33,8 +33,10 @@ export default function SuccessPage(props: { params: Promise<{ orderId: string }
 
     const pollStatus = async () => {
       try {
-        // Feed simulate flag to API to trigger auto-publish on local testing
-        const url = `/api/orders/${orderId}${isSimulated ? "?simulate=true" : ""}`;
+        // In simulate mode, use the dedicated simulate route (no secret needed from browser)
+        const url = isSimulated
+          ? `/api/simulate/${orderId}`
+          : `/api/orders/${orderId}`;
         const res = await fetch(url);
         
         if (!res.ok) {

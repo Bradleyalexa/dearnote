@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createSignedUploadUrl } from "@/lib/r2/client";
 import { nanoid } from "nanoid";
+import { rateLimit, getClientIp } from "@/lib/rate-limit";
 
 const ALLOWED_PHOTO_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 const ALLOWED_VOICE_TYPES = [
@@ -24,6 +25,21 @@ const MAX_PHOTO_SIZE = 5 * 1024 * 1024; // 5 MB raw limit
 const MAX_VOICE_SIZE = 6 * 1024 * 1024; // 6 MB limit
 
 export async function POST(req: NextRequest) {
+  // --- Rate Limiting: max 20 uploads per IP per 10 minutes ---
+  const ip = getClientIp(req);
+  const rl = rateLimit(`upload-url:${ip}`, { limit: 25, windowSeconds: 600 });
+  if (!rl.success) {
+    return NextResponse.json(
+      { error: "Too many requests. Please try again later." },
+      {
+        status: 429,
+        headers: {
+          "Retry-After": String(Math.ceil((rl.resetAt - Date.now()) / 1000)),
+        },
+      }
+    );
+  }
+
   try {
     const body = await req.json();
     const { fileName, contentType, fileSize, kind } = body;
@@ -82,14 +98,14 @@ export async function POST(req: NextRequest) {
     // Create a temporary upload key prefix (order_tmp_...)
     const tempId = `tmp_${nanoid(10)}`;
     const fileId = nanoid(6);
-    
+
     // Key structure: pending/order_{tempId}/assets/{fileId}_{sanitizedName}
     const key = `pending/order_${tempId}/assets/${fileId}_${sanitizedName}`;
 
     // 3. Generate pre-signed URL from R2 helper client
     const uploadUrl = await createSignedUploadUrl(key, contentType, 3600); // 1 hour expiry
     const publicBaseUrl = process.env.PUBLIC_CARD_BASE_URL || "";
-    
+
     // Clean public base URL from trailing slashes
     const baseUrlClean = publicBaseUrl.endsWith("/") ? publicBaseUrl.slice(0, -1) : publicBaseUrl;
     const publicUrl = `${baseUrlClean}/${key}`;
@@ -102,7 +118,7 @@ export async function POST(req: NextRequest) {
   } catch (error: any) {
     console.error("Error generating upload URL:", error);
     return NextResponse.json(
-      { error: "Internal Server Error", details: error.message },
+      { error: "Internal Server Error" },
       { status: 500 }
     );
   }

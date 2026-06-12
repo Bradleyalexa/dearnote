@@ -15,6 +15,22 @@ export async function GET(
     return NextResponse.json({ error: "Missing order ID" }, { status: 400 });
   }
 
+  // --- Guard: simulate mode requires ADMIN_SECRET ---
+  if (simulate) {
+    const adminSecret = process.env.ADMIN_SECRET;
+    if (!adminSecret) {
+      // If ADMIN_SECRET is not configured in env, simulation is always disabled.
+      return NextResponse.json({ error: "Simulation mode is not available." }, { status: 403 });
+    }
+    const authHeader = req.headers.get("authorization");
+    const providedSecret = authHeader?.startsWith("Bearer ")
+      ? authHeader.slice(7)
+      : null;
+    if (providedSecret !== adminSecret) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+  }
+
   const orderKey = `orders/${orderId}.json`;
 
   try {
@@ -27,13 +43,13 @@ export async function GET(
     // SIMULATION MODE: If pending_payment and simulate=true, automatically trigger publish
     if (order.status === "pending_payment" && simulate) {
       console.log(`[Order API] Simulating payment completion for order ${orderId}...`);
-      
+
       // Call publisher synchronously
       const cardUrl = await publishCard(orderId);
-      
+
       // Reload order JSON from storage after publishing
       const updatedOrder = await getJson<any>(orderKey);
-      
+
       const publicBaseUrl = process.env.PUBLIC_CARD_BASE_URL || "";
       const cleanBaseUrl = publicBaseUrl.endsWith("/")
         ? publicBaseUrl.slice(0, -1)
@@ -72,7 +88,7 @@ export async function GET(
   } catch (error: any) {
     console.error(`Error loading order ${orderId}:`, error);
     return NextResponse.json(
-      { error: "Internal Server Error", details: error.message },
+      { error: "Internal Server Error" },
       { status: 500 }
     );
   }
