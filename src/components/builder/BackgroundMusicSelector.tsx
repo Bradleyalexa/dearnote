@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 interface DraftBgMusic {
   key: string;
@@ -35,9 +36,11 @@ export default function BackgroundMusicSelector({ value, onChange }: BackgroundM
   const [activeCategory, setActiveCategory] = useState("all");
   const [playingTrack, setPlayingTrack] = useState<string | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [mounted, setMounted] = useState(false);
 
   // Stop audio on unmount
   useEffect(() => {
+    setMounted(true);
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
@@ -145,8 +148,8 @@ export default function BackgroundMusicSelector({ value, onChange }: BackgroundM
         </button>
       </div>
 
-      {/* Modal Overlay */}
-      {isOpen && (
+      {/* Modal Overlay (Rendered via React Portal under document.body) */}
+      {mounted && typeof document !== "undefined" && isOpen && createPortal(
         <div 
           onClick={handleClose}
           className="fixed inset-0 z-50 flex items-start justify-center p-4 bg-zinc-950/45 backdrop-blur-sm animate-modal-fade overflow-y-auto md:items-center"
@@ -281,7 +284,8 @@ export default function BackgroundMusicSelector({ value, onChange }: BackgroundM
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
