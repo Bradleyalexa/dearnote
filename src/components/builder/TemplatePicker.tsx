@@ -119,6 +119,14 @@ export const TEMPLATE_REGISTRY: {
     accent: "linear-gradient(135deg, #FFB7B2, #E8C7EA, #B5EAD7)",
     tags: ["Anniversary", "Birthday", "Flagship"],
   },
+  {
+    id: "graduation_note",
+    name: "Graduation Note 🎓",
+    description: "Premium flagship graduation celebration. Sophisticated navy & gold design, elegant diploma scroll reveal, confetti burst, yearbook photo gallery, and inspiring finale.",
+    category: "interaktif",
+    accent: "linear-gradient(135deg, #1B2B4D, #D4AF37, #4A90E2)",
+    tags: ["Graduation", "Achievement", "Flagship"],
+  },
 ];
 
 type Category = "semua" | "minimal" | "romantic" | "playful" | "interaktif";

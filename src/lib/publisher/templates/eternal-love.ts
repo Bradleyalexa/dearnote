@@ -10,7 +10,7 @@ export function generateEternalLoveHtml(config: PublishedConfig): string {
   const hasBgMusic = !!config.bgMusic;
   const bgMusicSrc = config.bgMusic?.src || "";
   const hasPhotos = config.photos && config.photos.length > 0;
-  const hasAudio = hasVoiceNote || hasBgMusic;
+  const hasAudio = hasVoiceNote;
 
   const vBars = Array.from({ length: 22 }, (_, i) =>
     `<div class="v-bar" style="animation-delay:${(i * 0.055).toFixed(3)}s;height:${16 + ((i % 5) * 7)}px"></div>`

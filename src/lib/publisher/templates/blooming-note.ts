@@ -10,7 +10,7 @@ export function generateBloomingNoteHtml(config: PublishedConfig): string {
   const hasBgMusic = !!config.bgMusic;
   const bgMusicSrc = config.bgMusic?.src || "";
   const hasPhotos = config.photos && config.photos.length > 0;
-  const hasAudio = hasVoiceNote || hasBgMusic;
+  const hasAudio = hasVoiceNote; // Audio chapter only if voice note exists
 
   const vBars = Array.from({ length: 24 }, (_, i) =>
     `<div class="v-bar" style="animation-delay:${(i * 0.05).toFixed(3)}s;height:${10 + ((i % 5) * 5)}px"></div>`

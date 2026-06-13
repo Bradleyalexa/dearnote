@@ -85,7 +85,7 @@ export default function LivePreview({ draft }: LivePreviewProps) {
   };
 
   return (
-    <div className="flex flex-col items-center space-y-4 w-full h-full max-w-[290px] mx-auto">
+    <div className="flex flex-col items-center space-y-4 w-full h-full max-w-[350px] mx-auto">
       {/* Preview Tabs */}
       <div className="flex bg-zinc-100 p-1 rounded-xl w-full border border-zinc-200/50 shadow-sm font-sans">
         <button

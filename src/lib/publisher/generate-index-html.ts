@@ -12,6 +12,7 @@ import { generatePlayfulPoohHtml } from "./templates/playful-pooh";
 import { generateEternalLoveHtml } from "./templates/eternal-love";
 import { generateBirthdayMagicHtml } from "./templates/birthday-magic";
 import { generateBloomingNoteHtml } from "./templates/blooming-note";
+import { generateGraduationNoteHtml } from "./templates/graduation-note";
 
 /**
  * Main coordinator that returns the HTML page content based on the selected template.
@@ -28,6 +29,10 @@ import { generateBloomingNoteHtml } from "./templates/blooming-note";
  *  playful_gift        → Playful Cute Gift (pastel gift box, balloons, bounce effect)
  *  playful_dog         → Playful Dog (CSS Shiba animated dog, interactive toys)
  *  playful_pooh        → Playful Pooh (CSS Winnie the Pooh, honey pot eating, bees)
+ *  eternal_love        → Eternal Love (romantic rose garden, elegant serif)
+ *  birthday_magic      → Birthday Magic (colorful celebration, cake and balloons)
+ *  blooming_note       → Blooming Note (floral garden, sprouting flowers, nature theme)
+ *  graduation_note     → Graduation Note (premium navy & gold, diploma scroll, confetti celebration)
  */
 export function generateIndexHtml(config: PublishedConfig): string {
   switch (config.template) {
@@ -59,6 +64,8 @@ export function generateIndexHtml(config: PublishedConfig): string {
       return generateBirthdayMagicHtml(config);
     case "blooming_note":
       return generateBloomingNoteHtml(config);
+    case "graduation_note":
+      return generateGraduationNoteHtml(config);
     default:
       return generateClassicEditorialHtml(config);
   }
