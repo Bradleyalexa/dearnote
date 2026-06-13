@@ -13,7 +13,7 @@ export function generateScrapbookHtml(config: PublishedConfig): string {
   const bgMusicSrc = config.bgMusic?.src || "";
 
   return `<!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -229,7 +229,7 @@ export function generateScrapbookHtml(config: PublishedConfig): string {
   ${
     hasBgMusic
       ? `
-  <button id="bgm-toggle-btn" onclick="toggleBgm()" class="fixed top-4 right-4 z-50 w-10 h-10 rounded-full bg-[#E5D3C0]/85 backdrop-blur-sm border border-[#D5C2B0] shadow-md flex items-center justify-center text-zinc-700 hover:bg-[#D8C4B0] transition-all" title="Matikan Musik Latar">
+  <button id="bgm-toggle-btn" onclick="toggleBgm()" class="fixed top-4 right-4 z-50 w-10 h-10 rounded-full bg-[#E5D3C0]/85 backdrop-blur-sm border border-[#D5C2B0] shadow-md flex items-center justify-center text-zinc-700 hover:bg-[#D8C4B0] transition-all" title="Mute Background Music">
     <span id="bgm-icon" class="text-sm">🎵</span>
   </button>
   <audio id="bgm-audio-element" src="${bgMusicSrc}" loop></audio>
@@ -246,15 +246,15 @@ export function generateScrapbookHtml(config: PublishedConfig): string {
       <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#F5EBE0] text-[#7C7267] text-2xl mb-4 shadow-sm border border-[#D5C2B0]/30">
         🔒
       </div>
-      <h2 class="font-typewriter text-xl font-bold text-gray-800 mb-2">Akses Jurnal</h2>
-      <p class="text-xs text-gray-500 font-sans">Ada sebuah catatan kenangan dari <span class="font-semibold text-[#7C7267]">${config.fromName}</span> untuk <span class="font-semibold text-[#7C7267]">${config.toName}</span>. Masukkan kode untuk membuka.</p>
+      <h2 class="font-typewriter text-xl font-bold text-gray-800 mb-2">Access Journal</h2>
+      <p class="text-xs text-gray-500 font-sans">A memory log from <span class="font-semibold text-[#7C7267]">${config.fromName}</span> to <span class="font-semibold text-[#7C7267]">${config.toName}</span>. Enter the code to open it.</p>
     </div>
     
     <div class="space-y-4 font-sans">
       <input 
         type="text" 
         id="secret-code-input" 
-        placeholder="Kode Akses" 
+        placeholder="Access Code" 
         maxlength="12"
         class="w-full px-4 py-3 rounded-xl border border-gray-300 text-center font-bold text-gray-700 focus:outline-none focus:ring-2 focus:ring-[#7C7267] uppercase tracking-widest text-sm"
       >
@@ -262,9 +262,9 @@ export function generateScrapbookHtml(config: PublishedConfig): string {
         onclick="verifyCode()"
         class="w-full py-3 bg-[#7C7267] hover:bg-[#6A6056] text-white font-semibold rounded-xl shadow-md transition-all text-sm uppercase tracking-wider"
       >
-        Buka Scrapbook
+        Open Scrapbook
       </button>
-      <p id="code-error" class="text-xs text-red-500 opacity-0 transition-opacity font-semibold">Kode salah, silakan coba kembali.</p>
+      <p id="code-error" class="text-xs text-red-500 opacity-0 transition-opacity font-semibold">Incorrect code, please try again.</p>
     </div>
   </div>
   `
@@ -287,12 +287,12 @@ export function generateScrapbookHtml(config: PublishedConfig): string {
       </div>
       
       <div class="text-center my-auto px-4 z-10 pl-12">
-        <h3 class="font-handwritten text-4xl sm:text-5xl font-bold mb-2 break-words">Untuk: ${config.toName}</h3>
-        <p class="font-sans text-xs uppercase tracking-widest opacity-80 break-words">Catatan Kenangan Dari ${config.fromName}</p>
+        <h3 class="font-handwritten text-4xl sm:text-5xl font-bold mb-2 break-words">For: ${config.toName}</h3>
+        <p class="font-sans text-xs uppercase tracking-widest opacity-80 break-words">A memory keepsake from ${config.fromName}</p>
       </div>
       
       <div class="text-center border-t border-white/20 pt-4 z-10 pl-12">
-        <span class="font-sans text-[9px] uppercase tracking-widest font-bold animate-pulse">Ketuk Jurnal untuk Membuka</span>
+        <span class="font-sans text-[9px] uppercase tracking-widest font-bold animate-pulse">Tap Journal to Open</span>
       </div>
     </div>
   </div>
@@ -310,11 +310,11 @@ export function generateScrapbookHtml(config: PublishedConfig): string {
       <div class="border-b border-dashed border-[#DDA15E]/60 pb-6 mb-6 font-handwritten text-3xl text-gray-800">
         <div class="flex flex-col gap-2.5 items-center justify-center text-center">
           <div class="flex flex-col sm:flex-row items-center gap-1.5 justify-center">
-            <span class="text-gray-500/70 text-lg sm:text-xl font-normal">Spesial Untuk:</span>
+            <span class="text-gray-500/70 text-lg sm:text-xl font-normal">For:</span>
             <span class="font-bold break-words max-w-[240px] sm:max-w-md">${config.toName}</span>
           </div>
           <div class="flex flex-col sm:flex-row items-center gap-1.5 justify-center">
-            <span class="text-gray-500/70 text-lg sm:text-xl font-normal">Jurnal Dari:</span>
+            <span class="text-gray-500/70 text-lg sm:text-xl font-normal">From:</span>
             <span class="font-bold break-words max-w-[240px] sm:max-w-md">${config.fromName}</span>
           </div>
         </div>
@@ -339,8 +339,8 @@ export function generateScrapbookHtml(config: PublishedConfig): string {
     <div id="gallery-container" class="hidden space-y-6 mb-8 transition-opacity duration-1000 opacity-0">
       <div class="text-center relative py-4 mb-2">
         <div class="tape top-0 left-[45%] w-16 h-5 opacity-70"></div>
-        <h3 class="font-handwritten text-4xl font-bold text-gray-800">Album Foto Lampiran</h3>
-        <p class="font-sans text-[10px] text-zinc-500 uppercase tracking-widest font-semibold mt-2">Ketuk & geser foto untuk mengatur susunan</p>
+        <h3 class="font-handwritten text-4xl font-bold text-gray-800">Captured Memories</h3>
+        <p class="font-sans text-[10px] text-zinc-500 uppercase tracking-widest font-semibold mt-2">Tap & drag photos to rearrange them</p>
       </div>
       <!-- Drag & Toss Workspace -->
       <div id="polaroid-grid" class="flex flex-wrap items-center justify-center gap-8 py-8 min-h-[300px] relative"></div>
@@ -355,7 +355,7 @@ export function generateScrapbookHtml(config: PublishedConfig): string {
       <div class="tape top-[-6px] left-[10%] w-16 h-5"></div>
       
       <h4 class="font-handwritten text-2xl font-bold text-gray-800 mb-4 text-center">
-        🔊 Putar Pesan Suara
+        🔊 Play Voice Message
       </h4>
       <div class="flex flex-col sm:flex-row items-center gap-4 font-sans">
         <button id="play-btn" onclick="toggleAudio()" class="w-12 h-12 rounded-full bg-[#7C7267] hover:bg-[#6A6056] text-white flex items-center justify-center shadow-md transition-all">

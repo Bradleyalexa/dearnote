@@ -2,7 +2,7 @@ import { PublishedConfig } from "../../schemas/card-draft";
 
 export function generateApologyLetterHtml(config: PublishedConfig): string {
   const hasSecretCode = !!config.secretCode;
-  const letterTitle = config.letterTitle || "Maaf, dari hatiku";
+  const letterTitle = config.letterTitle || "A Sincere Apology";
   const escapedLetterBody = JSON.stringify(config.letterBody);
   const photosJson = JSON.stringify(config.photos);
   const hasVoiceNote = !!config.voiceNote;
@@ -11,7 +11,7 @@ export function generateApologyLetterHtml(config: PublishedConfig): string {
   const bgMusicSrc = config.bgMusic?.src || "";
 
   return `<!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -649,7 +649,7 @@ export function generateApologyLetterHtml(config: PublishedConfig): string {
 <body>
 
   ${hasBgMusic ? `
-  <button id="bgm-toggle-btn" onclick="toggleBgm()" title="Musik">
+  <button id="bgm-toggle-btn" onclick="toggleBgm()" title="Background Music">
     <span id="bgm-icon">♪</span>
   </button>
   <audio id="bgm-audio" src="${bgMusicSrc}" loop></audio>
@@ -659,24 +659,24 @@ export function generateApologyLetterHtml(config: PublishedConfig): string {
   ${hasSecretCode ? `
   <div id="code-section">
     <p class="scene-label" style="margin-bottom:1rem">DearNote</p>
-    <h2>Sebuah Surat Untukmu</h2>
-    <p>Ada pesan dari <strong>${config.fromName}</strong> untuk <strong>${config.toName}</strong>.<br>Masukkan kode untuk membuka surat.</p>
+    <h2>A Letter for You</h2>
+    <p>A message from <strong>${config.fromName}</strong> for <strong>${config.toName}</strong>.<br>Enter the code to open the letter.</p>
     <input
       type="text"
       id="secret-code-input"
-      placeholder="Kode akses"
+      placeholder="Access code"
       maxlength="12"
       onkeydown="if(event.key==='Enter')verifyCode()"
     >
-    <button id="unlock-btn" onclick="verifyCode()">Buka Surat</button>
-    <p id="code-error">Kode salah. Silakan coba lagi.</p>
+    <button id="unlock-btn" onclick="verifyCode()">Open Letter</button>
+    <p id="code-error">Incorrect code. Please try again.</p>
   </div>
   ` : ""}
 
   <!-- ── SECTION 2: ENVELOPE ── -->
   <div id="envelope-scene" ${hasSecretCode ? 'style="display:none"' : ""}>
 
-    <p class="scene-label">Surat untukmu</p>
+    <p class="scene-label">A letter for you</p>
 
     <div class="env-wrap">
       <div class="env-body">
@@ -705,11 +705,11 @@ export function generateApologyLetterHtml(config: PublishedConfig): string {
   <div id="letter-section">
 
     <div class="letter-paper">
-      <div class="letter-overline">${config.fromName} untuk ${config.toName}</div>
+      <div class="letter-overline">${config.fromName} to ${config.toName}</div>
 
       <h1 class="letter-title">${letterTitle}</h1>
       <p class="letter-meta">
-        ${config.toName} &nbsp;·&nbsp; dari ${config.fromName}
+        ${config.toName} &nbsp;·&nbsp; from ${config.fromName}
       </p>
 
       <div class="letter-body" id="letter-body"></div>
@@ -727,7 +727,7 @@ export function generateApologyLetterHtml(config: PublishedConfig): string {
     ${hasVoiceNote ? `
     <div id="voice-section">
       <div class="voice-player">
-        <p class="voice-label">Pesan Suara</p>
+        <p class="voice-label">Voice Message</p>
         <div class="voice-controls">
           <button id="play-btn" onclick="toggleAudio()">
             <span id="play-icon">▶</span>
@@ -751,7 +751,7 @@ export function generateApologyLetterHtml(config: PublishedConfig): string {
     <!-- Photo gallery -->
     ${`
     <div id="gallery-section">
-      <div class="gallery-label">Lampiran Foto</div>
+      <div class="gallery-label">Attached Photos</div>
       <div class="gallery-grid" id="gallery-grid"></div>
     </div>
     `}

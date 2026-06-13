@@ -2,7 +2,7 @@ import { PublishedConfig } from "../../schemas/card-draft";
 
 export function generatePlayfulPoohHtml(config: PublishedConfig): string {
   const hasSecretCode = !!config.secretCode;
-  const letterTitle = config.letterTitle || "Pesan Manis Untukmu!";
+  const letterTitle = config.letterTitle || "A Sweet Message for You!";
   const escapedLetterBody = JSON.stringify(config.letterBody);
   const photosJson = JSON.stringify(config.photos);
   const hasVoiceNote = !!config.voiceNote;
@@ -11,7 +11,7 @@ export function generatePlayfulPoohHtml(config: PublishedConfig): string {
   const bgMusicSrc = config.bgMusic?.src || "";
 
   return `<!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -499,20 +499,20 @@ export function generatePlayfulPoohHtml(config: PublishedConfig): string {
       <div class="absolute bottom-3 right-3 text-[#FFDF80] opacity-40 text-lg">🐝</div>
       
       <p class="text-xs font-bold uppercase tracking-widest text-[#B38E36] mb-2 font-fredoka">DearNote • Playful Pooh</p>
-      <h1 class="text-2xl font-bold font-fredoka text-[#5C4A37] mb-4">Madu Manis & Surat Rahasia</h1>
+      <h1 class="text-2xl font-bold font-fredoka text-[#5C4A37] mb-4">Sweet Honey & Secret Letter</h1>
       <p class="text-xs text-[#8A7C6E] leading-relaxed mb-6 font-quicksand">
-        Pesan dari <strong>${config.fromName}</strong> dikunci kode akses. Masukkan kode untuk membuka gerbang madu ini.
+        The message from <strong>${config.fromName}</strong> is locked. Enter the code to open the honey gate.
       </p>
       
       <div class="space-y-4">
-        <input id="code-input" type="text" placeholder="Masukkan kode" maxlength="12"
+        <input id="code-input" type="text" placeholder="Enter code" maxlength="12"
           class="w-full px-4 py-3 bg-[#FFFDF7] border-2 border-[#FEF08A] rounded-2xl text-center font-fredoka tracking-widest text-[#5C4A37] focus:outline-none focus:border-[#FFCB4C]"
           onkeydown="if(event.key==='Enter')verifyCode()">
         <button id="code-btn" onclick="verifyCode()"
           class="w-full py-3 bg-[#FFCB4C] hover:bg-[#B38E36] text-white font-bold rounded-2xl transition-all shadow-md font-fredoka">
-          BUKA SURAT
+          OPEN LETTER
         </button>
-        <p id="code-err" class="text-xs text-red-500 font-bold opacity-0 transition-opacity duration-300">Kode salah! Coba lagi.</p>
+        <p id="code-err" class="text-xs text-red-500 font-bold opacity-0 transition-opacity duration-300">Incorrect code! Try again.</p>
       </div>
     </div>
   </div>
@@ -523,12 +523,12 @@ export function generatePlayfulPoohHtml(config: PublishedConfig): string {
     
     <div class="text-center mb-6">
       <h2 class="text-[#B38E36] text-xs font-bold uppercase tracking-widest font-fredoka mb-1">Interactive Keepsake</h2>
-      <h1 class="text-3xl font-bold font-fredoka text-[#5C4A37] leading-tight">Pooh Bear & Madu Hangat 🍯</h1>
+      <h1 class="text-3xl font-bold font-fredoka text-[#5C4A37] leading-tight">Pooh Bear & Sweet Honey 🍯</h1>
     </div>
 
     <!-- Speech bubble for interaction logs -->
     <div id="speech-bubble" class="speech-bubble show font-quicksand font-bold text-center text-sm">
-      Zzz... (Pooh sedang tidur nyenyak memeluk pot kosong. Coba ketuk untuk membangunkannya!)
+      Zzz... (Pooh is sleeping soundly, cuddling his empty pot. Tap to wake him up!)
     </div>
 
     <!-- Pooh Canvas container -->
@@ -575,13 +575,13 @@ export function generatePlayfulPoohHtml(config: PublishedConfig): string {
     <!-- Interactive buttons panel (revealed when awake) -->
     <div id="toys-panel" class="w-full max-w-sm grid grid-cols-3 gap-3 opacity-35 pointer-events-none transition-all duration-500">
       <button onclick="petPooh(event)" class="py-2.5 bg-white border-2 border-[#FEF08A] hover:bg-[#FFFBEB] rounded-2xl flex flex-col items-center justify-center text-xs font-fredoka text-[#B38E36] shadow-sm active:scale-95 transition-all">
-        <span class="text-xl mb-1">👋</span> Elus Kepala
+        <span class="text-xl mb-1">👋</span> Pet Head
       </button>
       <button onclick="feedHoney()" class="py-2.5 bg-white border-2 border-[#FEF08A] hover:bg-[#FFFBEB] rounded-2xl flex flex-col items-center justify-center text-xs font-fredoka text-[#B38E36] shadow-sm active:scale-95 transition-all">
-        <span class="text-xl mb-1">🍯</span> Beri Madu
+        <span class="text-xl mb-1">🍯</span> Give Honey
       </button>
       <button onclick="playBee()" class="py-2.5 bg-white border-2 border-[#FEF08A] hover:bg-[#FFFBEB] rounded-2xl flex flex-col items-center justify-center text-xs font-fredoka text-[#B38E36] shadow-sm active:scale-95 transition-all">
-        <span class="text-xl mb-1">🐝</span> Main Lebah
+        <span class="text-xl mb-1">🐝</span> Play Bee
       </button>
     </div>
 
@@ -589,7 +589,7 @@ export function generatePlayfulPoohHtml(config: PublishedConfig): string {
     <div id="letter-trigger-container" class="mt-8 opacity-0 pointer-events-none transition-all duration-700 transform translate-y-4">
       <button onclick="openLetterSheet()"
         class="px-8 py-4 bg-[#FFCB4C] hover:bg-[#B38E36] text-white font-bold rounded-2xl shadow-lg hover:shadow-xl font-fredoka text-sm tracking-wider animate-bounce flex items-center gap-2">
-        <span>🍯</span> BACA SURAT MANIS DARI ${config.fromName.toUpperCase()}
+        <span>🍯</span> READ SWEET LETTER FROM ${config.fromName.toUpperCase()}
       </button>
     </div>
 
@@ -616,7 +616,7 @@ export function generatePlayfulPoohHtml(config: PublishedConfig): string {
         <div class="text-center pb-4 border-b-2 border-dashed border-[#F4E3D4]">
           <h2 class="text-xs font-fredoka text-[#B38E36] uppercase tracking-widest mb-1">Hunny Note</h2>
           <h1 class="text-2xl font-bold font-fredoka text-[#5C4A37]">${letterTitle}</h1>
-          <p class="text-xs text-[#8A7C6E] mt-1 font-quicksand">Untuk: <span class="font-bold text-[#FFCB4C]">${config.toName}</span></p>
+          <p class="text-xs text-[#8A7C6E] mt-1 font-quicksand">For: <span class="font-bold text-[#FFCB4C]">${config.toName}</span></p>
         </div>
 
         <!-- Handwritten body -->
@@ -631,7 +631,7 @@ export function generatePlayfulPoohHtml(config: PublishedConfig): string {
             <span id="play-icon">▶</span>
           </button>
           <div class="flex-1 min-w-0">
-            <p class="text-[10px] uppercase font-bold tracking-widest text-[#B38E36] font-fredoka mb-1">Pesan Suara</p>
+            <p class="text-[10px] uppercase font-bold tracking-widest text-[#B38E36] font-fredoka mb-1">Voice Message</p>
             <div id="mini-track" onclick="seekAudio(event)" class="w-full h-2 bg-[#FEF08A] rounded-full cursor-pointer relative">
               <div id="audio-bar" class="absolute left-0 top-0 bottom-0 w-0 bg-[#FFCB4C] rounded-full transition-all duration-100 ease-linear"></div>
             </div>
@@ -644,12 +644,12 @@ export function generatePlayfulPoohHtml(config: PublishedConfig): string {
         <!-- Image Gallery (if present) -->
         ${config.photos && config.photos.length > 0 ? `
         <div class="space-y-6">
-          <p class="text-xs font-bold uppercase tracking-widest text-[#B38E36] font-fredoka text-center">🍯 Potret Kenangan Manis 🍯</p>
+          <p class="text-xs font-bold uppercase tracking-widest text-[#B38E36] font-fredoka text-center">🍯 Sweet Memories 🍯</p>
           <div class="grid grid-cols-1 gap-6">
             ${config.photos.map((p) => `
               <div class="pooh-photo-frame">
                 <div class="w-full aspect-[4/3] rounded-xl overflow-hidden bg-[#FAF6EE]">
-                  <img src="${p.src}" alt="${p.caption || 'Foto'}" class="w-full h-full object-cover" loading="lazy">
+                  <img src="${p.src}" alt="${p.caption || 'Photo'}" class="w-full h-full object-cover" loading="lazy">
                 </div>
                 ${p.caption ? `
                   <p class="text-center font-script text-lg text-[#5C4A37] mt-3 px-2">${p.caption}</p>
@@ -664,11 +664,11 @@ export function generatePlayfulPoohHtml(config: PublishedConfig): string {
         ${config.finalMessage ? `
         <div class="text-center py-6 border-t-2 border-dashed border-[#F4E3D4]">
           <p class="font-script text-2xl text-[#B38E36] italic">"${config.finalMessage}"</p>
-          <p class="text-xs font-bold uppercase tracking-widest text-[#8A7C6E] font-fredoka mt-2">— Dari ${config.fromName}</p>
+          <p class="text-xs font-bold uppercase tracking-widest text-[#8A7C6E] font-fredoka mt-2">— From ${config.fromName}</p>
         </div>
         ` : `
         <div class="text-center py-4 border-t-2 border-dashed border-[#F4E3D4]">
-          <p class="text-xs font-bold uppercase tracking-widest text-[#8A7C6E] font-fredoka">— Pelukan hangat, ${config.fromName} 🍯</p>
+          <p class="text-xs font-bold uppercase tracking-widest text-[#8A7C6E] font-fredoka">— Warm hugs, ${config.fromName} 🍯</p>
         </div>
         `}
 
@@ -678,7 +678,7 @@ export function generatePlayfulPoohHtml(config: PublishedConfig): string {
       <div class="p-4 bg-white border-t border-[#F4E3D4]">
         <button onclick="closeLetterSheet()"
           class="w-full py-3 bg-[#FFCB4C] hover:bg-[#B38E36] text-white font-bold rounded-2xl transition-all shadow-md font-fredoka text-sm">
-          TUTUP SURAT
+          CLOSE LETTER
         </button>
       </div>
 
@@ -773,7 +773,7 @@ export function generatePlayfulPoohHtml(config: PublishedConfig): string {
       $('pooh-tongue').style.display = 'block';
 
       // Update Speech bubble
-      updateSpeech("Menguap... Oh, hallo! Aku Pooh Bear. Aku suka madu manis! 🍯");
+      updateSpeech("Yawn... Oh, hello! I'm Pooh Bear. I love sweet honey! 🍯");
 
       // Celebrate with sparkles
       createConfetti();
@@ -789,7 +789,7 @@ export function generatePlayfulPoohHtml(config: PublishedConfig): string {
         const trigger = $('letter-trigger-container');
         trigger.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
 
-        updateSpeech("Aku membawakan surat manis penuh madu dari " + CONFIG.fromName + " untukmu! Ketuk tombol di bawah untuk membacanya ya!");
+        updateSpeech("I brought a sweet honey-filled letter from " + CONFIG.fromName + " for you! Tap the button below to read it!");
       }, 1500);
 
       startBgm();
@@ -811,7 +811,7 @@ export function generatePlayfulPoohHtml(config: PublishedConfig): string {
       
       const avatar = $('pooh-avatar');
       avatar.classList.add('happy');
-      updateSpeech("Hehe, kepalaku hangat dielus-elus... Terima kasih teman baik! ❤️");
+      updateSpeech("Hehe, my head feels warm being patted... Thank you, good friend! ❤️");
 
       // Spawn floating hearts
       for (let i = 0; i < 4; i++) {
@@ -848,7 +848,7 @@ export function generatePlayfulPoohHtml(config: PublishedConfig): string {
       pot.style.top = '10px';
       pot.style.transform = 'scale(1.2)';
 
-      updateSpeech("Wah! Satu pot madu segar berlelehan! Nyam... 🍯");
+      updateSpeech("Oh! A pot of fresh dripping honey! Yum... 🍯");
 
       // Move pot to mouth
       setTimeout(() => {
@@ -861,7 +861,7 @@ export function generatePlayfulPoohHtml(config: PublishedConfig): string {
       setTimeout(() => {
         pot.style.opacity = '0';
         avatar.classList.add('happy');
-        updateSpeech("Slurpp... Manis sekali! Perut gendutku senang sekarang. Terima kasih! 🍯✨");
+        updateSpeech("Slurp... So sweet! My tummy is happy now. Thank you! 🍯✨");
       }, 1100);
 
       setTimeout(() => {
@@ -882,7 +882,7 @@ export function generatePlayfulPoohHtml(config: PublishedConfig): string {
       bee.style.left = '-20px';
       bee.style.top = '50px';
 
-      updateSpeech("Tengok... Ada lebah madu kecil berdengung! Bzzzz... 🐝");
+      updateSpeech("Look... A little honeybee is buzzing! Bzzzz... 🐝");
 
       // Bee buzzes around Pooh
       setTimeout(() => {
@@ -894,7 +894,7 @@ export function generatePlayfulPoohHtml(config: PublishedConfig): string {
         bee.style.left = '180px';
         bee.style.top = '90px';
         avatar.classList.add('happy');
-        updateSpeech("Bzzz... Lebahnya terbang mengelilingiku dengan ceria! Lucu sekali! 🐝🎉");
+        updateSpeech("Bzzz... The bee is buzzing around me happily! How cute! 🐝🎉");
       }, 1000);
 
       setTimeout(() => {

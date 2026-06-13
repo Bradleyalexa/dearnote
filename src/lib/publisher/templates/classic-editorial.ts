@@ -19,7 +19,7 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
   const bgMusicSrc = config.bgMusic?.src || "";
 
   return `<!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -280,7 +280,7 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
   ${
     hasBgMusic
       ? `
-  <button id="bgm-toggle-btn" onclick="toggleBgm()" class="fixed top-4 right-4 z-50 w-10 h-10 rounded-full bg-white/80 backdrop-blur-md border border-[#c5a880]/30 shadow-md flex items-center justify-center text-amber-900/70 hover:bg-white hover:text-amber-900 transition-all" title="Matikan Musik Latar">
+  <button id="bgm-toggle-btn" onclick="toggleBgm()" class="fixed top-4 right-4 z-50 w-10 h-10 rounded-full bg-white/80 backdrop-blur-md border border-[#c5a880]/30 shadow-md flex items-center justify-center text-amber-900/70 hover:bg-white hover:text-amber-900 transition-all" title="Mute Background Music">
     <span id="bgm-icon" class="text-sm">🎵</span>
   </button>
   <audio id="bgm-audio-element" src="${bgMusicSrc}" loop></audio>
@@ -297,8 +297,8 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
       <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-amber-50 text-amber-700 border border-amber-100 text-2xl mb-4 shadow-sm">
         🔒
       </div>
-      <h2 class="font-lora text-2xl font-semibold text-amber-950 mb-2">Masukkan Kode Akses</h2>
-      <p class="text-xs text-amber-800/70 font-medium">Ada sebuah catatan khusus untuk Anda. Silakan masukkan kode akses untuk membacanya.</p>
+      <h2 class="font-lora text-2xl font-semibold text-amber-950 mb-2">Enter Access Code</h2>
+      <p class="text-xs text-amber-800/70 font-medium">A special note awaits you. Please enter the access code to open it.</p>
     </div>
     
     <div class="space-y-4">
@@ -313,9 +313,9 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
         onclick="verifyCode()"
         class="w-full py-3 bg-gradient-to-r from-amber-700 to-amber-800 hover:from-amber-800 hover:to-amber-900 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all text-sm uppercase tracking-wider"
       >
-        Buka Catatan
+        Unlock Note
       </button>
-      <p id="code-error" class="text-xs text-red-650 opacity-0 transition-opacity font-semibold">Kode tidak cocok. Silakan coba kembali.</p>
+      <p id="code-error" class="text-xs text-red-650 opacity-0 transition-opacity font-semibold">Incorrect code. Please try again.</p>
     </div>
   </div>
   `
@@ -327,8 +327,8 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
     hasSecretCode ? "hidden" : ""
   } flex-col items-center justify-center z-10 transition-all duration-500 px-4">
     <div class="text-center mb-8">
-      <h3 class="font-lora text-2xl font-semibold text-amber-950 mb-1.5 break-words px-4">Spesial Untuk: ${config.toName}</h3>
-      <p class="text-[10px] text-amber-800/60 font-bold uppercase tracking-widest">Sebuah Catatan Kenangan</p>
+      <h3 class="font-lora text-2xl font-semibold text-amber-950 mb-1.5 break-words px-4">For: ${config.toName}</h3>
+      <p class="text-[10px] text-amber-800/60 font-bold uppercase tracking-widest">A Keepsake Note</p>
     </div>
     
     <div id="envelope" class="envelope-wrapper" onclick="openEnvelope()">
@@ -339,10 +339,10 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
       </div>
       <div class="envelope-card flex flex-col justify-between items-center text-center p-4">
         <div class="my-auto">
-          <span class="block text-[10px] text-amber-800/60 uppercase font-bold tracking-widest mb-1.5">Dari Pengirim</span>
+          <span class="block text-[10px] text-amber-800/60 uppercase font-bold tracking-widest mb-1.5">From</span>
           <span class="font-lora text-lg font-medium text-zinc-750 break-words w-full px-2 block leading-relaxed">${config.fromName}</span>
         </div>
-        <span class="text-[9px] uppercase font-bold tracking-widest text-amber-650/80 animate-pulse">Ketuk untuk Membuka</span>
+        <span class="text-[9px] uppercase font-bold tracking-widest text-amber-650/80 animate-pulse">Tap to Open</span>
       </div>
     </div>
   </div>
@@ -355,11 +355,11 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
       <h1 class="font-lora text-3xl sm:text-4xl font-semibold text-amber-950 tracking-tight mb-4">${letterTitle}</h1>
       <div class="flex flex-col gap-1.5 items-center justify-center text-[10px] font-bold text-amber-900/60 uppercase tracking-widest px-2">
         <div class="flex flex-wrap items-center justify-center gap-1">
-          <span class="text-amber-800/50 font-medium">Spesial Untuk:</span>
+          <span class="text-amber-800/50 font-medium">For:</span>
           <span class="text-amber-950 font-bold break-words max-w-[240px] sm:max-w-md">${config.toName}</span>
         </div>
         <div class="flex flex-wrap items-center justify-center gap-1">
-          <span class="text-amber-800/50 font-medium">Dikirim Oleh:</span>
+          <span class="text-amber-800/50 font-medium">From:</span>
           <span class="text-amber-950 font-bold break-words max-w-[240px] sm:max-w-md">${config.fromName}</span>
         </div>
       </div>
@@ -371,8 +371,8 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
     <!-- Photos Gallery -->
     <div id="gallery-container" class="hidden space-y-6 mb-8 transition-opacity duration-1000 opacity-0">
       <div class="text-center border-t border-amber-850/10 pt-8 pb-4">
-        <h3 class="font-lora text-xl font-semibold text-amber-950">Lampiran Foto Kenangan</h3>
-        <p class="text-[9px] text-amber-800/50 font-bold uppercase tracking-widest mt-1">Dokumentasi Momen Bersama</p>
+        <h3 class="font-lora text-xl font-semibold text-amber-950">Captured Memories</h3>
+        <p class="text-[9px] text-amber-800/50 font-bold uppercase tracking-widest mt-1">Our Story in Pictures</p>
       </div>
       <div id="photos-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
     </div>
@@ -383,7 +383,7 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
         ? `
     <div id="voice-section" class="hidden bg-[#fdfcf7] border border-[#d4af37]/35 rounded-2xl p-5 sm:p-6 mb-8 shadow-sm transition-opacity duration-1000 opacity-0">
       <h4 class="font-lora text-sm font-semibold text-amber-900/95 mb-4 text-center flex items-center justify-center gap-2">
-        <span class="text-amber-700">🎙️</span> Lampiran Pesan Suara
+        <span class="text-amber-700">🎙️</span> Voice Message
       </h4>
       <div class="flex flex-col sm:flex-row items-center gap-4">
         <!-- Custom Audio Player UI with Gold Accent -->
@@ -415,7 +415,7 @@ export function generateClassicEditorialHtml(config: PublishedConfig): string {
         ? `
     <div id="final-message-container" class="hidden text-center mt-10 pt-8 border-t border-amber-850/10 transition-opacity duration-1000 opacity-0">
       <p class="font-lora text-2xl italic text-amber-950 mb-2">"${config.finalMessage}"</p>
-      <p class="text-[9px] font-bold uppercase tracking-wider text-amber-800/50">Salam Hangat</p>
+      <p class="text-[9px] font-bold uppercase tracking-wider text-amber-800/50">Warmest Regards</p>
     </div>
     `
         : ""

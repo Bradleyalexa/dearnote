@@ -322,8 +322,10 @@ export default function CardBuilder() {
       </form>
 
       {/* Right Column: Live Visual Preview Mockup (1 col on desktop) */}
-      <div id="live-preview" className="lg:sticky lg:top-8 w-full flex justify-center scroll-mt-6">
-        <LivePreview draft={formValues} />
+      <div id="live-preview" className="self-stretch w-full flex justify-center scroll-mt-6">
+        <div className="lg:sticky lg:top-8 w-full flex justify-center h-fit">
+          <LivePreview draft={formValues} />
+        </div>
       </div>
     </div>
   );

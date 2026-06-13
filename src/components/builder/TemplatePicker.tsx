@@ -18,7 +18,7 @@ export const TEMPLATE_REGISTRY: {
   {
     id: "eternal_love",
     name: "Eternal Love Cinema ✨",
-    description: "Template couple paling premium — chapter sinematik, partikel kanvas, typewriter, galeri polaroid & kembang api finale.",
+    description: "Most premium couple template — cinematic chapters, canvas particles, typewriter, polaroid gallery & fireworks finale.",
     category: "romantic",
     accent: "linear-gradient(135deg, #2c1020, #c8936a)",
     tags: ["Couple", "Anniversary", "Flagship"],
@@ -26,108 +26,124 @@ export const TEMPLATE_REGISTRY: {
   {
     id: "classic_editorial",
     name: "Classic Editorial",
-    description: "Tipografi serif elegan, kertas krem hangat, partikel debu halus.",
+    description: "Elegant serif typography, warm cream paper, subtle dust particles.",
     category: "minimal",
     accent: "linear-gradient(135deg, #F5F0E8, #DDD3C0)",
-    tags: ["Perpisahan", "Terima Kasih", "Keluarga"],
+    tags: ["Farewell", "Thank You", "Family"],
   },
   {
     id: "nocturnal_journal",
     name: "Nocturnal Journal",
-    description: "Langit malam berbintang, gelap, tenang, dan minimalis.",
+    description: "Starry night sky, dark, quiet, and minimalist.",
     category: "minimal",
     accent: "linear-gradient(135deg, #1A1A2E, #16213E)",
-    tags: ["Keluarga", "Perpisahan", "Kenangan"],
+    tags: ["Family", "Farewell", "Memories"],
   },
   {
     id: "apology_letter",
     name: "Apology Letter",
-    description: "Amplop tersegel lilin, surat tulus tulis tangan — menyentuh.",
+    description: "Wax-sealed envelope, heartfelt handwritten letter — touching.",
     category: "minimal",
     accent: "linear-gradient(135deg, #E8E0D8, #CFC4B8)",
-    tags: ["Permintaan Maaf"],
+    tags: ["Apology"],
   },
   {
     id: "scrapbook",
-    name: "Scrapbook Vintage",
-    description: "Sampul coklat tua, polaroid drag, nuansa nostalgia.",
+    name: "Vintage Scrapbook",
+    description: "Dark brown cover, draggable polaroids, nostalgic feel.",
     category: "romantic",
     accent: "linear-gradient(135deg, #BF8A60, #8C6040)",
-    tags: ["Couple", "Persahabatan"],
+    tags: ["Couple", "Friendship"],
   },
   {
     id: "pink_book_folds",
     name: "Pink Book Folds",
-    description: "Binder pastel pink imut, animasi halaman 3D, kaset rekaman.",
+    description: "Cute pastel pink binder, 3D page animations, cassette tape.",
     category: "romantic",
     accent: "linear-gradient(135deg, #FFCCE0, #FFB3D1)",
-    tags: ["Couple", "Ulang Tahun"],
+    tags: ["Couple", "Birthday"],
   },
   {
     id: "open_when_cards",
     name: "Open When Cards",
-    description: "Kumpulan amplop interaktif flip-card untuk aneka momen.",
+    description: "Collection of interactive envelope flip-cards for various moments.",
     category: "interaktif",
     accent: "linear-gradient(135deg, #FAF6F0, #DDD0BC)",
-    tags: ["LDR", "Persahabatan", "Ulang Tahun"],
+    tags: ["LDR", "Friendship", "Birthday"],
   },
   {
     id: "gift_box_reveal",
     name: "Gift Box Reveal",
-    description: "Kotak hadiah 3D, tarik pita, confetti perayaan!",
+    description: "3D gift box, pull ribbon, celebratory confetti!",
     category: "interaktif",
     accent: "linear-gradient(135deg, #FF9A9E, #FF6B6B)",
-    tags: ["Ulang Tahun", "Wisuda", "Anniversary"],
+    tags: ["Birthday", "Graduation", "Anniversary"],
   },
   {
     id: "playful_gift",
     name: "Playful Cute Gift",
-    description: "Kotak kado pink pastel imut, balon & gelembung ceria.",
+    description: "Cute pastel pink gift box, cheerful balloons & bubbles.",
     category: "playful",
     accent: "linear-gradient(135deg, #FFE5EC, #F0E6FF)",
-    tags: ["Ulang Tahun", "Couple"],
+    tags: ["Birthday", "Couple"],
   },
   {
     id: "playful_dog",
     name: "Playful Shiba Dog 🐾",
-    description: "Shiba Inu interaktif! Ketuk bangun, beri tulang, main bola.",
+    description: "Interactive Shiba Inu! Tap to wake up, feed bones, play ball.",
     category: "playful",
     accent: "linear-gradient(135deg, #FFF9E6, #FFE4CC)",
-    tags: ["Couple", "Persahabatan", "Ulang Tahun"],
+    tags: ["Couple", "Friendship", "Birthday"],
   },
   {
     id: "playful_pooh",
     name: "Playful Pooh Bear 🍯",
-    description: "Pooh tidur, bangun, makan madu, main lebah — super imut!",
+    description: "Sleeping Pooh, wake up, eat honey, play with bees — super cute!",
     category: "playful",
     accent: "linear-gradient(135deg, #FFFDE6, #FFCB4C33)",
-    tags: ["Couple", "Persahabatan", "Ulang Tahun"],
+    tags: ["Couple", "Friendship", "Birthday"],
+  },
+  {
+    id: "birthday_magic",
+    name: "Birthday Magic 🎂",
+    description: "Ultimate flagship birthday template! Pop rising balloons, blow out interactive cake candles, swipe 3D memories, and trigger fireworks!",
+    category: "playful",
+    accent: "linear-gradient(135deg, #FF99C8, #FCF6BD, #D0F4DE, #A9DEF9, #E4C1F9)",
+    tags: ["Birthday", "Anniversary", "Flagship"],
+  },
+  {
+    id: "blooming_note",
+    name: "Blooming Note 🌸",
+    description: "Heartwarming floral surprise flagship. Tap the wax-sealed envelope to watch procedurally growing vines and blooming wildflowers fill the screen, transitioning into an elegant glassmorphic letter.",
+    category: "playful",
+    accent: "linear-gradient(135deg, #FFB7B2, #E8C7EA, #B5EAD7)",
+    tags: ["Anniversary", "Birthday", "Flagship"],
   },
 ];
 
 type Category = "semua" | "minimal" | "romantic" | "playful" | "interaktif";
 
 const CATEGORY_LABELS: Record<Category, string> = {
-  semua: "Semua",
+  semua: "All",
   minimal: "Minimal",
-  romantic: "Romantis",
+  romantic: "Romantic",
   playful: "Playful",
-  interaktif: "Interaktif",
+  interaktif: "Interactive",
 };
 
 /* ── A minimal dummy CardDraft for preview generation ── */
 function makeDummyDraft(templateId: TemplateType) {
   return {
     template: templateId,
-    fromName: "Kamu",
-    toName: "Dia",
+    fromName: "Me",
+    toName: "You",
     secretCode: "",
-    letterTitle: "Sebuah Pesan Untukmu",
-    letterBody: "Halo! Ini adalah preview desain. Isi surat yang sesungguhnya akan muncul di sini setelah kamu mengisi formnya.",
+    letterTitle: "A Message for You",
+    letterBody: "Hello! This is a design preview. The actual letter content will appear here after you fill out the form.",
     photos: [],
     voiceNote: undefined,
     bgMusic: undefined,
-    finalMessage: "Dengan sepenuh hati 💖",
+    finalMessage: "With all my love 💖",
   };
 }
 
@@ -233,7 +249,7 @@ export default function TemplatePicker({ value, onChange }: TemplatePickerProps)
           />
           <div className="text-left">
             <p className="text-sm font-semibold text-zinc-800 leading-tight">
-              {currentTemplate?.name ?? "Pilih Desain"}
+              {currentTemplate?.name ?? "Select Design"}
             </p>
             <p className="text-[10px] text-zinc-400 leading-tight mt-0.5">
               {currentTemplate?.description.slice(0, 55)}…
@@ -241,7 +257,7 @@ export default function TemplatePicker({ value, onChange }: TemplatePickerProps)
           </div>
         </div>
         <span className="text-zinc-400 group-hover:text-zinc-700 transition-colors ml-2 text-xs font-semibold flex items-center gap-1">
-          Ganti
+          Change
           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
           </svg>
@@ -264,8 +280,8 @@ export default function TemplatePicker({ value, onChange }: TemplatePickerProps)
             {/* Header */}
             <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-zinc-100 flex-shrink-0">
               <div>
-                <h2 className="text-lg font-bold text-zinc-800 font-serif">Pilih Desain Catatan</h2>
-                <p className="text-xs text-zinc-400 mt-0.5">Klik desain untuk melihat preview langsung</p>
+                <h2 className="text-lg font-bold text-zinc-800 font-serif">Choose Note Design</h2>
+                <p className="text-xs text-zinc-400 mt-0.5">Click a design for a live preview</p>
               </div>
               <button
                 type="button"
@@ -356,7 +372,7 @@ export default function TemplatePicker({ value, onChange }: TemplatePickerProps)
                 {previewLoading ? (
                   <div className="flex flex-col items-center gap-3">
                     <div className="w-8 h-8 border-2 border-zinc-300 border-t-zinc-700 rounded-full animate-spin" />
-                    <p className="text-xs text-zinc-400">Memuat preview…</p>
+                    <p className="text-xs text-zinc-400">Loading preview…</p>
                   </div>
                 ) : (
                   <div className="relative flex flex-row items-center justify-center gap-6 w-full h-full max-h-[62vh] lg:max-h-[70vh] min-h-0 px-6">
@@ -378,7 +394,7 @@ export default function TemplatePicker({ value, onChange }: TemplatePickerProps)
                         return tmpl ? (
                           <>
                             <span className="text-[9px] font-bold uppercase tracking-wider text-zinc-400">
-                              Detail Desain
+                              Design Details
                             </span>
                             <h3 className="text-base font-extrabold text-zinc-850 text-[#18181b] mt-1 leading-tight font-serif">
                               {tmpl.name}
@@ -392,7 +408,7 @@ export default function TemplatePicker({ value, onChange }: TemplatePickerProps)
                             <div className="flex items-center gap-2 mt-4 pt-4 border-t border-zinc-100">
                               <div className="w-3.5 h-3.5 rounded-full shadow-sm" style={{ background: tmpl.accent }} />
                               <span className="text-[9px] text-zinc-400 font-bold uppercase tracking-wider">
-                                Tema Warna
+                                Color Theme
                               </span>
                             </div>
                           </>
@@ -408,7 +424,7 @@ export default function TemplatePicker({ value, onChange }: TemplatePickerProps)
             {/* Footer action */}
             <div className="flex items-center justify-between px-6 py-4 border-t border-zinc-100 flex-shrink-0 gap-3">
               <p className="text-xs text-zinc-400 hidden sm:block">
-                {highlighted !== value ? `Akan menggunakan: ${TEMPLATE_REGISTRY.find((t) => t.id === highlighted)?.name}` : "Desain saat ini sudah dipilih"}
+                {highlighted !== value ? `Will use: ${TEMPLATE_REGISTRY.find((t) => t.id === highlighted)?.name}` : "This design is currently selected"}
               </p>
               <div className="flex gap-2 ml-auto">
                 <button
@@ -416,14 +432,14 @@ export default function TemplatePicker({ value, onChange }: TemplatePickerProps)
                   onClick={handleClose}
                   className="px-4 py-2.5 text-sm font-semibold text-zinc-600 bg-zinc-100 hover:bg-zinc-200 rounded-xl transition-all"
                 >
-                  Batal
+                  Cancel
                 </button>
                 <button
                   type="button"
                   onClick={handleConfirm}
                   className="px-5 py-2.5 text-sm font-semibold text-white bg-zinc-800 hover:bg-zinc-900 rounded-xl transition-all shadow-sm"
                 >
-                  Pilih Desain Ini
+                  Select This Design
                 </button>
               </div>
             </div>

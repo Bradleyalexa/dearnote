@@ -2,7 +2,7 @@ import { PublishedConfig } from "../../schemas/card-draft";
 
 export function generatePlayfulDogHtml(config: PublishedConfig): string {
   const hasSecretCode = !!config.secretCode;
-  const letterTitle = config.letterTitle || "Pesan Spesial Untukmu!";
+  const letterTitle = config.letterTitle || "A Special Message for You!";
   const escapedLetterBody = JSON.stringify(config.letterBody);
   const photosJson = JSON.stringify(config.photos);
   const hasVoiceNote = !!config.voiceNote;
@@ -11,7 +11,7 @@ export function generatePlayfulDogHtml(config: PublishedConfig): string {
   const bgMusicSrc = config.bgMusic?.src || "";
 
   return `<!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -507,20 +507,20 @@ export function generatePlayfulDogHtml(config: PublishedConfig): string {
       <div class="absolute bottom-2 right-2 text-[#FFE3D1] opacity-40 text-xl">🐾</div>
       
       <p class="text-xs font-bold uppercase tracking-widest text-[#C47936] mb-2 font-fredoka">DearNote • Playful Dog</p>
-      <h1 class="text-2xl font-bold font-fredoka text-[#4A3E3D] mb-4">Ada anjing lucu membawa surat!</h1>
+      <h1 class="text-2xl font-bold font-fredoka text-[#4A3E3D] mb-4">A cute puppy brought a letter!</h1>
       <p class="text-xs text-[#8A7978] leading-relaxed mb-6 font-quicksand">
-        Surat dari <strong>${config.fromName}</strong> dilindungi kode akses. Masukkan kode untuk membukanya.
+        The letter from <strong>${config.fromName}</strong> is locked with an access code. Enter it to open.
       </p>
       
       <div class="space-y-4">
-        <input id="code-input" type="text" placeholder="Masukkan kode" maxlength="12"
+        <input id="code-input" type="text" placeholder="Enter code" maxlength="12"
           class="w-full px-4 py-3 bg-[#FFFBF7] border-2 border-[#FCD3B6] rounded-2xl text-center font-fredoka tracking-widest text-[#4A3E3D] focus:outline-none focus:border-[#E89E58]"
           onkeydown="if(event.key==='Enter')verifyCode()">
         <button id="code-btn" onclick="verifyCode()"
           class="w-full py-3 bg-[#E89E58] hover:bg-[#C47936] text-white font-bold rounded-2xl transition-all shadow-md font-fredoka">
-          BUKA SURAT
+          OPEN LETTER
         </button>
-        <p id="code-err" class="text-xs text-red-500 font-bold opacity-0 transition-opacity duration-300">Kode salah! Coba lagi.</p>
+        <p id="code-err" class="text-xs text-red-500 font-bold opacity-0 transition-opacity duration-300">Incorrect code! Try again.</p>
       </div>
     </div>
   </div>
@@ -531,12 +531,12 @@ export function generatePlayfulDogHtml(config: PublishedConfig): string {
     
     <div class="text-center mb-6">
       <h2 class="text-[#C47936] text-xs font-bold uppercase tracking-widest font-fredoka mb-1">Interactive Keepsake</h2>
-      <h1 class="text-3xl font-bold font-fredoka text-[#4A3E3D] leading-tight">Temui Shiba Lucu! 🐾</h1>
+      <h1 class="text-3xl font-bold font-fredoka text-[#4A3E3D] leading-tight">Meet the Cute Shiba! 🐾</h1>
     </div>
 
     <!-- Speech bubble for interaction logs -->
     <div id="speech-bubble" class="speech-bubble show font-quicksand font-bold text-center text-sm">
-      Zzz... (Anjing sedang tidur nyenyak. Coba ketuk untuk membangunkannya!)
+      Zzz... (The puppy is fast asleep. Try tapping to wake him up!)
     </div>
 
     <!-- Dog Canvas container -->
@@ -583,13 +583,13 @@ export function generatePlayfulDogHtml(config: PublishedConfig): string {
     <!-- Interactive buttons panel (revealed when awake) -->
     <div id="toys-panel" class="w-full max-w-sm grid grid-cols-3 gap-3 opacity-35 pointer-events-none transition-all duration-500">
       <button onclick="petDog(event)" class="py-2.5 bg-white border-2 border-[#FCD3B6] hover:bg-[#FFF5EE] rounded-2xl flex flex-col items-center justify-center text-xs font-fredoka text-[#C47936] shadow-sm active:scale-95 transition-all">
-        <span class="text-xl mb-1">👋</span> Elus Kepala
+        <span class="text-xl mb-1">👋</span> Pet Head
       </button>
       <button onclick="feedBone()" class="py-2.5 bg-white border-2 border-[#FCD3B6] hover:bg-[#FFF5EE] rounded-2xl flex flex-col items-center justify-center text-xs font-fredoka text-[#C47936] shadow-sm active:scale-95 transition-all">
-        <span class="text-xl mb-1">🦴</span> Beri Tulang
+        <span class="text-xl mb-1">🦴</span> Give Bone
       </button>
       <button onclick="playBall()" class="py-2.5 bg-white border-2 border-[#FCD3B6] hover:bg-[#FFF5EE] rounded-2xl flex flex-col items-center justify-center text-xs font-fredoka text-[#C47936] shadow-sm active:scale-95 transition-all">
-        <span class="text-xl mb-1">🎾</span> Main Bola
+        <span class="text-xl mb-1">🎾</span> Play Ball
       </button>
     </div>
 
@@ -597,7 +597,7 @@ export function generatePlayfulDogHtml(config: PublishedConfig): string {
     <div id="letter-trigger-container" class="mt-8 opacity-0 pointer-events-none transition-all duration-700 transform translate-y-4">
       <button onclick="openLetterSheet()"
         class="px-8 py-4 bg-[#E89E58] hover:bg-[#C47936] text-white font-bold rounded-2xl shadow-lg hover:shadow-xl font-fredoka text-sm tracking-wider animate-bounce flex items-center gap-2">
-        <span>💌</span> BACA SURAT DARI ${config.fromName.toUpperCase()}
+        <span>💌</span> READ LETTER FROM ${config.fromName.toUpperCase()}
       </button>
     </div>
 
@@ -619,7 +619,7 @@ export function generatePlayfulDogHtml(config: PublishedConfig): string {
         <div class="text-center pb-4 border-b-2 border-dashed border-[#F0E6DD]">
           <h2 class="text-xs font-fredoka text-[#C47936] uppercase tracking-widest mb-1">DearNote Letter</h2>
           <h1 class="text-2xl font-bold font-fredoka text-[#4A3E3D]">${letterTitle}</h1>
-          <p class="text-xs text-[#8A7978] mt-1 font-quicksand">Untuk: <span class="font-bold text-[#E89E58]">${config.toName}</span></p>
+          <p class="text-xs text-[#8A7978] mt-1 font-quicksand">For: <span class="font-bold text-[#E89E58]">${config.toName}</span></p>
         </div>
 
         <!-- Handwritten body -->
@@ -634,7 +634,7 @@ export function generatePlayfulDogHtml(config: PublishedConfig): string {
             <span id="play-icon">▶</span>
           </button>
           <div class="flex-1 min-w-0">
-            <p class="text-[10px] uppercase font-bold tracking-widest text-[#C47936] font-fredoka mb-1">Pesan Suara</p>
+            <p class="text-[10px] uppercase font-bold tracking-widest text-[#C47936] font-fredoka mb-1">Voice Message</p>
             <div id="mini-track" onclick="seekAudio(event)" class="w-full h-2 bg-[#FCD3B6] rounded-full cursor-pointer relative">
               <div id="audio-bar" class="absolute left-0 top-0 bottom-0 w-0 bg-[#E89E58] rounded-full transition-all duration-100 ease-linear"></div>
             </div>
@@ -647,12 +647,12 @@ export function generatePlayfulDogHtml(config: PublishedConfig): string {
         <!-- Image Gallery (if present) -->
         ${config.photos && config.photos.length > 0 ? `
         <div class="space-y-6">
-          <p class="text-xs font-bold uppercase tracking-widest text-[#C47936] font-fredoka text-center">🐾 Galeri Kenangan 🐾</p>
+          <p class="text-xs font-bold uppercase tracking-widest text-[#C47936] font-fredoka text-center">🐾 Captured Memories 🐾</p>
           <div class="grid grid-cols-1 gap-6">
             ${config.photos.map((p, idx) => `
               <div class="dog-photo-frame">
                 <div class="w-full aspect-[4/3] rounded-xl overflow-hidden bg-zinc-100">
-                  <img src="${p.src}" alt="${p.caption || 'Foto'}" class="w-full h-full object-cover" loading="lazy">
+                  <img src="${p.src}" alt="${p.caption || 'Photo'}" class="w-full h-full object-cover" loading="lazy">
                 </div>
                 ${p.caption ? `
                   <p class="text-center font-script text-lg text-[#4A3E3D] mt-3 px-2">${p.caption}</p>
@@ -667,11 +667,11 @@ export function generatePlayfulDogHtml(config: PublishedConfig): string {
         ${config.finalMessage ? `
         <div class="text-center py-6 border-t-2 border-dashed border-[#F0E6DD]">
           <p class="font-script text-2xl text-[#E89E58] italic">"${config.finalMessage}"</p>
-          <p class="text-xs font-bold uppercase tracking-widest text-[#8A7978] font-fredoka mt-2">— Dari ${config.fromName}</p>
+          <p class="text-xs font-bold uppercase tracking-widest text-[#8A7978] font-fredoka mt-2">— From ${config.fromName}</p>
         </div>
         ` : `
         <div class="text-center py-4 border-t-2 border-dashed border-[#F0E6DD]">
-          <p class="text-xs font-bold uppercase tracking-widest text-[#8A7978] font-fredoka">— Salam manis, ${config.fromName} 🐾</p>
+          <p class="text-xs font-bold uppercase tracking-widest text-[#8A7978] font-fredoka">— With love, ${config.fromName} 🐾</p>
         </div>
         `}
 
@@ -681,7 +681,7 @@ export function generatePlayfulDogHtml(config: PublishedConfig): string {
       <div class="p-4 bg-white border-t border-[#F0E6DD]">
         <button onclick="closeLetterSheet()"
           class="w-full py-3 bg-[#E89E58] hover:bg-[#C47936] text-white font-bold rounded-2xl transition-all shadow-md font-fredoka text-sm">
-          TUTUP SURAT
+          CLOSE LETTER
         </button>
       </div>
 
@@ -777,7 +777,7 @@ export function generatePlayfulDogHtml(config: PublishedConfig): string {
       $('dog-tongue').style.display = 'block';
 
       // Update Speech bubble
-      updateSpeech("Woof! Guk! Halo! Aku Shiba. Senang sekali bertemu kamu! 🐾");
+      updateSpeech("Woof! Hello! I'm Shiba. So happy to meet you! 🐾");
 
       // Celebrate with sparkles
       createConfetti();
@@ -793,7 +793,7 @@ export function generatePlayfulDogHtml(config: PublishedConfig): string {
         const trigger = $('letter-trigger-container');
         trigger.classList.remove('opacity-0', 'pointer-events-none', 'translate-y-4');
 
-        updateSpeech("Aku membawakan surat rahasia dari " + CONFIG.fromName + " untukmu! Ketuk tombol di bawah untuk membacanya ya!");
+        updateSpeech("I brought a secret letter from " + CONFIG.fromName + " for you! Tap the button below to read it!");
       }, 1500);
 
       startBgm();
@@ -815,7 +815,7 @@ export function generatePlayfulDogHtml(config: PublishedConfig): string {
       
       const avatar = $('dog-avatar');
       avatar.classList.add('happy');
-      updateSpeech("Hehe, geli! Enak sekali dielus-elus... Woof! ❤️");
+      updateSpeech("Hehe, that tickles! Thank you for the pets... Woof! ❤️");
 
       // Spawn floating hearts
       for (let i = 0; i < 4; i++) {
@@ -852,7 +852,7 @@ export function generatePlayfulDogHtml(config: PublishedConfig): string {
       bone.style.top = '0px';
       bone.style.transform = 'scale(1.2)';
 
-      updateSpeech("Nyam! Ada tulang lezat! Nyam nyam... 🦴");
+      updateSpeech("Nom! A delicious bone! Chomp chomp... 🦴");
 
       // Move bone to mouth
       setTimeout(() => {
@@ -865,7 +865,7 @@ export function generatePlayfulDogHtml(config: PublishedConfig): string {
       setTimeout(() => {
         bone.style.opacity = '0';
         avatar.classList.add('happy');
-        updateSpeech("Yummy! Terima kasih banyak! Aku kenyang sekali sekarang. Guk! 🐾");
+        updateSpeech("Yummy! Thank you so much! I'm so full now. Woof! 🐾");
       }, 1000);
 
       setTimeout(() => {
@@ -886,7 +886,7 @@ export function generatePlayfulDogHtml(config: PublishedConfig): string {
       ball.style.left = '-20px';
       ball.style.top = '60px';
 
-      updateSpeech("Wah, bola tenis kuning kesukaanku! Lempar dong! 🎾");
+      updateSpeech("Oh, my favorite yellow tennis ball! Throw it! 🎾");
 
       // Make ball bounce
       setTimeout(() => {
@@ -898,7 +898,7 @@ export function generatePlayfulDogHtml(config: PublishedConfig): string {
         ball.style.left = '200px';
         ball.style.top = '100px';
         avatar.classList.add('happy');
-        updateSpeech("Hore! Kena! Aku berhasil menangkap bolanya! Guk guk! 🎉");
+        updateSpeech("Hooray! Caught it! I got the ball! Woof woof! 🎉");
       }, 1000);
 
       setTimeout(() => {

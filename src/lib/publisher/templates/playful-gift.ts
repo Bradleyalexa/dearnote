@@ -2,7 +2,7 @@ import { PublishedConfig } from "../../schemas/card-draft";
 
 export function generatePlayfulGiftHtml(config: PublishedConfig): string {
   const hasSecretCode = !!config.secretCode;
-  const letterTitle = config.letterTitle || "Kejutan Manis Untukmu!";
+  const letterTitle = config.letterTitle || "A Sweet Surprise for You!";
   const escapedLetterBody = JSON.stringify(config.letterBody);
   const photosJson = JSON.stringify(config.photos);
   const hasVoiceNote = !!config.voiceNote;
@@ -11,7 +11,7 @@ export function generatePlayfulGiftHtml(config: PublishedConfig): string {
   const bgMusicSrc = config.bgMusic?.src || "";
 
   return `<!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -262,15 +262,15 @@ export function generatePlayfulGiftHtml(config: PublishedConfig): string {
       <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#FFE5EC] text-[#FF6B8B] text-2xl mb-4 border-2 border-white shadow-md animate-bounce">
         🎈
       </div>
-      <h2 class="font-fredoka text-2xl font-bold text-[#FF6B8B] mb-2 tracking-wide">Intip Kado Yuk!</h2>
-      <p class="text-xs text-[#8A7799] font-medium px-2">Masukkan kode akses rahasia untuk membuka kado spesial dariku.</p>
+      <h2 class="font-fredoka text-2xl font-bold text-[#FF6B8B] mb-2 tracking-wide">Unbox Your Gift!</h2>
+      <p class="text-xs text-[#8A7799] font-medium px-2">Enter the secret access code to open your special gift.</p>
     </div>
 
     <div class="space-y-4">
       <input
         type="text"
         id="secret-code-input"
-        placeholder="KODE AKSES"
+        placeholder="ACCESS CODE"
         maxlength="12"
         class="w-full px-4 py-3 rounded-2xl border-2 border-[#FFCCD5] bg-[#FFF0F3] text-center font-fredoka font-bold text-[#FF6B8B] focus:outline-none focus:ring-4 focus:ring-[#FF85A2]/30 uppercase tracking-widest text-sm transition-all shadow-inner"
       >
@@ -278,9 +278,9 @@ export function generatePlayfulGiftHtml(config: PublishedConfig): string {
         onclick="verifyCode()"
         class="w-full py-3.5 bg-gradient-to-r from-[#FF85A2] to-[#FF6B8B] hover:scale-[1.02] active:scale-[0.98] text-white font-fredoka font-bold rounded-2xl shadow-lg transition-all text-sm uppercase tracking-wider border-b-4 border-[#D94E6C]"
       >
-        Buka Sekarang 🎉
+        Open Now 🎉
       </button>
-      <p id="code-error" class="text-xs text-red-500 opacity-0 transition-opacity font-bold">Kodenya salah, dicoba lagi yuk! 💕</p>
+      <p id="code-error" class="text-xs text-red-500 opacity-0 transition-opacity font-bold">Incorrect code, please try again! 💕</p>
     </div>
   </div>
   ` : ""}
@@ -288,9 +288,9 @@ export function generatePlayfulGiftHtml(config: PublishedConfig): string {
   <!-- Gift Box Opening Screen -->
   <div id="gift-box-section" class="${hasSecretCode ? 'hidden' : 'flex'} flex-col items-center justify-center z-10 my-auto transition-all duration-1000 w-full">
     <div class="text-center mb-8">
-      <h3 class="font-script text-4xl text-[#FF6B8B] mb-1 font-bold">Ada Kado Lucu Buat:</h3>
+      <h3 class="font-script text-4xl text-[#FF6B8B] mb-1 font-bold">A special gift for:</h3>
       <h2 class="font-fredoka text-3xl font-bold text-[#3D2C47] tracking-wide mt-1">${config.toName} 💖</h2>
-      <p class="text-[10px] text-[#FF85A2] font-bold uppercase tracking-widest mt-2 bg-white/70 px-4 py-1.5 rounded-full border border-[#FFCCD5]/50 shadow-sm animate-pulse">Tap kado untuk membukanya!</p>
+      <p class="text-[10px] text-[#FF85A2] font-bold uppercase tracking-widest mt-2 bg-white/70 px-4 py-1.5 rounded-full border border-[#FFCCD5]/50 shadow-sm animate-pulse">Tap the gift to open it!</p>
     </div>
 
     <!-- 2.5D Interactive Cute Gift Box -->
@@ -319,7 +319,7 @@ export function generatePlayfulGiftHtml(config: PublishedConfig): string {
     </div>
 
     <button onclick="openGiftBox()" class="mt-10 px-6 py-3 bg-white hover:bg-[#FFF0F3] border-2 border-[#FFCCD5] rounded-full text-xs font-fredoka font-bold uppercase tracking-widest text-[#FF6B8B] transition-all flex items-center gap-2 shadow-md hover:scale-105 active:scale-95">
-      <span>🎈</span> Klik Untuk Buka Kado!
+      <span>🎈</span> Click to Open Gift!
     </button>
   </div>
 
@@ -329,7 +329,7 @@ export function generatePlayfulGiftHtml(config: PublishedConfig): string {
     <!-- Header of the Card -->
     <div class="text-center border-b-2 border-dashed border-[#FFCCD5] pb-6 mb-8 relative">
       <div class="inline-block px-4 py-1.5 bg-[#FFF0F3] border border-[#FFCCD5] rounded-full mb-3 shadow-sm">
-        <p class="text-xs font-fredoka font-bold text-[#FF6B8B] uppercase tracking-wider">Dari: ${config.fromName} ✨</p>
+        <p class="text-xs font-fredoka font-bold text-[#FF6B8B] uppercase tracking-wider">From: ${config.fromName} ✨</p>
       </div>
       <h1 class="font-fredoka text-3xl sm:text-4xl font-bold text-[#3D2C47] tracking-tight leading-tight mt-1">${letterTitle}</h1>
     </div>
@@ -340,7 +340,7 @@ export function generatePlayfulGiftHtml(config: PublishedConfig): string {
     <!-- Polaroid Gallery with Sticker Decorations -->
     <div id="gallery-container" class="hidden space-y-6 mb-8 opacity-0">
       <div class="text-center pt-2 pb-4">
-        <h3 class="font-fredoka text-2xl font-bold text-[#FF6B8B] tracking-wide">Galeri Foto Ceria</h3>
+        <h3 class="font-fredoka text-2xl font-bold text-[#FF6B8B] tracking-wide">Memory Gallery</h3>
         <p class="text-[10px] text-[#8A7799] font-bold uppercase tracking-widest mt-0.5">📸 Sweet Memories Together</p>
       </div>
       <div id="photos-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-6"></div>
@@ -352,7 +352,7 @@ export function generatePlayfulGiftHtml(config: PublishedConfig): string {
       <!-- Decorative Cute Cassette Sticker -->
       <div class="absolute -right-2 -bottom-2 text-5xl opacity-10 select-none">📼</div>
       <h4 class="font-fredoka text-sm font-bold text-[#FF6B8B] mb-4 text-center flex items-center justify-center gap-2">
-        <span>🎙️</span> Dengerin Suaraku Yuk!
+        <span>🎙️</span> Voice Message
       </h4>
       <div class="flex flex-col sm:flex-row items-center gap-4 relative z-10">
         <button id="play-btn" onclick="toggleAudio()" class="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#FF85A2] to-[#FF6B8B] hover:scale-105 active:scale-95 text-white flex items-center justify-center shadow-md transition-all border-b-4 border-[#D94E6C]">
@@ -645,7 +645,7 @@ export function generatePlayfulGiftHtml(config: PublishedConfig): string {
 
           const img = document.createElement('img');
           img.src = photo.src;
-          img.alt = photo.caption || 'Foto Kenangan';
+          img.alt = photo.caption || 'Memories';
           img.className = 'w-full aspect-[4/3] object-cover rounded-2xl';
 
           item.appendChild(img);

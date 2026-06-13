@@ -11,7 +11,7 @@ export function generateGiftBoxRevealHtml(config: PublishedConfig): string {
   const bgMusicSrc = config.bgMusic?.src || "";
 
   return `<!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -284,15 +284,15 @@ export function generateGiftBoxRevealHtml(config: PublishedConfig): string {
       <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 text-2xl mb-4 shadow-lg">
         🎁
       </div>
-      <h2 class="font-serif text-2xl font-bold text-zinc-900 mb-2 tracking-wide">Masukkan Kode Rahasia</h2>
-      <p class="text-xs text-zinc-500 font-medium">Kotak kado dikunci dengan sandi khusus. Masukkan kode untuk membukanya.</p>
+      <h2 class="font-serif text-2xl font-bold text-zinc-900 mb-2 tracking-wide">Enter Secret Code</h2>
+      <p class="text-xs text-zinc-500 font-medium">This gift box is locked with a special code. Enter it to open.</p>
     </div>
 
     <div class="space-y-4">
       <input
         type="text"
         id="secret-code-input"
-        placeholder="KODE AKSES"
+        placeholder="ACCESS CODE"
         maxlength="12"
         class="w-full px-4 py-3 rounded-xl border border-zinc-200 bg-zinc-50 text-center font-bold text-zinc-900 focus:outline-none focus:ring-2 focus:ring-yellow-500 uppercase tracking-widest text-sm transition-all shadow-inner"
       >
@@ -300,9 +300,9 @@ export function generateGiftBoxRevealHtml(config: PublishedConfig): string {
         onclick="verifyCode()"
         class="w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-600 hover:to-yellow-700 text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all text-sm uppercase tracking-wider border border-yellow-500/20"
       >
-        Buka Hadiah
+        Unlock Gift
       </button>
-      <p id="code-error" class="text-xs text-red-500 opacity-0 transition-opacity font-semibold">Kode salah. Silakan coba lagi.</p>
+      <p id="code-error" class="text-xs text-red-500 opacity-0 transition-opacity font-semibold">Incorrect code. Please try again.</p>
     </div>
   </div>
   ` : ""}
@@ -310,9 +310,9 @@ export function generateGiftBoxRevealHtml(config: PublishedConfig): string {
   <!-- Gift Box Opening Screen -->
   <div id="gift-box-section" class="${hasSecretCode ? 'hidden' : 'flex'} flex-col items-center justify-center z-10 my-auto transition-all duration-1000 w-full">
     <div class="text-center mb-8">
-      <h3 class="font-script text-4xl text-yellow-300 mb-1 drop-shadow-md">Spesial Untukmu:</h3>
+      <h3 class="font-script text-4xl text-yellow-300 mb-1 drop-shadow-md">Especially for You:</h3>
       <h2 class="font-serif text-2xl sm:text-3xl font-semibold text-white tracking-wide">${config.toName}</h2>
-      <p class="text-[10px] text-yellow-500/60 font-bold uppercase tracking-widest mt-1">Sentuh kado untuk membuka isi pesan</p>
+      <p class="text-[10px] text-yellow-500/60 font-bold uppercase tracking-widest mt-1">Touch the gift to open your message</p>
     </div>
 
     <!-- 2.5D Interactive Gift Box -->
@@ -341,7 +341,7 @@ export function generateGiftBoxRevealHtml(config: PublishedConfig): string {
     </div>
 
     <button onclick="openGiftBox()" class="mt-10 px-6 py-2.5 bg-white/10 hover:bg-white/20 border border-yellow-500/30 rounded-full text-xs font-semibold uppercase tracking-widest text-yellow-300 transition-all flex items-center gap-2 shadow-lg animate-pulse">
-      <span>🎁</span> Buka Kotak Kenangan
+      <span>🎁</span> Open Keepsake Box
     </button>
   </div>
 
@@ -351,7 +351,7 @@ export function generateGiftBoxRevealHtml(config: PublishedConfig): string {
     <!-- Header of the Card -->
     <div class="text-center border-b border-zinc-200 pb-6 mb-8 relative">
       <div class="inline-block px-4 py-1.5 bg-yellow-500/10 border border-yellow-500/20 rounded-full mb-3 shadow-sm">
-        <p class="text-xs font-bold text-yellow-850 uppercase tracking-wider">Dari: ${config.fromName}</p>
+        <p class="text-xs font-bold text-yellow-850 uppercase tracking-wider">From: ${config.fromName}</p>
       </div>
       <h1 class="font-serif text-3xl sm:text-4xl font-bold text-zinc-900 tracking-tight leading-tight">${letterTitle}</h1>
       <div class="absolute bottom-[-1px] left-1/2 -translate-x-1/2 w-16 h-[1px] bg-yellow-600/40"></div>
@@ -363,7 +363,7 @@ export function generateGiftBoxRevealHtml(config: PublishedConfig): string {
     <!-- Polaroid Gallery -->
     <div id="gallery-container" class="hidden space-y-6 mb-8 opacity-0">
       <div class="text-center pt-2 pb-4">
-        <h3 class="font-serif text-xl font-bold text-zinc-800 tracking-wide">Galeri Foto Kenangan</h3>
+        <h3 class="font-serif text-xl font-bold text-zinc-800 tracking-wide">Memory Gallery</h3>
         <p class="text-[10px] text-zinc-400 font-bold uppercase tracking-widest mt-0.5">Moments We Shared</p>
       </div>
       <div id="photos-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-6"></div>
@@ -373,7 +373,7 @@ export function generateGiftBoxRevealHtml(config: PublishedConfig): string {
     ${hasVoiceNote ? `
     <div id="voice-section" class="hidden bg-yellow-50/70 border border-yellow-500/20 rounded-2xl p-5 sm:p-6 mb-8 opacity-0 shadow-sm">
       <h4 class="font-serif text-sm font-semibold text-yellow-900 mb-4 text-center flex items-center justify-center gap-2">
-        <span>🎙️</span> Dengar Pesan Suara
+        <span>🎙️</span> Voice Message
       </h4>
       <div class="flex flex-col sm:flex-row items-center gap-4">
         <button id="play-btn" onclick="toggleAudio()" class="w-12 h-12 rounded-full bg-gradient-to-br from-yellow-500 to-amber-600 hover:from-yellow-600 hover:to-amber-700 text-white flex items-center justify-center shadow-md transition-all">
@@ -643,7 +643,7 @@ export function generateGiftBoxRevealHtml(config: PublishedConfig): string {
 
           const img = document.createElement('img');
           img.src = photo.src;
-          img.alt = photo.caption || 'Kenangan';
+          img.alt = photo.caption || 'Memories';
           img.className = 'w-full aspect-[4/3] object-cover rounded-lg shadow-inner';
 
           item.appendChild(img);

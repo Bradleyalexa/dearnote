@@ -2,7 +2,7 @@ import { PublishedConfig } from "../../schemas/card-draft";
 
 export function generateEternalLoveHtml(config: PublishedConfig): string {
   const hasSecretCode = !!config.secretCode;
-  const letterTitle = config.letterTitle || "Kepada Yang Tersayang";
+  const letterTitle = config.letterTitle || "To My Beloved";
   const escapedLetterBody = JSON.stringify(config.letterBody);
   const photosJson = JSON.stringify(config.photos);
   const hasVoiceNote = !!config.voiceNote;
@@ -19,25 +19,25 @@ export function generateEternalLoveHtml(config: PublishedConfig): string {
   const photosChapterHtml = hasPhotos
     ? `
   <div class="chapter" id="ch-photos">
-    <h2 class="ch-heading">Kenangan Kita</h2>
-    <p class="ch-subheading">Setiap gambar menyimpan seribu kata</p>
+    <h2 class="ch-heading">Our Memories</h2>
+    <p class="ch-subheading">Every picture holds a thousand words</p>
     <div class="polaroid-grid" id="polaroid-container"></div>
-    <button class="soft-btn" id="photos-next-btn" style="margin-top:1.8rem">Lanjutkan &rarr;</button>
+    <button class="soft-btn" id="photos-next-btn" style="margin-top:1.8rem">Continue &rarr;</button>
   </div>`
     : "";
 
   const audioChapterHtml = hasAudio
     ? `
   <div class="chapter" id="ch-audio">
-    <h2 class="ch-heading">Melodi Untukmu</h2>
-    <p class="ch-subheading">Suara yang menemani cerita kita</p>
+    <h2 class="ch-heading">A Melody for You</h2>
+    <p class="ch-subheading">The voices of our story</p>
     <div class="audio-card">
       <div class="visualizer" id="visualizer">${vBars}</div>
       ${
         hasVoiceNote
           ? `
       <div class="audio-row">
-        <p class="audio-row-label">🎙 Pesan Suara</p>
+        <p class="audio-row-label">🎙 Voice Message</p>
         <div class="audio-row-controls">
           <button id="vn-btn" class="round-play-btn">&#9654;</button>
           <div class="progress-track"><div class="progress-fill" id="vn-progress"></div></div>
@@ -50,26 +50,26 @@ export function generateEternalLoveHtml(config: PublishedConfig): string {
         hasBgMusic
           ? `
       <div class="audio-row" style="border-top:1px solid rgba(210,130,140,0.18);padding-top:0.9rem;margin-top:0.5rem">
-        <p class="audio-row-label">🎼 Musik Latar</p>
+        <p class="audio-row-label">🎼 Background Music</p>
         <div class="audio-row-controls">
           <button id="bgm-inner-btn" class="round-play-btn">&#9646;&#9646;</button>
-          <p style="font-size:0.68rem;color:var(--muted);font-style:italic">Menemani setiap momen</p>
+          <p style="font-size:0.68rem;color:var(--muted);font-style:italic">Accompanying every moment</p>
         </div>
         <audio id="bg-audio" src="${bgMusicSrc}" loop></audio>
       </div>`
           : ""
       }
     </div>
-    <button class="soft-btn" id="audio-next-btn" style="margin-top:1.8rem">Pesan Penutup &rarr;</button>
+    <button class="soft-btn" id="audio-next-btn" style="margin-top:1.8rem">Closing Message &rarr;</button>
   </div>`
     : "";
 
   return `<!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Surat Cintaku – DearNote</title>
+  <title>My Love Letter – DearNote</title>
   <meta name="robots" content="noindex, nofollow">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -488,7 +488,7 @@ export function generateEternalLoveHtml(config: PublishedConfig): string {
   <canvas id="particle-canvas"></canvas>
   <div class="bokeh-bg"></div>
   <div id="progress-bar"></div>
-  <button id="bgm-fab" title="Toggle Musik">🎵</button>
+  <button id="bgm-fab" title="Toggle Music">🎵</button>
   <div class="nav-dots" id="nav-dots"></div>
 
   <!-- ════════ CODE GATE ════════ -->
@@ -496,10 +496,10 @@ export function generateEternalLoveHtml(config: PublishedConfig): string {
   <div class="chapter active" id="ch-code">
     <div class="code-card">
       <span class="code-lock">💌</span>
-      <h2 class="code-title">Ada Surat Untukmu</h2>
-      <p class="code-sub">Masukkan kode dari pengirim untuk membuka pesan ini</p>
-      <input id="code-input" class="code-input" type="text" maxlength="12" placeholder="KODE AKSES" autocomplete="off" spellcheck="false">
-      <button id="code-submit" class="code-submit">Buka Sekarang 🌸</button>
+      <h2 class="code-title">A Letter for You</h2>
+      <p class="code-sub">Enter the code from the sender to open this message</p>
+      <input id="code-input" class="code-input" type="text" maxlength="12" placeholder="ACCESS CODE" autocomplete="off" spellcheck="false">
+      <button id="code-submit" class="code-submit">Open Now 🌸</button>
       <p id="code-err" class="code-err"></p>
     </div>
   </div>` : ``}
@@ -533,10 +533,10 @@ export function generateEternalLoveHtml(config: PublishedConfig): string {
       <div class="ornament-line"></div>
     </div>
 
-    <p class="intro-tagline">Ada pesan manis yang menunggumu</p>
+    <p class="intro-tagline">A sweet message is waiting for you</p>
 
     <button class="cta-btn" id="open-letter-btn" style="margin-top:2.2rem">
-      Buka Suratnya 💌
+      Open Letter 💌
     </button>
   </div>
 
@@ -559,7 +559,7 @@ export function generateEternalLoveHtml(config: PublishedConfig): string {
           </svg>
         </div>
         <h2 class="letter-title-text">${letterTitle}</h2>
-        <p class="letter-to-tag">Kepada yang tercinta &mdash; ${config.toName}</p>
+        <p class="letter-to-tag">To my beloved &mdash; ${config.toName}</p>
       </div>
 
       <div class="parchment-body">
@@ -567,11 +567,11 @@ export function generateEternalLoveHtml(config: PublishedConfig): string {
       </div>
 
       <div class="parchment-footer">
-        <p class="letter-from-label">Dengan sepenuh cinta</p>
+        <p class="letter-from-label">With all my love</p>
         <p class="letter-from-name">${config.fromName}</p>
       </div>
 
-      <button class="letter-next-fab" id="letter-next-btn" title="Lanjut">&#8594;</button>
+      <button class="letter-next-fab" id="letter-next-btn" title="Next">&#8594;</button>
     </div>
   </div>
 
@@ -597,7 +597,7 @@ export function generateEternalLoveHtml(config: PublishedConfig): string {
       <ellipse cx="35" cy="22" rx="8" ry="5" fill="rgba(255,255,255,0.28)" transform="rotate(-30 35 22)"/>
     </svg>
 
-    <p class="finale-quote">&ldquo;${config.finalMessage || "Bersamamu, setiap harinya terasa seperti hadiah yang paling indah."}&rdquo;</p>
+    <p class="finale-quote">&ldquo;${config.finalMessage || "With you, every single day feels like the most beautiful gift."}&rdquo;</p>
 
     <div class="ornament" style="margin:0.9rem 0 0.4rem">
       <div class="ornament-line"></div>
@@ -606,7 +606,7 @@ export function generateEternalLoveHtml(config: PublishedConfig): string {
     </div>
 
     <p class="finale-from">${config.fromName}</p>
-    <p class="finale-to">Untuk ${config.toName} &middot; Dengan segenap cinta 🌸</p>
+    <p class="finale-to">For ${config.toName} &middot; With all my love 🌸</p>
   </div>
 
   <script>
@@ -707,7 +707,7 @@ export function generateEternalLoveHtml(config: PublishedConfig): string {
         goTo(CHAPTERS.indexOf('ch-intro'));
         setTimeout(playBgMusicAuto, 500);
       } else {
-        if (errEl) { errEl.textContent = 'Kode salah, coba lagi ya 🌸'; setTimeout(() => { errEl.textContent = ''; }, 2500); }
+        if (errEl) { errEl.textContent = 'Incorrect code, please try again 🌸'; setTimeout(() => { errEl.textContent = ''; }, 2500); }
         if (input) { input.value = ''; input.style.borderColor = '#e06070'; setTimeout(() => { input.style.borderColor = ''; }, 2500); }
       }
     }
@@ -751,7 +751,7 @@ export function generateEternalLoveHtml(config: PublishedConfig): string {
       polaroidsRendered = true;
       const container = document.getElementById('polaroid-container');
       if (!container || !PHOTOS || PHOTOS.length === 0) {
-        if (container) container.innerHTML = '<p style="color:var(--muted);font-style:italic;font-size:0.8rem;text-align:center">Tidak ada foto yang dilampirkan.</p>';
+        if (container) container.innerHTML = '<p style="color:var(--muted);font-style:italic;font-size:0.8rem;text-align:center">No photos attached.</p>';
         return;
       }
       const rots = [-3.5, 2.2, -1.8, 3.1, -2.6, 1.4, -2.1, 3.3];
@@ -762,7 +762,7 @@ export function generateEternalLoveHtml(config: PublishedConfig): string {
         el.style.setProperty('--rot', rot + 'deg');
         el.style.animationDelay = (idx * 0.14) + 's';
         el.innerHTML = \`
-          <img src="\${ph.src}" alt="Kenangan \${idx+1}" loading="lazy">
+          <img src="\${ph.src}" alt="Memory \${idx+1}" loading="lazy">
           \${ph.caption ? \`<p class="polaroid-cap">\${ph.caption}</p>\` : ''}
         \`;
         container.appendChild(el);

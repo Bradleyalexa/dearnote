@@ -85,7 +85,7 @@ export default function LivePreview({ draft }: LivePreviewProps) {
   };
 
   return (
-    <div className="flex flex-col items-center space-y-4 w-full h-full max-w-sm mx-auto">
+    <div className="flex flex-col items-center space-y-4 w-full h-full max-w-[290px] mx-auto">
       {/* Preview Tabs */}
       <div className="flex bg-zinc-100 p-1 rounded-xl w-full border border-zinc-200/50 shadow-sm font-sans">
         <button
@@ -97,7 +97,7 @@ export default function LivePreview({ draft }: LivePreviewProps) {
               : "text-zinc-500 hover:text-zinc-800"
           }`}
         >
-          Isi Catatan (Preview)
+          Inside Note (Preview)
         </button>
         <button
           type="button"
@@ -108,7 +108,7 @@ export default function LivePreview({ draft }: LivePreviewProps) {
               : "text-zinc-500 hover:text-zinc-800"
           }`}
         >
-          Layar Pembuka
+          Cover Screen
         </button>
       </div>
 
@@ -142,7 +142,7 @@ export default function LivePreview({ draft }: LivePreviewProps) {
         onClick={reloadPreview}
         className="text-xs text-zinc-500 hover:text-zinc-800 font-semibold flex items-center gap-1.5 font-sans"
       >
-        <span>🔄</span> Reset Animasi
+        <span>🔄</span> Reset Animation
       </button>
     </div>
   );

@@ -13,7 +13,7 @@ export function generateNocturnalJournalHtml(config: PublishedConfig): string {
   const bgMusicSrc = config.bgMusic?.src || "";
 
   return `<!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -166,7 +166,7 @@ export function generateNocturnalJournalHtml(config: PublishedConfig): string {
   ${
     hasBgMusic
       ? `
-  <button id="bgm-toggle-btn" onclick="toggleBgm()" class="fixed top-4 right-4 z-50 w-10 h-10 rounded-full bg-white/5 backdrop-blur-md border border-white/10 shadow-md flex items-center justify-center text-zinc-300 hover:bg-white/10 transition-all" title="Matikan Musik Latar">
+  <button id="bgm-toggle-btn" onclick="toggleBgm()" class="fixed top-4 right-4 z-50 w-10 h-10 rounded-full bg-white/5 backdrop-blur-md border border-white/10 shadow-md flex items-center justify-center text-zinc-300 hover:bg-white/10 transition-all" title="Mute Background Music">
     <span id="bgm-icon" class="text-sm">🎵</span>
   </button>
   <audio id="bgm-audio-element" src="${bgMusicSrc}" loop></audio>
@@ -187,14 +187,14 @@ export function generateNocturnalJournalHtml(config: PublishedConfig): string {
         🌙
       </div>
       <h2 class="font-serif text-2xl font-semibold text-white mb-2">Nocturnal Journal</h2>
-      <p class="text-xs text-zinc-400 font-sans">Ada sebuah catatan jurnal dari <span class="font-semibold text-zinc-200">${config.fromName}</span> untuk <span class="font-semibold text-zinc-200">${config.toName}</span>. Masukkan kode akses.</p>
+      <p class="text-xs text-zinc-400 font-sans">A journal entry from <span class="font-semibold text-zinc-200">${config.fromName}</span> to <span class="font-semibold text-zinc-200">${config.toName}</span>. Enter the access code.</p>
     </div>
     
     <div class="space-y-4 font-sans">
       <input 
         type="password" 
         id="secret-code-input" 
-        placeholder="Kode Akses" 
+        placeholder="Access Code" 
         maxlength="12"
         class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-center font-bold text-white focus:outline-none focus:ring-2 focus:ring-zinc-400 uppercase tracking-widest text-sm"
       >
@@ -202,9 +202,9 @@ export function generateNocturnalJournalHtml(config: PublishedConfig): string {
         onclick="verifyCode()"
         class="w-full py-3 bg-zinc-200 hover:bg-white text-zinc-900 font-bold rounded-xl shadow-md transition-all text-sm uppercase tracking-wider"
       >
-        Buka Notes
+        Open Journal
       </button>
-      <p id="code-error" class="text-xs text-zinc-400 opacity-0 transition-opacity font-semibold">Kode tidak cocok. Silakan coba kembali.</p>
+      <p id="code-error" class="text-xs text-zinc-400 opacity-0 transition-opacity font-semibold">Incorrect code. Please try again.</p>
     </div>
   </div>
   `
@@ -216,8 +216,8 @@ export function generateNocturnalJournalHtml(config: PublishedConfig): string {
     hasSecretCode ? "hidden" : ""
   } flex flex-col items-center justify-center z-10 transition-all duration-700 px-4">
     <div class="text-center mb-6">
-      <h3 class="font-serif text-3xl text-zinc-200 mb-2 break-words">Kepada: ${config.toName}</h3>
-      <p class="font-sans text-[10px] uppercase tracking-widest opacity-80 text-zinc-400 break-words">Jurnal Kenangan Dari ${config.fromName}</p>
+      <h3 class="font-serif text-3xl text-zinc-200 mb-2 break-words">For: ${config.toName}</h3>
+      <p class="font-sans text-[10px] uppercase tracking-widest opacity-80 text-zinc-400 break-words">A nocturnal journal from ${config.fromName}</p>
     </div>
     
     <!-- Moon and its concentric orbits -->
@@ -229,7 +229,7 @@ export function generateNocturnalJournalHtml(config: PublishedConfig): string {
     </div>
     
     <div class="text-center mt-6">
-      <span class="font-sans text-[9px] uppercase tracking-widest text-zinc-500 animate-pulse">Ketuk Bulan untuk Membuka</span>
+      <span class="font-sans text-[9px] uppercase tracking-widest text-zinc-500 animate-pulse">Tap Moon to Open</span>
     </div>
   </div>
 
@@ -240,11 +240,11 @@ export function generateNocturnalJournalHtml(config: PublishedConfig): string {
       <h1 class="font-serif text-3xl sm:text-4xl text-white tracking-tight mb-4">${letterTitle}</h1>
       <div class="flex flex-col gap-1.5 items-center justify-center text-[10px] font-bold text-zinc-400 uppercase tracking-widest px-2 font-sans">
         <div class="flex flex-wrap items-center justify-center gap-1">
-          <span class="text-zinc-500 font-medium">Spesial Untuk:</span>
+          <span class="text-zinc-500 font-medium">For:</span>
           <span class="text-white font-semibold break-words max-w-[240px] sm:max-w-md">${config.toName}</span>
         </div>
         <div class="flex flex-wrap items-center justify-center gap-1">
-          <span class="text-zinc-500 font-medium">Jurnal Dari:</span>
+          <span class="text-zinc-500 font-medium">From:</span>
           <span class="text-white font-semibold break-words max-w-[240px] sm:max-w-md">${config.fromName}</span>
         </div>
       </div>
@@ -256,7 +256,7 @@ export function generateNocturnalJournalHtml(config: PublishedConfig): string {
     <!-- Photos Grid (Glowing borders) -->
     <div id="gallery-container" class="hidden space-y-6 mb-8 transition-opacity duration-1000 opacity-0">
       <div class="text-center border-t border-white/10 pt-8 pb-4">
-        <h3 class="font-serif text-lg text-white">Lampiran Foto Kenangan</h3>
+        <h3 class="font-serif text-lg text-white">Captured Memories</h3>
       </div>
       <div id="photos-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-6"></div>
     </div>
@@ -267,7 +267,7 @@ export function generateNocturnalJournalHtml(config: PublishedConfig): string {
         ? `
     <div id="voice-section" class="hidden bg-white/5 border border-white/10 rounded-2xl p-5 sm:p-6 mb-8 transition-opacity duration-1000 opacity-0">
       <h4 class="font-serif text-sm text-zinc-350 mb-4 text-center flex items-center justify-center gap-2 font-sans">
-        <span>🎙️</span> Jurnal Pesan Suara
+        <span>🎙️</span> Voice Message
       </h4>
       <div class="flex flex-col sm:flex-row items-center gap-5 font-sans">
         <button id="play-btn" onclick="toggleAudio()" class="w-12 h-12 rounded-full bg-zinc-100 hover:bg-white text-zinc-950 flex items-center justify-center shadow-lg transition-all focus:outline-none transform active:scale-95">
@@ -309,7 +309,7 @@ export function generateNocturnalJournalHtml(config: PublishedConfig): string {
         ? `
     <div id="final-message-container" class="hidden text-center mt-10 pt-8 border-t border-white/10 transition-opacity duration-1000 opacity-0 font-serif">
       <p class="text-2xl italic text-zinc-200 mb-2">"${config.finalMessage}"</p>
-      <p class="text-[9px] font-bold uppercase tracking-widest text-zinc-400 font-sans">Catatan Selesai</p>
+      <p class="text-[9px] font-bold uppercase tracking-widest text-zinc-400 font-sans">End of Entry</p>
     </div>
     `
         : ""

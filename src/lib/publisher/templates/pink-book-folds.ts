@@ -2,7 +2,7 @@ import { PublishedConfig } from "../../schemas/card-draft";
 
 export function generatePinkBookFoldsHtml(config: PublishedConfig): string {
   const hasSecretCode = !!config.secretCode;
-  const letterTitle = config.letterTitle || "Catatan Kenangan";
+  const letterTitle = config.letterTitle || "Memory Scrapbook";
   const escapedLetterBody = JSON.stringify(config.letterBody);
   const photosJson = JSON.stringify(config.photos);
   const hasVoiceNote = !!config.voiceNote;
@@ -13,7 +13,7 @@ export function generatePinkBookFoldsHtml(config: PublishedConfig): string {
   const bgMusicSrc = config.bgMusic?.src || "";
 
   return `<!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -290,7 +290,7 @@ export function generatePinkBookFoldsHtml(config: PublishedConfig): string {
   ${
     hasBgMusic
       ? `
-  <button id="bgm-toggle-btn" onclick="toggleBgm()" class="fixed top-4 right-4 z-50 w-12 h-12 rounded-full bg-[#FFCAD4]/90 border-2 border-white shadow-md flex items-center justify-center text-lg hover:scale-105 active:scale-95 transition-all" title="Matikan Musik Latar">
+  <button id="bgm-toggle-btn" onclick="toggleBgm()" class="fixed top-4 right-4 z-50 w-12 h-12 rounded-full bg-[#FFCAD4]/90 border-2 border-white shadow-md flex items-center justify-center text-lg hover:scale-105 active:scale-95 transition-all" title="Mute Background Music">
     <span id="bgm-icon">🎵</span>
   </button>
   <audio id="bgm-audio-element" src="${bgMusicSrc}" loop></audio>
@@ -307,15 +307,15 @@ export function generatePinkBookFoldsHtml(config: PublishedConfig): string {
       <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#FFE5D9] text-3xl mb-4 shadow-sm">
         🧸
       </div>
-      <h2 class="font-sans text-2xl font-bold text-[#8A7A6E] mb-2">Akses Jurnal</h2>
-      <p class="text-xs text-zinc-500 font-sans">Ada sebuah catatan kenangan dari <span class="font-bold text-[#FF9EAA]">${config.fromName}</span> untuk <span class="font-bold text-[#FF9EAA]">${config.toName}</span>. Masukkan kode untuk membuka.</p>
+      <h2 class="font-sans text-2xl font-bold text-[#8A7A6E] mb-2">Access Journal</h2>
+      <p class="text-xs text-zinc-500 font-sans">A memory log from <span class="font-bold text-[#FF9EAA]">${config.fromName}</span> to <span class="font-bold text-[#FF9EAA]">${config.toName}</span>. Enter the code to open it.</p>
     </div>
     
     <div class="space-y-4 font-sans">
       <input 
         type="text" 
         id="secret-code-input" 
-        placeholder="Kode Akses" 
+        placeholder="Access Code" 
         maxlength="12"
         class="w-full px-4 py-3 rounded-2xl border-2 border-[#FFCAD4] text-center font-bold text-[#8A7A6E] focus:outline-none focus:ring-2 focus:ring-[#FF9EAA] uppercase tracking-widest text-sm bg-white"
       >
@@ -323,9 +323,9 @@ export function generatePinkBookFoldsHtml(config: PublishedConfig): string {
         onclick="verifyCode()"
         class="w-full py-3 bg-[#FF9EAA] hover:bg-[#FF8093] active:scale-95 text-white font-bold rounded-2xl shadow-md transition-all text-sm uppercase tracking-wider hover:rotate-1"
       >
-        Buka Lembaran Jurnal
+        Open Journal Pages
       </button>
-      <p id="code-error" class="text-xs text-red-400 opacity-0 transition-opacity font-bold">Kode salah, silakan coba kembali.</p>
+      <p id="code-error" class="text-xs text-red-400 opacity-0 transition-opacity font-bold">Incorrect code, please try again.</p>
     </div>
   </div>
   `
@@ -357,7 +357,7 @@ export function generatePinkBookFoldsHtml(config: PublishedConfig): string {
             <div class="text-[#FF9EAA] animate-bounce my-auto">
               <svg class="w-12 h-12" fill="currentColor" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
             </div>
-            <span class="text-[10px] uppercase tracking-wider text-[#FF9EAA] font-bold">Membuka lembaran...</span>
+            <span class="text-[10px] uppercase tracking-wider text-[#FF9EAA] font-bold">Opening pages...</span>
           </div>
         </div>
 
@@ -370,9 +370,9 @@ export function generatePinkBookFoldsHtml(config: PublishedConfig): string {
               <div class="w-8 h-8 rounded-full bg-[#FFE5D9] flex items-center justify-center text-xs">🌸</div>
             </div>
             <div class="text-center font-handwritten text-xl text-[#8A7A6E]">
-              Setiap momen bersamamu adalah cerita indah...
+              Every moment with you is a beautiful story...
             </div>
-            <div class="text-right text-xs text-zinc-400 font-sans">Jurnal Kenangan 📖</div>
+            <div class="text-right text-xs text-zinc-400 font-sans">Memory Journal 📖</div>
           </div>
           <!-- Back Side of Leaf 2 (visible after flip) -->
           <div class="page-back p-6 flex flex-col justify-between h-full bg-[#FAF0D7]">
@@ -381,7 +381,7 @@ export function generatePinkBookFoldsHtml(config: PublishedConfig): string {
               <span class="text-xl">🎈</span>
             </div>
             <div class="text-center font-handwritten text-xl text-[#8A7A6E]">
-              Disimpan dengan penuh kasih sayang...
+              Kept with all my love...
             </div>
             <div class="text-left text-xs text-zinc-400 font-sans">DearNote ✨</div>
           </div>
@@ -396,10 +396,10 @@ export function generatePinkBookFoldsHtml(config: PublishedConfig): string {
               <span class="text-xl">💖</span>
             </div>
             <div class="text-center font-handwritten text-2xl text-[#8A7A6E] font-bold">
-              Buka & Temukan Rahasianya...
+              Open & Discover the Secret...
             </div>
             <div class="text-center text-[10px] text-zinc-500 uppercase tracking-widest font-bold font-sans">
-              Ketuk Untuk Membuka
+              Tap to Open
             </div>
           </div>
           <!-- Back Side of Leaf 1 (visible after flip) -->
@@ -409,7 +409,7 @@ export function generatePinkBookFoldsHtml(config: PublishedConfig): string {
               <span class="text-xl">🎨</span>
             </div>
             <div class="text-center font-handwritten text-xl text-[#8A7A6E]">
-              Lembaran kenangan kita berdua...
+              Our shared memories...
             </div>
             <div class="text-left text-xs text-zinc-400 font-sans">Memories 📝</div>
           </div>
@@ -428,14 +428,14 @@ export function generatePinkBookFoldsHtml(config: PublishedConfig): string {
             </div>
 
             <div class="my-auto bg-white/80 backdrop-blur-sm border-2 border-dashed border-[#FF9EAA] p-4 rounded-2xl shadow-sm text-center">
-              <h3 class="font-handwritten text-3xl font-bold text-[#8A7A6E] mb-1">Untuk: ${config.toName}</h3>
+              <h3 class="font-handwritten text-3xl font-bold text-[#8A7A6E] mb-1">To: ${config.toName}</h3>
               <div class="w-12 h-[2px] bg-[#FF9EAA] mx-auto my-2"></div>
-              <p class="font-sans text-[10px] uppercase tracking-widest font-bold text-[#8A7A6E]/80">Dari: ${config.fromName}</p>
+              <p class="font-sans text-[10px] uppercase tracking-widest font-bold text-[#8A7A6E]/80">From: ${config.fromName}</p>
             </div>
 
             <div class="text-center">
               <span id="flip-hint" class="inline-block px-3 py-1 bg-[#FF9EAA] text-white text-[9px] font-bold uppercase tracking-widest rounded-full animate-pulse font-sans">
-                Ketuk untuk membuka halaman pertama
+                Tap to open the first page
               </span>
             </div>
           </div>
@@ -446,7 +446,7 @@ export function generatePinkBookFoldsHtml(config: PublishedConfig): string {
               <span class="text-2xl">🐶</span>
             </div>
             <div class="text-center font-handwritten text-2xl text-[#8A7A6E] font-bold">
-              Mari kita lihat kisah kita...
+              Let's look at our story...
             </div>
             <div class="text-right text-[10px] text-zinc-400 font-bold uppercase font-sans">PAGE 01</div>
           </div>
@@ -495,7 +495,7 @@ export function generatePinkBookFoldsHtml(config: PublishedConfig): string {
           </div>
           <h2 class="font-handwritten text-4xl font-bold text-[#8A7A6E] mt-2">${letterTitle}</h2>
           <div class="text-[10px] uppercase tracking-wider text-zinc-400 font-bold">
-            Kepada: <span class="text-[#FF9EAA]">${config.toName}</span> • Dari: <span class="text-[#FF9EAA]">${config.fromName}</span>
+            For: <span class="text-[#FF9EAA]">${config.toName}</span> • From: <span class="text-[#FF9EAA]">${config.fromName}</span>
           </div>
         </div>
       </div>
@@ -540,8 +540,8 @@ export function generatePinkBookFoldsHtml(config: PublishedConfig): string {
 
       <div class="text-center relative py-4 mb-2">
         <div class="tape tape-yellow top-0 left-[42%] w-20 h-5 opacity-80"></div>
-        <h3 class="font-handwritten text-4xl font-bold text-[#8A7A6E]">💖 Galeri Kenangan</h3>
-        <p class="font-sans text-[10px] text-zinc-400 uppercase tracking-widest font-bold mt-2">Ketuk & geser foto untuk mengatur susunan</p>
+        <h3 class="font-handwritten text-4xl font-bold text-[#8A7A6E]">💖 Captured Memories</h3>
+        <p class="font-sans text-[10px] text-zinc-400 uppercase tracking-widest font-bold mt-2">Tap & drag photos to rearrange them</p>
       </div>
       <!-- Drag & Toss Workspace -->
       <div id="polaroid-grid" class="flex flex-wrap items-center justify-center gap-8 py-8 min-h-[300px] relative"></div>
@@ -556,14 +556,14 @@ export function generatePinkBookFoldsHtml(config: PublishedConfig): string {
       <div class="tape tape-heart top-[-10px] left-[15%] w-20 h-6"></div>
       
       <h4 class="font-sans text-xs uppercase tracking-widest font-bold text-[#FF9EAA] mb-4 text-center">
-        📟 Tape Rekaman Suara
+        📟 Voice Message
       </h4>
       
       <!-- Cassette Outer Case -->
       <div class="bg-[#FF9EAA] p-4 rounded-2xl border-4 border-[#FFAEBC] shadow-inner flex flex-col gap-4 relative overflow-hidden">
         <!-- Cassette Top Label -->
         <div class="bg-white/95 rounded-xl p-3 border-2 border-dashed border-[#FF9EAA] flex flex-col items-center">
-          <span class="font-handwritten text-xl font-bold text-[#8A7A6E]">Pesan Suara Untukmu</span>
+          <span class="font-handwritten text-xl font-bold text-[#8A7A6E]">Voice Message for You</span>
           <div class="flex items-center gap-1.5 mt-1 text-[9px] text-[#FFAEBC] font-sans font-bold">
             <span>SIDE A</span>
             <span>•</span>
@@ -702,7 +702,7 @@ export function generatePinkBookFoldsHtml(config: PublishedConfig): string {
         pageStep = 1;
         setTimeout(() => {
           isFlipping = false;
-          updateHint('Lanjut — ketuk halaman berikutnya');
+          updateHint('Continue — tap the next page');
         }, 900); // wait for CSS transition (1.5s but we show hint after 0.9s)
 
       } else if (pageStep === 1) {
@@ -713,7 +713,7 @@ export function generatePinkBookFoldsHtml(config: PublishedConfig): string {
         pageStep = 2;
         setTimeout(() => {
           isFlipping = false;
-          updateHint('Satu lagi — buka halaman terakhir');
+          updateHint('One more — open the last page');
         }, 900);
 
       } else if (pageStep === 2) {
@@ -722,7 +722,7 @@ export function generatePinkBookFoldsHtml(config: PublishedConfig): string {
         const leaf2 = document.getElementById('leaf-2');
         leaf2.classList.add('flipped');
         pageStep = 3;
-        updateHint('Membuka jurnal...');
+        updateHint('Opening journal...');
         setTimeout(() => {
           transitionToContent();
         }, 1400);

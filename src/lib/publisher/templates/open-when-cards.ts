@@ -2,7 +2,7 @@ import { PublishedConfig } from "../../schemas/card-draft";
 
 export function generateOpenWhenCardsHtml(config: PublishedConfig): string {
   const hasSecretCode = !!config.secretCode;
-  const letterTitle = config.letterTitle || "Untuk Kamu";
+  const letterTitle = config.letterTitle || "For You";
   const escapedLetterBody = JSON.stringify(config.letterBody);
   const photosJson = JSON.stringify(config.photos);
   const hasVoiceNote = !!config.voiceNote;
@@ -13,7 +13,7 @@ export function generateOpenWhenCardsHtml(config: PublishedConfig): string {
   const finalMessage = config.finalMessage || "";
 
   return `<!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -511,15 +511,15 @@ export function generateOpenWhenCardsHtml(config: PublishedConfig): string {
   <div id="code-gate">
     <div class="gate-card">
       <p class="gate-label">DearNote · Open When</p>
-      <h1 class="gate-title">Ada pesan untukmu</h1>
+      <h1 class="gate-title">A message for you</h1>
       <p class="gate-sub">
-        Dari <strong>${config.fromName}</strong> untuk <strong>${config.toName}</strong>.<br>
-        Masukkan kode untuk membuka koleksi surat ini.
+        From <strong>${config.fromName}</strong> for <strong>${config.toName}</strong>.<br>
+        Enter the code to open this letter collection.
       </p>
-      <input id="code-input" type="text" placeholder="Kode akses" maxlength="12"
+      <input id="code-input" type="text" placeholder="Access code" maxlength="12"
         onkeydown="if(event.key==='Enter')verifyCode()">
-      <button id="code-btn" onclick="verifyCode()">Buka</button>
-      <p id="code-err">Kode salah. Coba lagi.</p>
+      <button id="code-btn" onclick="verifyCode()">Open</button>
+      <p id="code-err">Incorrect code. Try again.</p>
     </div>
   </div>
   ` : ""}
@@ -530,9 +530,9 @@ export function generateOpenWhenCardsHtml(config: PublishedConfig): string {
     <header class="ow-header" id="ow-header">
       <p class="ow-eyebrow">DearNote · Open When</p>
       <h1 class="ow-title">${letterTitle}</h1>
-      <p class="ow-meta">dari ${config.fromName} &nbsp;·&nbsp; untuk ${config.toName}</p>
+      <p class="ow-meta">from ${config.fromName} &nbsp;·&nbsp; for ${config.toName}</p>
       <div class="ow-divider"></div>
-      <p class="ow-instruction">Ketuk kartu untuk membuka</p>
+      <p class="ow-instruction">Tap a card to open</p>
     </header>
 
     <div class="cards-grid" id="cards-grid"></div>
@@ -578,12 +578,12 @@ export function generateOpenWhenCardsHtml(config: PublishedConfig): string {
 
     /* Default "Open when…" prompts for photo cards with no short caption */
     const DEFAULT_PROMPTS = [
-      'Ketika kamu rindu aku…',
-      'Ketika kamu butuh senyum…',
-      'Ketika kamu ingin diingat…',
-      'Ketika kamu merasa lelah…',
-      'Ketika kamu butuh semangat…',
-      'Ketika momen ini terkenang…',
+      'When you miss me…',
+      'When you need a smile…',
+      'When you need to remember…',
+      'When you feel tired…',
+      'When you need strength…',
+      'When you want to reminisce…',
     ];
 
     /* ── Build all card data ── */
@@ -612,7 +612,7 @@ export function generateOpenWhenCardsHtml(config: PublishedConfig): string {
       if (CONFIG.hasFinalMessage) {
         cards.push({
           type: 'quote',
-          prompt: 'Satu kata terakhir…',
+          prompt: 'One last word…',
           accent: ACCENTS[cards.length % ACCENTS.length],
         });
       }
@@ -642,7 +642,7 @@ export function generateOpenWhenCardsHtml(config: PublishedConfig): string {
 
       const whenLabel = document.createElement('p');
       whenLabel.className = 'card-when-label';
-      whenLabel.innerText = 'Buka ketika';
+      whenLabel.innerText = 'Open when';
       front.appendChild(whenLabel);
 
       const prompt = document.createElement('p');
@@ -652,7 +652,7 @@ export function generateOpenWhenCardsHtml(config: PublishedConfig): string {
 
       const tap = document.createElement('p');
       tap.className = 'card-tap';
-      tap.innerText = 'Ketuk untuk membuka';
+      tap.innerText = 'Tap to open';
       front.appendChild(tap);
 
       // ── BACK ──
@@ -727,7 +727,7 @@ export function generateOpenWhenCardsHtml(config: PublishedConfig): string {
       // Close strip at the bottom of back
       const closeBar = document.createElement('div');
       closeBar.className = 'back-close';
-      closeBar.innerText = 'Tutup';
+      closeBar.innerText = 'Close';
       closeBar.addEventListener('click', (e) => {
         e.stopPropagation();
         owc.classList.remove('opened');
