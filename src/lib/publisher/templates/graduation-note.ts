@@ -882,6 +882,107 @@ export function generateGraduationNoteHtml(config: PublishedConfig): string {
     }
 
     /* ══════════════════════════════════════
+       Photo Modal
+    ══════════════════════════════════════ */
+    .photo-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 28, 63, 0.95);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      padding: 2rem;
+      cursor: pointer;
+      animation: modalFadeIn 0.3s ease;
+    }
+    .photo-modal.active {
+      display: flex;
+    }
+    @keyframes modalFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-content {
+      max-width: 90vw;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+      cursor: default;
+      animation: modalZoomIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes modalZoomIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .modal-image-wrapper {
+      position: relative;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+      border: 4px solid var(--gold);
+      border-radius: 24px;
+      padding: 20px;
+      box-shadow:
+        0 30px 80px var(--shadow-xl),
+        0 0 60px var(--gold-glow);
+      max-width: 100%;
+      max-height: calc(90vh - 100px);
+      overflow: hidden;
+    }
+
+    .modal-image {
+      display: block;
+      max-width: 100%;
+      max-height: calc(90vh - 140px);
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      border-radius: 16px;
+    }
+
+    .modal-caption {
+      font-family: var(--font-sans);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--white);
+      text-align: center;
+      max-width: 600px;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+      letter-spacing: 0.02em;
+    }
+
+    .modal-close-btn {
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      border: 2px solid var(--gold);
+      color: var(--navy);
+      font-size: 1.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 24px var(--shadow-md);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 2001;
+    }
+    .modal-close-btn:hover {
+      transform: scale(1.1) rotate(90deg);
+      box-shadow: 0 12px 32px var(--shadow-lg);
+      border-color: var(--gold-bright);
+    }
+
+    /* ══════════════════════════════════════
        Audio Deck
     ══════════════════════════════════════ */
     .audio-deck {
@@ -1168,6 +1269,17 @@ export function generateGraduationNoteHtml(config: PublishedConfig): string {
   <button id="music-fab" title="Toggle Music">🎵</button>
   <div class="nav-indicator-dots" id="nav-dots"></div>
 
+  <!-- Photo Modal -->
+  <div class="photo-modal" id="photo-modal">
+    <button class="modal-close-btn" id="modal-close-btn">&times;</button>
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <div class="modal-image-wrapper">
+        <img class="modal-image" id="modal-image" src="" alt="Full size photo">
+      </div>
+      <p class="modal-caption" id="modal-caption"></p>
+    </div>
+  </div>
+
   PLACEHOLDER_BODY
 
   <script>
@@ -1386,7 +1498,7 @@ export function generateGraduationNoteHtml(config: PublishedConfig): string {
     }
 
     // ══════════════════════════════════════
-    // Photo Gallery
+    // Photo Gallery & Modal
     // ══════════════════════════════════════
     function renderPhotos() {
       photosRendered = true;
@@ -1405,9 +1517,60 @@ export function generateGraduationNoteHtml(config: PublishedConfig): string {
           <img src="\${photo.src}" alt="Memory \${idx + 1}" loading="lazy">
           \${photo.caption ? \`<p class="yearbook-caption">\${photo.caption}</p>\` : '<p class="yearbook-caption">🎓</p>'}
         \`;
+
+        // Add click handler to open modal
+        card.addEventListener('click', () => {
+          openPhotoModal(photo.src, photo.caption || '🎓');
+        });
+
         grid.appendChild(card);
       });
     }
+
+    function openPhotoModal(src, caption) {
+      const modal = document.getElementById('photo-modal');
+      const modalImage = document.getElementById('modal-image');
+      const modalCaption = document.getElementById('modal-caption');
+
+      if (modal && modalImage && modalCaption) {
+        modalImage.src = src;
+        modalCaption.textContent = caption;
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closePhotoModal() {
+      const modal = document.getElementById('photo-modal');
+      if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    }
+
+    // Modal event listeners
+    const photoModal = document.getElementById('photo-modal');
+    const modalCloseBtn = document.getElementById('modal-close-btn');
+
+    if (photoModal) {
+      // Close on overlay click
+      photoModal.addEventListener('click', closePhotoModal);
+    }
+
+    if (modalCloseBtn) {
+      // Close on close button click
+      modalCloseBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closePhotoModal();
+      });
+    }
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closePhotoModal();
+      }
+    });
 
     // ══════════════════════════════════════
     // Audio Controls

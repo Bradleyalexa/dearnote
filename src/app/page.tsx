@@ -2,9 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import TemplatePreview from "@/components/landing/TemplatePreview";
+
+type TemplateKey = "pooh" | "graduation" | "birthday" | "blooming" | "pinkbook";
 
 export default function Home() {
-  const [activeTemplate, setActiveTemplate] = useState<"classic" | "polaroid" | "nocturnal" | "giftbox" | "playfulbox">("classic");
+  const [activeTemplate, setActiveTemplate] = useState<TemplateKey>("graduation");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   const toggleFaq = (index: number) => {
@@ -81,19 +84,19 @@ export default function Home() {
           </div>
 
           <div className="flex flex-col md:flex-row gap-12 items-center justify-center">
-            
+
             {/* Tabs (Left on desktop) */}
             <div className="flex md:flex-col gap-3 w-full md:w-64 justify-center">
               {[
-                { id: "classic", label: "Classic Editorial", desc: "Kertas linen bertekstur cream lembut, font serif elegan, wax seal klasik, serta serpihan kertas mengambang lembut." },
-                { id: "polaroid", label: "Polaroid Scrapbook", desc: "Kertas kerajinan kraft cokelat hangat, foto polaroid berselotip, serta nuansa tulisan mesin tik klasik." },
-                { id: "nocturnal", label: "Nocturnal Journal", desc: "Kanvas hitam legam malam sunyi, garis rasi bintang bersinar redup, font monospace, dan aksen pemutar suara yang berpendar." },
-                { id: "giftbox", label: "Gift Box Reveal", desc: "Kotak hadiah 3D dengan pita interaktif, confetti perayaan hangat, dan unwrapping ritual yang memorable." },
-                { id: "playfulbox", label: "Playful Cute Gift", desc: "Kotak kado pink pastel imut dengan balon & gelembung ceria, bounciness, dan sticker menggemaskan." }
+                { id: "pooh", label: "Playful Pooh", desc: "Beruang Pooh yang lucu tidur nyenyak dengan pot madu, nuansa hangat kuning keemasan, dan interaksi yang menggemaskan." },
+                { id: "graduation", label: "Graduation Note", desc: "Diploma elegan dengan wax seal emas, kanvas krem premium, font serif mewah, dan animasi confetti merayakan kelulusan." },
+                { id: "birthday", label: "Birthday Magic", desc: "Kue ulang tahun interaktif dengan lilin yang bisa ditiup, balon mengapung, dan pesta kembang api penuh warna." },
+                { id: "blooming", label: "Blooming Flower", desc: "Amplop dengan wax seal yang mekar menjadi taman bunga indah, nuansa pastel lembut, dan animasi bunga tumbuh." },
+                { id: "pinkbook", label: "Pink Book Folds", desc: "Buku scrapbook 3D dengan halaman yang bisa dibalik, polaroid yang bisa di-drag, dan nuansa pink yang hangat." }
               ].map((tab) => (
                 <button
                   key={tab.id}
-                  onClick={() => setActiveTemplate(tab.id as any)}
+                  onClick={() => setActiveTemplate(tab.id as TemplateKey)}
                   className={`p-4 rounded-2xl text-left border transition-all cursor-pointer flex flex-col gap-1.5 w-full ${
                     activeTemplate === tab.id
                       ? "bg-zinc-900 text-white border-zinc-900 shadow-md transform md:translate-x-2"
@@ -108,251 +111,9 @@ export default function Home() {
               ))}
             </div>
 
-            {/* Mobile Viewport Mockup (Right on desktop) */}
-            <div className="relative w-full max-w-[280px] aspect-[9/18] rounded-[36px] border-[8px] border-zinc-800 bg-zinc-900 shadow-2xl p-2 flex flex-col overflow-hidden animate-float">
-              
-              {/* Phone Speaker & Camera cut */}
-              <div className="absolute top-2.5 left-1/2 -translate-x-1/2 w-20 h-4 bg-zinc-800 rounded-full z-20 flex items-center justify-center">
-                <span className="w-1.5 h-1.5 rounded-full bg-zinc-900" />
-              </div>
-
-              {/* Screen Inner Viewport */}
-              <div className="w-full h-full rounded-[24px] overflow-hidden relative flex flex-col text-left font-sans text-xs">
-                
-                {/* 1. Classic Editorial Mockup */}
-                {activeTemplate === "classic" && (
-                  <div className="w-full h-full bg-[#FAF9F6] p-4 flex flex-col justify-between border border-zinc-200/50 relative overflow-hidden animate-fade-in text-[#27272A]">
-                    
-                    {/* Simulated Floating Parchment particles */}
-                    <div className="absolute top-1/4 left-1/3 w-1 h-1 bg-zinc-400/40 rounded-full animate-ping" />
-                    <div className="absolute bottom-1/4 right-1/4 w-1.5 h-1.5 bg-zinc-400/30 rounded-full animate-pulse" />
-
-                    <div className="space-y-4 pt-4">
-                      <div className="flex justify-between items-center border-b border-zinc-200/60 pb-2">
-                        <span className="font-serif text-[10px] tracking-widest uppercase text-zinc-400">Jurnal Kenangan</span>
-                        <span className="text-[10px] font-semibold text-zinc-400">#001</span>
-                      </div>
-
-                      <h2 className="font-serif text-lg font-bold leading-tight">Untuk Wisuda Terindahmu, Sarah</h2>
-                      <p className="text-[10px] text-zinc-550 leading-relaxed font-serif">
-                        Hari ini langkah barumu resmi dimulai. Aku sangat bangga atas semua usaha dan kerja kerasmu untuk mencapai titik ini...
-                      </p>
-
-                      {/* Real Photo Box - Graduation */}
-                      <div className="w-full aspect-[4/3] rounded-lg overflow-hidden border border-zinc-200 shadow-inner relative">
-                        <img src="/img/graduation_pic_mockup.png" alt="Foto wisuda" className="w-full h-full object-cover object-top" />
-                        <span className="absolute bottom-1.5 left-1.5 px-2 py-0.5 bg-white/80 rounded text-[9px] font-bold">1 / 5</span>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col items-center gap-3 pb-2">
-                      {/* Audio Player Mock */}
-                      <div className="w-full py-2 px-3 bg-white border border-zinc-200/60 rounded-xl flex items-center gap-2 shadow-sm">
-                        <span className="text-[10px]">▶</span>
-                        <div className="flex-1 h-1 bg-zinc-100 rounded-full overflow-hidden">
-                          <div className="w-1/3 h-full bg-zinc-800" />
-                        </div>
-                        <span className="text-[9px] font-bold text-zinc-400">0:14 / 0:45</span>
-                      </div>
-                      
-                      {/* Wax Seal digital */}
-                      <div className="w-10 h-10 rounded-full bg-zinc-800 border-2 border-zinc-700 shadow flex items-center justify-center text-white text-xs font-serif animate-pulse">
-                        ⚜️
-                      </div>
-                    </div>
-
-                  </div>
-                )}
-
-                {/* 2. Polaroid Scrapbook Mockup */}
-                {activeTemplate === "polaroid" && (
-                  <div className="w-full h-full bg-[#F3EFE9] p-4 flex flex-col justify-between border border-zinc-200/50 relative overflow-hidden animate-fade-in text-zinc-750">
-                    
-                    {/* Craft grid pattern simulation */}
-                    <div className="absolute inset-0 border-t border-dashed border-zinc-200/30 grid grid-cols-6 grid-rows-12 pointer-events-none" />
-
-                    <div className="space-y-4 pt-4 z-10">
-                      <div className="flex justify-between items-center text-[10px] font-mono text-zinc-400 uppercase">
-                        <span>Scrapbook Note</span>
-                        <span>12.06.2026</span>
-                      </div>
-
-                      {/* Mock Polaroid Frame */}
-                      <div className="w-full bg-[#FAF9F6] border border-zinc-200 shadow-md p-2 rounded flex flex-col gap-2 relative transform -rotate-1">
-                        
-                        {/* Tape Strip representation */}
-                        <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 w-14 h-4 bg-amber-100/60 border border-amber-250/20 backdrop-blur-[1px] rotate-2" />
-                        
-                        <div className="w-full aspect-square shadow-inner rounded-sm relative overflow-hidden">
-                          <img src="/img/holiday_bali_pic_mockup.png" alt="Foto liburan Bali" className="w-full h-full object-cover object-center" />
-                        </div>
-                        <div className="font-serif text-[10px] text-center font-bold tracking-tight italic">
-                          "Liburan di Bali tempo hari"
-                        </div>
-                      </div>
-
-                      <p className="text-[10px] text-zinc-550 leading-relaxed font-mono">
-                        Ingat waktu kita tersesat di Ubud dan kehujanan? Momen konyol yang tidak pernah bosan kuingat...
-                      </p>
-                    </div>
-
-                    <div className="space-y-2 pb-2 z-10">
-                      {/* Audio Player */}
-                      <div className="w-full py-2 px-3 bg-[#EAE3D9] border border-zinc-300/65 rounded-xl flex items-center gap-2 shadow-inner">
-                        <span className="text-[10px]">🎙️</span>
-                        <div className="flex-1 h-1 bg-zinc-250 rounded-full overflow-hidden">
-                          <div className="w-2/3 h-full bg-zinc-800" />
-                        </div>
-                        <span className="text-[9px] font-bold text-zinc-500">Play Note</span>
-                      </div>
-                    </div>
-
-                  </div>
-                )}
-
-                {/* 3. Nocturnal Journal Mockup */}
-                {activeTemplate === "nocturnal" && (
-                  <div className="w-full h-full bg-[#121212] p-4 flex flex-col justify-between border border-zinc-800 relative overflow-hidden animate-fade-in text-zinc-200">
-
-                    {/* Stars and Constellation representation */}
-                    <div className="absolute top-12 left-10 w-1.5 h-1.5 bg-white rounded-full animate-ping" />
-                    <div className="absolute bottom-32 right-12 w-1 h-1 bg-white/60 rounded-full animate-pulse" />
-                    <svg className="absolute inset-0 w-full h-full opacity-25" xmlns="http://www.w3.org/2000/svg">
-                      <line x1="20" y1="100" x2="80" y2="40" stroke="white" strokeWidth="0.5" strokeDasharray="2" />
-                      <line x1="80" y1="40" x2="160" y2="60" stroke="white" strokeWidth="0.5" strokeDasharray="2" />
-                    </svg>
-
-                    <div className="space-y-4 pt-4 z-10">
-                      <div className="flex justify-between items-center text-[9px] font-mono text-zinc-500 uppercase tracking-widest">
-                        <span>Constellation Jnl</span>
-                        <span>Lock Screen Active</span>
-                      </div>
-
-                      <h2 className="font-serif text-base font-bold text-zinc-100 glow-sm">Sepucuk Puisi Malam</h2>
-                      <p className="text-[10px] text-zinc-400 leading-relaxed font-mono">
-                        Di bawah bintang-bintang yang sama, aku menitipkan ucapan ini untukmu. Semoga jarak tidak pernah memudarkan rasa hangat ini...
-                      </p>
-
-                      {/* Mock Constellation Audio Ring */}
-                      <div className="flex justify-center py-2">
-                        <div className="w-20 h-20 rounded-full border border-dashed border-zinc-700 flex items-center justify-center relative animate-spin">
-                          <div className="absolute w-16 h-16 rounded-full border border-zinc-650 flex items-center justify-center">
-                            <span className="text-sm">🌌</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="pb-2 text-center z-10">
-                      <button className="w-full py-2 bg-zinc-900 border border-zinc-800 text-zinc-300 font-bold rounded-xl text-[9px] uppercase tracking-wider animate-pulse">
-                        🔮 Dengar Bisikan Suara
-                      </button>
-                    </div>
-
-                  </div>
-                )}
-
-                {/* 4. Gift Box Reveal Mockup */}
-                {activeTemplate === "giftbox" && (
-                  <div className="w-full h-full bg-gradient-to-b from-[#1E1214] to-[#0F090A] p-4 flex flex-col justify-between border border-zinc-800 relative overflow-hidden animate-fade-in text-white">
-
-                    {/* Gold sparkle representation */}
-                    <div className="absolute top-8 left-12 w-1.5 h-1.5 bg-yellow-400 rounded-full animate-ping opacity-60" />
-                    <div className="absolute top-20 right-16 w-1 h-1 bg-yellow-200 rounded-full animate-pulse opacity-50" />
-                    <div className="absolute bottom-28 left-8 w-1.5 h-1.5 bg-yellow-500 rounded-full animate-bounce opacity-40" />
-
-                    <div className="space-y-3 pt-4 z-10">
-                      <div className="flex justify-between items-center text-[9px] font-bold text-yellow-500/60 uppercase tracking-widest">
-                        <span>Gift Box</span>
-                        <span>12.06.2026</span>
-                      </div>
-
-                      {/* Upgraded Luxury Gift Box Visual */}
-                      <div className="flex justify-center py-2">
-                        <div className="relative w-20 h-20 flex flex-col items-center justify-end">
-                          {/* Bow on top */}
-                          <div className="absolute -top-3 w-10 h-6 flex justify-between z-20">
-                            <div className="w-4 h-4 bg-gradient-to-br from-yellow-300 to-amber-500 rounded-full rotate-45"></div>
-                            <div className="w-4 h-4 bg-gradient-to-bl from-yellow-300 to-amber-500 rounded-full -rotate-45"></div>
-                          </div>
-                          {/* Gift box lid */}
-                          <div className="w-[86px] h-4 bg-gradient-to-r from-red-700 to-red-900 rounded-t border border-yellow-500/20 relative z-10">
-                            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3 h-full bg-gradient-to-r from-yellow-400 to-amber-500"></div>
-                          </div>
-                          {/* Gift box body */}
-                          <div className="w-20 h-14 bg-gradient-to-b from-red-800 to-red-950 rounded-b border border-yellow-500/20 relative shadow-lg">
-                            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3 h-full bg-gradient-to-r from-yellow-400 to-amber-500"></div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="text-center space-y-0.5">
-                        <h3 className="font-script text-lg text-yellow-300 leading-none">Spesial Untukmu:</h3>
-                        <h2 className="font-serif text-xs font-bold text-white tracking-wide">Nadia</h2>
-                      </div>
-                    </div>
-
-                    <div className="pb-2 text-center z-10 space-y-1.5">
-                      <p className="text-[8px] text-yellow-500/60 font-bold uppercase tracking-wide animate-pulse">Sentuh kado untuk membuka</p>
-                      <div className="w-full py-1.5 bg-gradient-to-r from-amber-500 to-yellow-600 text-white font-bold rounded-xl text-[9px] uppercase tracking-wider shadow-md">
-                        🎁 Buka Hadiah
-                      </div>
-                    </div>
-
-                  </div>
-                )}
-
-                {/* 5. Playful Cute Gift Mockup */}
-                {activeTemplate === "playfulbox" && (
-                  <div className="w-full h-full bg-gradient-to-b from-[#FFE5EC] to-[#F0E6FF] p-4 flex flex-col justify-between border border-pink-100 relative overflow-hidden animate-fade-in text-[#3D2C47]">
-
-                    {/* Cute bubbles floating */}
-                    <div className="absolute top-10 left-10 text-xs animate-bounce opacity-70">🎈</div>
-                    <div className="absolute top-24 right-12 text-[10px] animate-ping opacity-60">💖</div>
-                    <div className="absolute bottom-24 left-6 text-xs animate-pulse opacity-50">⭐</div>
-
-                    <div className="space-y-3 pt-4 z-10">
-                      <div className="flex justify-between items-center text-[9px] font-bold text-[#FF6B8B] uppercase tracking-widest font-sans">
-                        <span>Cute Gift</span>
-                        <span>12.06.2026</span>
-                      </div>
-
-                      {/* Cute Box Visual */}
-                      <div className="flex justify-center py-2">
-                        <div className="relative w-20 h-20 flex flex-col items-center justify-end animate-bounce">
-                          {/* Puffy bow */}
-                          <div className="absolute -top-2 w-10 h-5 flex justify-between z-20">
-                            <div className="w-4 h-4 bg-[#B3F5FC] rounded-full border border-white rotate-12 shadow-sm"></div>
-                            <div className="w-4 h-4 bg-[#B3F5FC] rounded-full border border-white -rotate-12 shadow-sm"></div>
-                          </div>
-                          {/* Lid */}
-                          <div className="w-[84px] h-4 bg-gradient-to-r from-[#FFA6C9] to-[#FF85A2] rounded border-2 border-white relative z-10">
-                            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3 h-full bg-[#B3F5FC]"></div>
-                          </div>
-                          {/* Body */}
-                          <div className="w-18 h-12 bg-gradient-to-b from-[#FF85A2] to-[#FF6B8B] rounded-b-xl border-2 border-white relative shadow-md">
-                            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3 h-full bg-[#B3F5FC]"></div>
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="text-center space-y-0.5">
-                        <h3 className="font-script text-lg text-[#FF6B8B] font-bold leading-none">Ada Kado Lucu Buat:</h3>
-                        <h2 className="font-sans text-xs font-bold text-[#3D2C47] tracking-wide">Nadia 💖</h2>
-                      </div>
-                    </div>
-
-                    <div className="pb-2 text-center z-10 space-y-1.5 font-sans">
-                      <p className="text-[8px] text-[#FF85A2] font-bold uppercase tracking-wide animate-pulse">Tap kado untuk membuka</p>
-                      <div className="w-full py-1.5 bg-gradient-to-r from-[#FF85A2] to-[#FF6B8B] text-white font-bold rounded-xl text-[9px] uppercase tracking-wider shadow-md">
-                        🎉 Buka Kado!
-                      </div>
-                    </div>
-
-                  </div>
-                )}
-
-              </div>
+            {/* Template Preview Component */}
+            <div className="relative animate-float">
+              <TemplatePreview activeTemplate={activeTemplate} />
             </div>
 
           </div>
