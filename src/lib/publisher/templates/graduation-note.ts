@@ -730,7 +730,7 @@ export function generateGraduationNoteHtml(config: PublishedConfig): string {
     }
 
     .card-footer {
-      padding: 2rem 3rem 2.5rem;
+      padding: 2rem 3rem 4rem; /* Increased bottom padding to prevent next button from overlapping signature */
       border-top: 2px solid rgba(212, 175, 55, 0.2);
       text-align: center;
       background: linear-gradient(to top, rgba(250, 247, 240, 0.6), rgba(255,255,255,0.4));
@@ -775,15 +775,15 @@ export function generateGraduationNoteHtml(config: PublishedConfig): string {
 
     .card-next-fab {
       position: absolute;
-      bottom: 2rem;
-      right: 2rem;
-      width: 56px;
-      height: 56px;
+      bottom: 0.8rem; /* Moved lower to avoid overlapping signature text */
+      right: 1.2rem; /* Adjusted right positioning */
+      width: 48px; /* Slightly more compact size */
+      height: 48px;
       border-radius: 50%;
       background: linear-gradient(135deg, var(--navy), var(--navy-light), var(--accent-blue));
       border: 2.5px solid var(--gold);
       color: var(--white);
-      font-size: 1.6rem;
+      font-size: 1.4rem; /* Adjusted arrow font size slightly */
       cursor: pointer;
       display: flex;
       align-items: center;
