@@ -140,7 +140,7 @@ const CATEGORY_LABELS: Record<Category, string> = {
 };
 
 /* ── A minimal dummy CardDraft for preview generation ── */
-function makeDummyDraft(templateId: TemplateType) {
+export function makeDummyDraft(templateId: TemplateType) {
   return {
     template: templateId,
     fromName: "Me",

@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import { generateConfig } from "@/lib/publisher/generate-config";
 import { generateIndexHtml } from "@/lib/publisher/generate-index-html";
 import { CardDraft } from "@/lib/schemas/card-draft";
+import { makeDummyDraft } from "./TemplatePicker";
 
 interface LivePreviewProps {
   draft: CardDraft;
@@ -81,6 +82,50 @@ export default function LivePreview({ draft }: LivePreviewProps) {
       `;
       html = html.replace("</body>", `${bypassScript}</body>`);
     }
+
+    // 4. Inject watermark overlay for screenshot protection
+    const watermarkInject = `
+      <style>
+        .preview-watermark-overlay {
+          position: fixed;
+          inset: 0;
+          z-index: 999999;
+          pointer-events: none;
+          display: flex;
+          flex-wrap: wrap;
+          align-content: space-around;
+          justify-content: space-around;
+          overflow: hidden;
+          opacity: 0.12;
+          user-select: none;
+          -webkit-user-select: none;
+        }
+        .preview-watermark-item {
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+          font-size: 14px;
+          font-weight: 800;
+          color: #888;
+          text-shadow: 1px 1px 0px rgba(255,255,255,0.6), -1px -1px 0px rgba(0,0,0,0.3);
+          transform: rotate(-30deg);
+          white-space: nowrap;
+          text-transform: uppercase;
+          letter-spacing: 0.15em;
+          padding: 24px;
+        }
+      </style>
+      <div class="preview-watermark-overlay">
+        <div class="preview-watermark-item">DearNote Preview</div>
+        <div class="preview-watermark-item">DearNote Preview</div>
+        <div class="preview-watermark-item">DearNote Preview</div>
+        <div class="preview-watermark-item">DearNote Preview</div>
+        <div class="preview-watermark-item">DearNote Preview</div>
+        <div class="preview-watermark-item">DearNote Preview</div>
+        <div class="preview-watermark-item">DearNote Preview</div>
+        <div class="preview-watermark-item">DearNote Preview</div>
+        <div class="preview-watermark-item">DearNote Preview</div>
+      </div>
+    `;
+    html = html.replace("</body>", `${watermarkInject}</body>`);
 
     setSrcDoc(html);
   }, [draft, activeTab]);
@@ -251,10 +296,25 @@ export default function LivePreview({ draft }: LivePreviewProps) {
           <button
             type="button"
             onClick={() => {
+              // 1. Generate a dummy draft for this template to showcase ONLY the template design
+              const dummyDraft = makeDummyDraft(draft.template);
+              
+              // 2. Generate config
+              const dummyConfig = generateConfig("preview_id", dummyDraft);
+              
+              // 3. Add rich placeholder photos to showcase the layout design beautifully
+              dummyConfig.photos = [
+                { src: "/img/holiday_bali_pic_mockup.png", caption: "Nostalgic Travel Moments 🌴" },
+                { src: "/img/graduation_pic_mockup.png", caption: "Celebrating Achievements 🎓" }
+              ];
+              
+              // 4. Generate clean HTML without watermark for showcase
+              const dummyHtml = generateIndexHtml(dummyConfig);
+              
               const newWindow = window.open();
               if (newWindow) {
                 newWindow.document.open();
-                newWindow.document.write(srcDoc);
+                newWindow.document.write(dummyHtml);
                 newWindow.document.close();
               }
             }}

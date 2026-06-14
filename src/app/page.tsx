@@ -86,7 +86,9 @@ export default function Home() {
           <div className="flex flex-col md:flex-row gap-12 items-center justify-center">
 
             {/* Tabs (Left on desktop) */}
-            <div className="flex md:flex-col gap-3 w-full md:w-64 justify-center">
+            <div 
+              className="flex flex-wrap md:flex-col gap-2 md:gap-3 w-full md:w-64 justify-center md:justify-start"
+            >
               {[
                 { id: "pooh", label: "Playful Pooh", desc: "Beruang Pooh yang lucu tidur nyenyak dengan pot madu, nuansa hangat kuning keemasan, dan interaksi yang menggemaskan." },
                 { id: "graduation", label: "Graduation Note", desc: "Diploma elegan dengan wax seal emas, kanvas krem premium, font serif mewah, dan animasi confetti merayakan kelulusan." },
@@ -97,13 +99,13 @@ export default function Home() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTemplate(tab.id as TemplateKey)}
-                  className={`p-4 rounded-2xl text-left border transition-all cursor-pointer flex flex-col gap-1.5 w-full ${
+                  className={`p-3 md:p-4 rounded-xl md:rounded-2xl text-left border transition-all cursor-pointer flex flex-col gap-1 md:gap-1.5 flex-1 min-w-[105px] max-w-[145px] md:max-w-none md:w-full ${
                     activeTemplate === tab.id
-                      ? "bg-zinc-900 text-white border-zinc-900 shadow-md transform md:translate-x-2"
+                      ? "bg-zinc-900 text-white border-zinc-900 shadow-md transform scale-[1.02] md:scale-100 md:translate-x-2"
                       : "bg-white/60 hover:bg-white text-zinc-650 border-zinc-200/60"
                   }`}
                 >
-                  <span className="text-xs sm:text-sm font-bold block">{tab.label}</span>
+                  <span className="text-[10px] sm:text-xs sm:font-bold block text-center md:text-left">{tab.label}</span>
                   <span className={`text-[10px] leading-relaxed hidden md:block ${activeTemplate === tab.id ? "text-zinc-300" : "text-zinc-400"}`}>
                     {tab.desc}
                   </span>
