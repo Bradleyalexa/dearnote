@@ -20,18 +20,16 @@ export default function LivePreview({ draft }: LivePreviewProps) {
   const [isAutoFit, setIsAutoFit] = useState<boolean>(true);
 
   const targetWidth = 380;
-  const targetHeight = 696; // 380 / (9/16.5) = 696.67 (standard mobile aspect ratio)
+  const targetHeight = 696;
 
   useEffect(() => {
-    // 1. Generate Config
     const config = generateConfig("preview_id", draft);
 
-    // Override S3 remapping for preview using direct data URLs or public keys
     config.photos = draft.photos.map((p) => ({
-      src: p.src, // Use the src (public Url) for live previewing
+      src: p.src,
       caption: p.caption,
     }));
-    
+
     if (draft.voiceNote) {
       config.voiceNote = {
         src: draft.voiceNote.src,
@@ -40,7 +38,6 @@ export default function LivePreview({ draft }: LivePreviewProps) {
     }
 
     if (draft.bgMusic) {
-      // Encode each path segment to handle filenames with spaces or special chars
       const encodedBgSrc = draft.bgMusic.src
         .split("/")
         .map((seg) => encodeURIComponent(seg))
@@ -51,23 +48,17 @@ export default function LivePreview({ draft }: LivePreviewProps) {
       };
     }
 
-    // 2. Generate HTML
     let html = generateIndexHtml(config);
 
-    // 3. Inject preview control script
-    // If tab is "inside", automatically trigger the reveal animations
     if (activeTab === "inside") {
       const bypassScript = `
         <script>
           window.addEventListener('load', () => {
-            // Disable actual fetching from local folder, use pre-injected config
-            // Auto bypass code screen
             const codeInput = document.getElementById('secret-code-input') || document.getElementById('code-input');
             if (codeInput) {
               codeInput.value = config.secretCode || '123';
               if (typeof verifyCode === 'function') verifyCode();
             }
-            // Auto bypass envelope/moon/giftbox opening screen or wake up dog
             setTimeout(() => {
               const envelope = document.getElementById('envelope');
               if (envelope) openEnvelope();
@@ -83,7 +74,6 @@ export default function LivePreview({ draft }: LivePreviewProps) {
       html = html.replace("</body>", `${bypassScript}</body>`);
     }
 
-    // 4. Inject watermark overlay for screenshot protection
     const watermarkInject = `
       <style>
         .preview-watermark-overlay {
@@ -98,14 +88,13 @@ export default function LivePreview({ draft }: LivePreviewProps) {
           overflow: hidden;
           opacity: 0.12;
           user-select: none;
-          -webkit-user-select: none;
         }
         .preview-watermark-item {
-          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+          font-family: -apple-system, sans-serif;
           font-size: 14px;
           font-weight: 800;
           color: #888;
-          text-shadow: 1px 1px 0px rgba(255,255,255,0.6), -1px -1px 0px rgba(0,0,0,0.3);
+          text-shadow: 1px 1px 0px rgba(255,255,255,0.6);
           transform: rotate(-30deg);
           white-space: nowrap;
           text-transform: uppercase;
@@ -114,15 +103,7 @@ export default function LivePreview({ draft }: LivePreviewProps) {
         }
       </style>
       <div class="preview-watermark-overlay">
-        <div class="preview-watermark-item">DearNote Preview</div>
-        <div class="preview-watermark-item">DearNote Preview</div>
-        <div class="preview-watermark-item">DearNote Preview</div>
-        <div class="preview-watermark-item">DearNote Preview</div>
-        <div class="preview-watermark-item">DearNote Preview</div>
-        <div class="preview-watermark-item">DearNote Preview</div>
-        <div class="preview-watermark-item">DearNote Preview</div>
-        <div class="preview-watermark-item">DearNote Preview</div>
-        <div class="preview-watermark-item">DearNote Preview</div>
+        ${Array(9).fill('<div class="preview-watermark-item">DearNote Preview</div>').join('')}
       </div>
     `;
     html = html.replace("</body>", `${watermarkInject}</body>`);
@@ -136,11 +117,8 @@ export default function LivePreview({ draft }: LivePreviewProps) {
     const handleResize = () => {
       if (!containerRef.current) return;
       const parentWidth = containerRef.current.parentElement?.clientWidth || 400;
-      
-      // Calculate scaling factors
       const scaleX = (parentWidth - 16) / targetWidth;
-      const scaleY = (window.innerHeight - 220) / targetHeight; // 220px vertical buffer
-      
+      const scaleY = (window.innerHeight - 220) / targetHeight;
       const autoScale = Math.min(1, scaleX, scaleY);
       setZoom(Math.max(0.5, Number(autoScale.toFixed(2))));
     };
@@ -162,64 +140,64 @@ export default function LivePreview({ draft }: LivePreviewProps) {
   };
 
   return (
-    <div ref={containerRef} className="flex flex-col items-center space-y-4 w-full h-full max-w-[400px] mx-auto select-none">
+    <div ref={containerRef} className="flex flex-col items-center space-y-4 w-full max-w-[400px] mx-auto">
       {/* Preview Tabs */}
-      <div className="flex bg-zinc-100 p-1 rounded-xl w-full border border-zinc-200/50 shadow-sm font-sans flex-shrink-0">
+      <div className="flex bg-gray-100 p-1 rounded-xl w-full border border-gray-200 shadow-sm">
         <button
           type="button"
           onClick={() => setActiveTab("inside")}
-          className={`flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all ${
+          className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
             activeTab === "inside"
-              ? "bg-zinc-850 text-white shadow-sm bg-zinc-800"
-              : "text-zinc-500 hover:text-zinc-800"
+              ? "bg-gray-900 text-white shadow-sm"
+              : "text-gray-600 hover:text-gray-900"
           }`}
         >
-          Inside Note (Preview)
+          Inside Note
         </button>
         <button
           type="button"
           onClick={() => setActiveTab("cover")}
-          className={`flex-1 py-1.5 text-xs font-semibold rounded-lg transition-all ${
+          className={`flex-1 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
             activeTab === "cover"
-              ? "bg-zinc-850 text-white shadow-sm bg-zinc-800"
-              : "text-zinc-500 hover:text-zinc-800"
+              ? "bg-gray-900 text-white shadow-sm"
+              : "text-gray-600 hover:text-gray-900"
           }`}
         >
           Cover Screen
         </button>
       </div>
 
-      {/* Dynamic scaled container to hold layout without gaps */}
-      <div 
+      {/* Scaled container */}
+      <div
         className="relative transition-all duration-300"
-        style={{ 
-          width: `${targetWidth * zoom}px`, 
-          height: `${targetHeight * zoom}px` 
+        style={{
+          width: `${targetWidth * zoom}px`,
+          height: `${targetHeight * zoom}px`
         }}
       >
-        <div 
+        <div
           className="absolute top-0 left-0 origin-top-left transition-all duration-300"
-          style={{ 
+          style={{
             transform: `scale(${zoom})`,
             width: `${targetWidth}px`,
             height: `${targetHeight}px`
           }}
         >
-          {/* Mobile device mockup frame */}
+          {/* Mobile mockup frame */}
           <div className="relative w-full h-full bg-slate-900 rounded-[40px] p-3 shadow-2xl border-4 border-slate-800 ring-8 ring-slate-950 flex flex-col overflow-hidden">
-            {/* Speaker / Camera notch */}
+            {/* Notch */}
             <div className="absolute top-4 left-1/2 transform -translate-x-1/2 w-28 h-5 bg-slate-950 rounded-full z-20 flex items-center justify-center">
               <div className="w-12 h-1 bg-slate-800 rounded-full mb-1"></div>
               <div className="w-2.5 h-2.5 bg-slate-900 rounded-full border border-slate-800 ml-2"></div>
             </div>
 
-            {/* iframe viewport */}
+            {/* Viewport */}
             <div className="flex-1 w-full h-full rounded-[30px] overflow-hidden bg-slate-950 relative z-10">
               <iframe
                 ref={iframeRef}
                 srcDoc={srcDoc}
                 title="Live Card Preview"
-                className="w-full h-full border-none select-none"
+                className="w-full h-full border-none"
                 sandbox="allow-scripts allow-same-origin"
               />
             </div>
@@ -232,17 +210,17 @@ export default function LivePreview({ draft }: LivePreviewProps) {
         </div>
       </div>
 
-      {/* Zoom / Scale Control Panel */}
-      <div className="flex flex-col items-center gap-3.5 w-full bg-zinc-50 border border-zinc-200/60 rounded-2xl p-3 shadow-sm font-sans flex-shrink-0">
-        <div className="flex items-center space-x-1.5 text-xs">
-          <span className="text-zinc-400 font-semibold">Zoom:</span>
+      {/* Controls */}
+      <div className="flex flex-col items-center gap-3 w-full bg-gray-50 border border-gray-200 rounded-xl p-3 shadow-sm">
+        <div className="flex items-center space-x-2 text-xs">
+          <span className="text-gray-500 font-medium">Zoom:</span>
           <button
             type="button"
             onClick={() => handleManualZoom(0.7)}
-            className={`px-2 py-0.5 rounded-md text-[11px] font-bold transition-all cursor-pointer ${
-              !isAutoFit && zoom === 0.7 
-                ? "bg-zinc-800 text-white shadow-sm" 
-                : "text-zinc-500 hover:text-zinc-800 hover:bg-zinc-200/50"
+            className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all cursor-pointer ${
+              !isAutoFit && zoom === 0.7
+                ? "bg-gray-900 text-white shadow-sm"
+                : "text-gray-600 hover:text-gray-900 hover:bg-gray-200"
             }`}
           >
             70%
@@ -250,10 +228,10 @@ export default function LivePreview({ draft }: LivePreviewProps) {
           <button
             type="button"
             onClick={() => handleManualZoom(0.85)}
-            className={`px-2 py-0.5 rounded-md text-[11px] font-bold transition-all cursor-pointer ${
-              !isAutoFit && zoom === 0.85 
-                ? "bg-zinc-800 text-white shadow-sm" 
-                : "text-zinc-500 hover:text-zinc-800 hover:bg-zinc-200/50"
+            className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all cursor-pointer ${
+              !isAutoFit && zoom === 0.85
+                ? "bg-gray-900 text-white shadow-sm"
+                : "text-gray-600 hover:text-gray-900 hover:bg-gray-200"
             }`}
           >
             85%
@@ -261,10 +239,10 @@ export default function LivePreview({ draft }: LivePreviewProps) {
           <button
             type="button"
             onClick={() => handleManualZoom(1.0)}
-            className={`px-2 py-0.5 rounded-md text-[11px] font-bold transition-all cursor-pointer ${
-              !isAutoFit && zoom === 1.0 
-                ? "bg-zinc-800 text-white shadow-sm" 
-                : "text-zinc-500 hover:text-zinc-800 hover:bg-zinc-200/50"
+            className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all cursor-pointer ${
+              !isAutoFit && zoom === 1.0
+                ? "bg-gray-900 text-white shadow-sm"
+                : "text-gray-600 hover:text-gray-900 hover:bg-gray-200"
             }`}
           >
             100%
@@ -272,45 +250,40 @@ export default function LivePreview({ draft }: LivePreviewProps) {
           <button
             type="button"
             onClick={() => setIsAutoFit(true)}
-            className={`px-2 py-0.5 rounded-md text-[11px] font-bold transition-all cursor-pointer flex items-center gap-1 ${
-              isAutoFit 
-                ? "bg-emerald-600 text-white shadow-sm" 
-                : "text-zinc-500 hover:text-zinc-800 hover:bg-zinc-200/50"
+            className={`px-2.5 py-1 rounded-md text-xs font-semibold transition-all cursor-pointer inline-flex items-center gap-1 ${
+              isAutoFit
+                ? "bg-green-600 text-white shadow-sm"
+                : "text-gray-600 hover:text-gray-900 hover:bg-gray-200"
             }`}
           >
             {isAutoFit && <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>}
-            Auto Fit
+            Auto
           </button>
         </div>
 
-        <div className="w-full h-px bg-zinc-200/80"></div>
+        <div className="w-full h-px bg-gray-200"></div>
 
         <div className="flex items-center justify-center space-x-6 w-full">
           <button
             type="button"
             onClick={reloadPreview}
-            className="text-xs text-zinc-500 hover:text-zinc-800 font-semibold flex items-center gap-1.5 cursor-pointer transition-colors"
+            className="text-xs text-gray-600 hover:text-gray-900 font-medium inline-flex items-center gap-2 cursor-pointer transition-colors"
           >
-            <span>🔄</span> Reset Animation
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            Reset
           </button>
           <button
             type="button"
             onClick={() => {
-              // 1. Generate a dummy draft for this template to showcase ONLY the template design
               const dummyDraft = makeDummyDraft(draft.template);
-              
-              // 2. Generate config
               const dummyConfig = generateConfig("preview_id", dummyDraft);
-              
-              // 3. Add rich placeholder photos to showcase the layout design beautifully
               dummyConfig.photos = [
-                { src: "/img/holiday_bali_pic_mockup.png", caption: "Nostalgic Travel Moments 🌴" },
-                { src: "/img/graduation_pic_mockup.png", caption: "Celebrating Achievements 🎓" }
+                { src: "/img/holiday_bali_pic_mockup.png", caption: "Nostalgic Travel Moments" },
+                { src: "/img/graduation_pic_mockup.png", caption: "Celebrating Achievements" }
               ];
-              
-              // 4. Generate clean HTML without watermark for showcase
               const dummyHtml = generateIndexHtml(dummyConfig);
-              
               const newWindow = window.open();
               if (newWindow) {
                 newWindow.document.open();
@@ -318,9 +291,12 @@ export default function LivePreview({ draft }: LivePreviewProps) {
                 newWindow.document.close();
               }
             }}
-            className="text-xs text-zinc-500 hover:text-zinc-800 font-semibold flex items-center gap-1.5 cursor-pointer transition-colors"
+            className="text-xs text-gray-600 hover:text-gray-900 font-medium inline-flex items-center gap-2 cursor-pointer transition-colors"
           >
-            <span>✨</span> Open Full Preview
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+            Full Preview
           </button>
         </div>
       </div>

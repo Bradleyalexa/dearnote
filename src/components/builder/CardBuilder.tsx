@@ -37,12 +37,9 @@ export default function CardBuilder() {
     },
   });
 
-  // Watch the form state to feed the LivePreview dynamically
   const formValues = watch();
-
   const [paymentGroup, setPaymentGroup] = useState<"qris_ewallet" | "bank_card">("qris_ewallet");
 
-  // On mobile, scroll to preview after template selection so user sees result immediately
   const scrollToPreview = () => {
     if (typeof window !== "undefined" && window.innerWidth < 1024) {
       const el = document.getElementById("live-preview");
@@ -72,8 +69,6 @@ export default function CardBuilder() {
       }
 
       const { paymentUrl } = await res.json();
-      
-      // Redirect to simulated checkout holding / success page
       window.location.href = paymentUrl;
     } catch (err: any) {
       console.error(err);
@@ -83,24 +78,25 @@ export default function CardBuilder() {
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start max-w-7xl mx-auto py-4 px-2">
-      {/* Left Column: Customize Form (2 cols on desktop) */}
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 items-start max-w-7xl mx-auto py-4 sm:py-8">
+      {/* Left Column: Form (2 cols on desktop) */}
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="lg:col-span-2 space-y-8 bg-white/70 backdrop-blur-md border border-zinc-200/50 rounded-3xl p-6 sm:p-10 shadow-xl"
+        className="lg:col-span-2 space-y-6 sm:space-y-8 bg-white border border-gray-200 rounded-2xl p-6 sm:p-8 shadow-sm"
       >
-        <div>
-          <h2 className="font-serif text-3xl font-semibold text-zinc-800 mb-1">
+        {/* Header */}
+        <div className="pb-6 border-b border-gray-100">
+          <h2 className="font-serif text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
             Buat Catatan Kenangan
           </h2>
-          <p className="text-xs text-zinc-400 font-bold uppercase tracking-wider">
+          <p className="text-sm text-gray-600">
             Dokumentasikan momen berharga, pasang foto & rekaman suara, lalu bagikan.
           </p>
         </div>
 
         {/* 1. Template Selector */}
         <div className="space-y-3">
-          <label className="block text-sm font-semibold text-zinc-700">
+          <label className="block text-sm font-semibold text-gray-900">
             Pilih Desain & Tata Letak Catatan
           </label>
           <TemplatePicker
@@ -109,82 +105,98 @@ export default function CardBuilder() {
           />
         </div>
 
-
-
         {/* 2. Sender and Recipient */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          <div className="space-y-1.5">
-            <label className="block text-sm font-semibold text-zinc-700">Dari (Nama Anda)</label>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+          <div className="space-y-2">
+            <label className="block text-sm font-semibold text-gray-900">
+              Dari (Nama Anda) <span className="text-red-500">*</span>
+            </label>
             <input
               type="text"
               placeholder="Contoh: Kevin"
               {...register("fromName")}
-              maxLength={40}
-              className="w-full px-4 py-2.5 border border-zinc-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-zinc-400 text-sm font-medium text-zinc-700"
+              maxLength={50}
+              className="w-full px-4 py-3 border border-zinc-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-zinc-400 text-sm font-medium text-zinc-700"
             />
             {errors.fromName && (
-              <p className="text-xs text-red-500 font-medium">{errors.fromName.message}</p>
+              <p className="text-xs text-red-600 flex items-center gap-1">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+                {errors.fromName.message}
+              </p>
             )}
           </div>
 
-          <div className="space-y-1.5">
-            <label className="block text-sm font-semibold text-zinc-700">Untuk (Nama Penerima)</label>
+          <div className="space-y-2">
+            <label className="block text-sm font-semibold text-gray-900">
+              Untuk (Nama Penerima) <span className="text-red-500">*</span>
+            </label>
             <input
               type="text"
               placeholder="Contoh: Jessica"
               {...register("toName")}
-              maxLength={40}
-              className="w-full px-4 py-2.5 border border-zinc-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-zinc-400 text-sm font-medium text-zinc-700"
+              maxLength={50}
+              className="w-full px-4 py-3 border border-zinc-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-zinc-400 text-sm font-medium text-zinc-700"
             />
             {errors.toName && (
-              <p className="text-xs text-red-500 font-medium">{errors.toName.message}</p>
+              <p className="text-xs text-red-600 flex items-center gap-1">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+                {errors.toName.message}
+              </p>
             )}
           </div>
         </div>
 
-        {/* 3. Access Code Gate */}
-        <div className="space-y-1.5 bg-zinc-50 border border-zinc-200/60 rounded-2xl p-4">
-          <div className="flex items-center justify-between">
-            <label className="block text-sm font-semibold text-zinc-700">Kode Akses / Passkey (Opsional)</label>
-            <span className="text-[9px] bg-zinc-200 text-zinc-600 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
-              Keamanan
-            </span>
+        {/* 3. Access Code */}
+        <div className="space-y-2 bg-amber-50 border border-amber-200 rounded-xl p-5">
+          <div className="flex items-center gap-2 mb-2">
+            <svg className="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+            <label className="block text-sm font-semibold text-gray-900">
+              Kode Akses / Passkey (Opsional)
+            </label>
           </div>
-          <p className="text-xs text-zinc-400 font-medium leading-normal mb-2">
+          <p className="text-xs text-gray-700 leading-relaxed mb-3">
             Jika diisi, pengunjung wajib memasukkan kode ini sebelum catatan terbuka. Jika dikosongkan, catatan langsung terbuka otomatis.
           </p>
           <input
             type="text"
-            placeholder="Contoh: dearnote"
+            placeholder="Contoh: dearnote123"
             {...register("secretCode")}
             maxLength={12}
-            className="w-full px-4 py-2.5 border border-zinc-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-zinc-400 text-sm font-bold text-zinc-700 tracking-widest placeholder:tracking-normal placeholder:font-normal uppercase"
+            className="w-full px-4 py-3 border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent text-sm font-mono text-gray-900 tracking-wider uppercase placeholder:normal-case placeholder:tracking-normal"
           />
           {errors.secretCode && (
-            <p className="text-xs text-red-500 font-medium">{errors.secretCode.message}</p>
+            <p className="text-xs text-red-600">{errors.secretCode.message}</p>
           )}
         </div>
 
         {/* 4. Letter Contents */}
-        <div className="space-y-4">
-          <div className="space-y-1.5">
-            <label className="block text-sm font-semibold text-zinc-700">Judul Catatan (Opsional)</label>
+        <div className="space-y-4 sm:space-y-6">
+          <div className="space-y-2">
+            <label className="block text-sm font-semibold text-gray-900">Judul Catatan (Opsional)</label>
             <input
               type="text"
               placeholder="Contoh: Kenangan Perjalanan Terbaik Kita"
               {...register("letterTitle")}
               maxLength={80}
-              className="w-full px-4 py-2.5 border border-zinc-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-zinc-400 text-sm font-medium text-zinc-700"
+              className="w-full px-4 py-3 border border-zinc-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-zinc-400 text-sm font-medium text-zinc-700"
             />
             {errors.letterTitle && (
-              <p className="text-xs text-red-500 font-medium">{errors.letterTitle.message}</p>
+              <p className="text-xs text-red-600">{errors.letterTitle.message}</p>
             )}
           </div>
 
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <label className="block text-sm font-semibold text-zinc-700">Isi Catatan / Jurnal</label>
-              <span className="text-xs text-zinc-400 font-medium">
+              <label className="block text-sm font-semibold text-gray-900">
+                Isi Catatan / Jurnal <span className="text-red-500">*</span>
+              </label>
+              <span className="text-xs text-gray-500 font-medium">
                 {formValues.letterBody?.length || 0}/3000
               </span>
             </div>
@@ -192,16 +204,21 @@ export default function CardBuilder() {
               placeholder="Tuliskan cerita, ucapan, atau catatan harian Anda di sini..."
               {...register("letterBody")}
               maxLength={3000}
-              rows={6}
-              className="w-full px-4 py-3 border border-zinc-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-zinc-400 text-sm font-medium text-zinc-700 leading-relaxed"
+              rows={8}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent text-sm text-gray-900 leading-relaxed resize-none"
             />
             {errors.letterBody && (
-              <p className="text-xs text-red-500 font-medium">{errors.letterBody.message}</p>
+              <p className="text-xs text-red-600 flex items-center gap-1">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+                {errors.letterBody.message}
+              </p>
             )}
           </div>
         </div>
 
-        {/* 5. Photo Uploader (Max 5) */}
+        {/* 5. Photo Uploader */}
         <Controller
           control={control}
           name="photos"
@@ -210,7 +227,7 @@ export default function CardBuilder() {
           )}
         />
 
-        {/* 6. Voice Note Uploader (Optional) */}
+        {/* 6. Voice Note Uploader */}
         <Controller
           control={control}
           name="voiceNote"
@@ -219,7 +236,7 @@ export default function CardBuilder() {
           )}
         />
 
-        {/* 7. Background Music Selector (Optional) */}
+        {/* 7. Background Music Selector */}
         <Controller
           control={control}
           name="bgMusic"
@@ -228,104 +245,118 @@ export default function CardBuilder() {
           )}
         />
 
-        {/* 7. Final Message */}
-        <div className="space-y-1.5">
-          <label className="block text-sm font-semibold text-zinc-700">Pesan Penutup (Opsional)</label>
+        {/* 8. Final Message */}
+        <div className="space-y-2">
+          <label className="block text-sm font-semibold text-gray-900">Pesan Penutup (Opsional)</label>
           <input
             type="text"
             placeholder="Contoh: Terima kasih atas segalanya."
             {...register("finalMessage")}
             maxLength={300}
-            className="w-full px-4 py-2.5 border border-zinc-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-zinc-400 text-sm font-medium text-zinc-700"
+            className="w-full px-4 py-3 border border-zinc-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-zinc-400 text-sm font-medium text-zinc-700"
           />
           {errors.finalMessage && (
-            <p className="text-xs text-red-500 font-medium">{errors.finalMessage.message}</p>
+            <p className="text-xs text-red-600">{errors.finalMessage.message}</p>
           )}
         </div>
 
-        {/* 8. Payment Method Group */}
-        <div className="space-y-3 pt-4 border-t border-zinc-150">
-          <label className="block text-sm font-semibold text-zinc-700">Pilih Metode Pembayaran</label>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 font-sans">
-            {/* Option 1: QRIS / E-Wallet */}
+        {/* 9. Payment Method */}
+        <div className="space-y-4 pt-6 border-t border-gray-200">
+          <label className="block text-sm font-semibold text-gray-900">Pilih Metode Pembayaran</label>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div
               onClick={() => setPaymentGroup("qris_ewallet")}
-              className={`border-2 rounded-xl p-4 flex items-center justify-between cursor-pointer transition-all ${
+              className={`border-2 rounded-xl p-4 cursor-pointer transition-all ${
                 paymentGroup === "qris_ewallet"
-                  ? "border-zinc-800 bg-zinc-50/50 shadow-sm"
-                  : "border-gray-200 hover:border-zinc-300 hover:bg-zinc-50/10"
+                  ? "border-gray-900 bg-gray-50 shadow-sm"
+                  : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
               }`}
             >
-              <div className="flex flex-col text-left">
-                <span className="text-xs font-bold text-zinc-850 text-[#18181b]">QRIS / E-Wallet</span>
-                <span className="text-[10px] text-zinc-400 mt-1 leading-normal">OVO, GoPay, Dana, LinkAja, dll</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="text-sm font-bold text-zinc-850 text-[#18181b]">Rp5.000</span>
-                <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${
-                  paymentGroup === "qris_ewallet" ? "border-zinc-800" : "border-gray-300"
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
+                  </svg>
+                  <span className="text-sm font-bold text-gray-900">QRIS / E-Wallet</span>
+                </div>
+                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                  paymentGroup === "qris_ewallet" ? "border-gray-900" : "border-gray-300"
                 }`}>
-                  {paymentGroup === "qris_ewallet" && <div className="w-2 h-2 rounded-full bg-zinc-800" />}
+                  {paymentGroup === "qris_ewallet" && <div className="w-2.5 h-2.5 rounded-full bg-gray-900" />}
                 </div>
               </div>
+              <p className="text-xs text-gray-600 mb-3">GoPay, OVO, Dana, LinkAja, ShopeePay, dll</p>
+              <div className="text-2xl font-bold text-gray-900">Rp5.000</div>
             </div>
 
-            {/* Option 2: Bank Transfer / Credit Card */}
             <div
               onClick={() => setPaymentGroup("bank_card")}
-              className={`border-2 rounded-xl p-4 flex items-center justify-between cursor-pointer transition-all ${
+              className={`border-2 rounded-xl p-4 cursor-pointer transition-all ${
                 paymentGroup === "bank_card"
-                  ? "border-zinc-800 bg-zinc-50/50 shadow-sm"
-                  : "border-gray-200 hover:border-zinc-300 hover:bg-zinc-50/10"
+                  ? "border-gray-900 bg-gray-50 shadow-sm"
+                  : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
               }`}
             >
-              <div className="flex flex-col text-left">
-                <span className="text-xs font-bold text-zinc-850 text-[#18181b]">Transfer Bank / Kartu</span>
-                <span className="text-[10px] text-zinc-400 mt-1 leading-normal">Virtual Account (BCA, Mandiri, dll), Visa/Mastercard</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <span className="text-sm font-bold text-zinc-850 text-[#18181b]">Rp8.000</span>
-                <div className={`w-4 h-4 rounded-full border flex items-center justify-center ${
-                  paymentGroup === "bank_card" ? "border-zinc-800" : "border-gray-300"
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                  </svg>
+                  <span className="text-sm font-bold text-gray-900">Transfer Bank / Kartu</span>
+                </div>
+                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
+                  paymentGroup === "bank_card" ? "border-gray-900" : "border-gray-300"
                 }`}>
-                  {paymentGroup === "bank_card" && <div className="w-2 h-2 rounded-full bg-zinc-800" />}
+                  {paymentGroup === "bank_card" && <div className="w-2.5 h-2.5 rounded-full bg-gray-900" />}
                 </div>
               </div>
+              <p className="text-xs text-gray-600 mb-3">VA BCA/Mandiri/BRI, Visa/Mastercard</p>
+              <div className="text-2xl font-bold text-gray-900">Rp8.000</div>
             </div>
           </div>
         </div>
 
         {submitError && (
-          <p className="text-sm text-red-500 font-semibold text-center">{submitError}</p>
+          <div className="flex items-center gap-2 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <svg className="w-5 h-5 text-red-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p className="text-sm text-red-800">{submitError}</p>
+          </div>
         )}
 
         {/* Submit Button */}
         <button
           type="submit"
           disabled={submitting}
-          className="w-full py-4 bg-zinc-800 hover:bg-zinc-900 disabled:bg-zinc-300 text-white font-bold rounded-2xl shadow-md transition-all transform hover:-translate-y-0.5 active:translate-y-0 text-center flex items-center justify-center gap-2 text-sm uppercase tracking-wider cursor-pointer"
+          className="w-full py-4 bg-gray-900 hover:bg-gray-800 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
         >
           {submitting ? (
             <>
-              <span className="animate-spin text-lg">⏳</span> Memproses Pesanan Anda...
+              <svg className="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Memproses Pesanan...
             </>
           ) : (
             <>
-              🔒 Terbitkan Catatan
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+              Terbitkan Catatan
             </>
           )}
         </button>
 
-        <p className="text-[10px] text-zinc-400 font-semibold text-center">
-          *Setelah pembayaran dikonfirmasi, catatan akan langsung terbit dan **tidak dapat diedit kembali**.
+        <p className="text-xs text-gray-500 text-center">
+          Setelah pembayaran dikonfirmasi, catatan akan langsung terbit dan <strong>tidak dapat diedit kembali</strong>.
         </p>
       </form>
 
-      {/* Right Column: Live Visual Preview Mockup (1 col on desktop) */}
-      <div id="live-preview" className="self-stretch w-full flex justify-center scroll-mt-6">
-        <div className="lg:sticky lg:top-8 w-full flex justify-center h-fit">
-          <LivePreview draft={formValues} />
-        </div>
+      {/* Right Column: Live Preview (1 col on desktop) */}
+      <div id="live-preview" className="lg:sticky lg:top-8 w-full">
+        <LivePreview draft={formValues} />
       </div>
     </div>
   );

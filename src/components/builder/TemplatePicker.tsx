@@ -6,18 +6,17 @@ import { generateConfig } from "@/lib/publisher/generate-config";
 import { generateIndexHtml } from "@/lib/publisher/generate-index-html";
 import { TemplateType } from "@/lib/schemas/card-draft";
 
-/* ── Template Registry ── */
 export const TEMPLATE_REGISTRY: {
   id: TemplateType;
   name: string;
   description: string;
   category: "semua" | "minimal" | "romantic" | "playful" | "interaktif";
-  accent: string; // CSS gradient or solid colour for the swatch dot
+  accent: string;
   tags: string[];
 }[] = [
   {
     id: "eternal_love",
-    name: "Eternal Love Cinema ✨",
+    name: "Eternal Love Cinema",
     description: "Most premium couple template — cinematic chapters, canvas particles, typewriter, polaroid gallery & fireworks finale.",
     category: "romantic",
     accent: "linear-gradient(135deg, #2c1020, #c8936a)",
@@ -89,7 +88,7 @@ export const TEMPLATE_REGISTRY: {
   },
   {
     id: "playful_dog",
-    name: "Playful Shiba Dog 🐾",
+    name: "Playful Shiba Dog",
     description: "Interactive Shiba Inu! Tap to wake up, feed bones, play ball.",
     category: "playful",
     accent: "linear-gradient(135deg, #FFF9E6, #FFE4CC)",
@@ -97,7 +96,7 @@ export const TEMPLATE_REGISTRY: {
   },
   {
     id: "playful_pooh",
-    name: "Playful Pooh Bear 🍯",
+    name: "Playful Pooh Bear",
     description: "Sleeping Pooh, wake up, eat honey, play with bees — super cute!",
     category: "playful",
     accent: "linear-gradient(135deg, #FFFDE6, #FFCB4C33)",
@@ -105,7 +104,7 @@ export const TEMPLATE_REGISTRY: {
   },
   {
     id: "birthday_magic",
-    name: "Birthday Magic 🎂",
+    name: "Birthday Magic",
     description: "Ultimate flagship birthday template! Pop rising balloons, blow out interactive cake candles, swipe 3D memories, and trigger fireworks!",
     category: "playful",
     accent: "linear-gradient(135deg, #FF99C8, #FCF6BD, #D0F4DE, #A9DEF9, #E4C1F9)",
@@ -113,16 +112,16 @@ export const TEMPLATE_REGISTRY: {
   },
   {
     id: "blooming_note",
-    name: "Blooming Note 🌸",
-    description: "Heartwarming floral surprise flagship. Tap the wax-sealed envelope to watch procedurally growing vines and blooming wildflowers fill the screen, transitioning into an elegant glassmorphic letter.",
+    name: "Blooming Note",
+    description: "Heartwarming floral surprise flagship. Tap the wax-sealed envelope to watch procedurally growing vines and blooming wildflowers fill the screen.",
     category: "playful",
     accent: "linear-gradient(135deg, #FFB7B2, #E8C7EA, #B5EAD7)",
     tags: ["Anniversary", "Birthday", "Flagship"],
   },
   {
     id: "graduation_note",
-    name: "Graduation Note 🎓",
-    description: "Premium flagship graduation celebration. Sophisticated navy & gold design, elegant diploma scroll reveal, confetti burst, yearbook photo gallery, and inspiring finale.",
+    name: "Graduation Note",
+    description: "Premium flagship graduation celebration. Sophisticated navy & gold design, elegant diploma scroll reveal, confetti burst.",
     category: "interaktif",
     accent: "linear-gradient(135deg, #1B2B4D, #D4AF37, #4A90E2)",
     tags: ["Graduation", "Achievement", "Flagship"],
@@ -139,7 +138,6 @@ const CATEGORY_LABELS: Record<Category, string> = {
   interaktif: "Interactive",
 };
 
-/* ── A minimal dummy CardDraft for preview generation ── */
 export function makeDummyDraft(templateId: TemplateType) {
   return {
     template: templateId,
@@ -151,11 +149,10 @@ export function makeDummyDraft(templateId: TemplateType) {
     photos: [],
     voiceNote: undefined,
     bgMusic: undefined,
-    finalMessage: "With all my love 💖",
+    finalMessage: "With all my love",
   };
 }
 
-/* ── Props ── */
 interface TemplatePickerProps {
   value: TemplateType;
   onChange: (id: TemplateType) => void;
@@ -181,7 +178,6 @@ export default function TemplatePicker({ value, onChange }: TemplatePickerProps)
       ? TEMPLATE_REGISTRY
       : TEMPLATE_REGISTRY.filter((t) => t.category === category);
 
-  /* Generate preview HTML when highlighted changes */
   const generatePreview = useCallback((templateId: TemplateType) => {
     setPreviewLoading(true);
     const draft = makeDummyDraft(templateId);
@@ -189,7 +185,6 @@ export default function TemplatePicker({ value, onChange }: TemplatePickerProps)
     config.photos = [];
     let html = generateIndexHtml(config);
 
-    // Inject auto-reveal script
     const bypassScript = `
       <script>
         window.addEventListener('load', () => {
@@ -231,7 +226,6 @@ export default function TemplatePicker({ value, onChange }: TemplatePickerProps)
     setIsOpen(false);
   };
 
-  /* Prevent body scroll when open */
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
@@ -243,88 +237,84 @@ export default function TemplatePicker({ value, onChange }: TemplatePickerProps)
 
   return (
     <>
-      {/* ── Trigger button ── */}
+      {/* Trigger button */}
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="w-full flex items-center justify-between px-4 py-3.5 bg-white border-2 border-zinc-200 hover:border-zinc-300 rounded-2xl shadow-sm hover:shadow-md transition-all group"
+        className="w-full flex items-center justify-between px-4 py-4 bg-white border-2 border-gray-200 hover:border-gray-300 rounded-xl shadow-sm hover:shadow-md transition-all cursor-pointer group"
       >
-        <div className="flex items-center gap-3">
-          {/* colour swatch */}
+        <div className="flex items-center gap-3 flex-1 min-w-0">
           <div
-            className="w-9 h-9 rounded-xl flex-shrink-0 shadow-sm"
+            className="w-12 h-12 rounded-lg flex-shrink-0 shadow-sm"
             style={{ background: currentTemplate?.accent ?? "#e5e7eb" }}
           />
-          <div className="text-left">
-            <p className="text-sm font-semibold text-zinc-800 leading-tight">
+          <div className="text-left min-w-0 flex-1">
+            <p className="text-sm font-bold text-gray-900 truncate">
               {currentTemplate?.name ?? "Select Design"}
             </p>
-            <p className="text-[10px] text-zinc-400 leading-tight mt-0.5">
-              {currentTemplate?.description.slice(0, 55)}…
+            <p className="text-xs text-gray-500 truncate mt-0.5">
+              {currentTemplate?.description.slice(0, 60)}...
             </p>
           </div>
         </div>
-        <span className="text-zinc-400 group-hover:text-zinc-700 transition-colors ml-2 text-xs font-semibold flex items-center gap-1">
-          Change
-          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-          </svg>
-        </span>
+        <svg className="w-5 h-5 text-gray-400 group-hover:text-gray-600 transition-colors flex-shrink-0 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
       </button>
 
-      {/* ── Modal overlay ── */}
+      {/* Modal overlay */}
       {mounted && typeof document !== "undefined" && isOpen && createPortal(
         <div
-          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center animate-modal-fade"
-          style={{ background: "rgba(0,0,0,0.5)", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)" }}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200"
           onClick={handleClose}
         >
-          {/* Panel */}
           <div
-            className="bg-white w-full sm:w-[95vw] max-w-6xl rounded-t-3xl sm:rounded-3xl shadow-2xl flex flex-col animate-modal-scale"
-            style={{ maxHeight: "92vh", minHeight: "60vh" }}
+            className="bg-white w-full max-w-6xl rounded-2xl shadow-2xl flex flex-col animate-in zoom-in-95 duration-200 overflow-hidden"
+            style={{ maxHeight: "90vh" }}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-zinc-100 flex-shrink-0">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
               <div>
-                <h2 className="text-lg font-bold text-zinc-800 font-serif">Choose Note Design</h2>
-                <p className="text-xs text-zinc-400 mt-0.5">Click a design for a live preview</p>
+                <h2 className="text-xl font-bold text-gray-900 font-serif">Choose Note Design</h2>
+                <p className="text-xs text-gray-500 mt-0.5">Click a design for a live preview</p>
               </div>
               <button
                 type="button"
                 onClick={handleClose}
-                className="w-8 h-8 rounded-full bg-zinc-100 hover:bg-zinc-200 flex items-center justify-center transition-colors"
+                className="w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors cursor-pointer"
               >
-                <svg className="w-4 h-4 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                <svg className="w-5 h-5 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
 
             {/* Category tabs */}
-            <div className="flex gap-2 px-6 py-3 overflow-x-auto flex-shrink-0 scrollbar-hide border-b border-zinc-100">
-              {(Object.keys(CATEGORY_LABELS) as Category[]).map((cat) => (
-                <button
-                  key={cat}
-                  type="button"
-                  onClick={() => setCategory(cat)}
-                  className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all ${
-                    category === cat
-                      ? "bg-zinc-800 text-white shadow-sm"
-                      : "bg-zinc-100 text-zinc-500 hover:bg-zinc-200"
-                  }`}
-                >
-                  {CATEGORY_LABELS[cat]}
-                </button>
-              ))}
+            <div className="border-b border-gray-100">
+              <div className="flex gap-2 px-6 py-3 overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+                {(Object.keys(CATEGORY_LABELS) as Category[]).map((cat) => (
+                  <button
+                    key={cat}
+                    type="button"
+                    onClick={() => setCategory(cat)}
+                    className={`px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap transition-all cursor-pointer flex-shrink-0 ${
+                      category === cat
+                        ? "bg-gray-900 text-white shadow-sm"
+                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    }`}
+                  >
+                    {CATEGORY_LABELS[cat]}
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Body: list + preview */}
             <div className="flex flex-1 overflow-hidden">
 
-              {/* Left: Template list (scrollable) */}
-              <div className="w-full sm:w-64 lg:w-72 flex-shrink-0 overflow-y-auto border-r border-zinc-100 py-3 px-3 space-y-1.5">
+              {/* Left: Template list */}
+              <div className="w-full sm:w-80 flex-shrink-0 overflow-y-auto border-r border-gray-100 p-4 space-y-2">
                 {filtered.map((tmpl) => {
                   const isSelected = highlighted === tmpl.id;
                   return (
@@ -332,31 +322,30 @@ export default function TemplatePicker({ value, onChange }: TemplatePickerProps)
                       key={tmpl.id}
                       type="button"
                       onClick={() => handleHighlight(tmpl.id)}
-                      className={`w-full text-left px-3 py-3 rounded-2xl flex items-center gap-3 transition-all ${
+                      className={`w-full text-left px-4 py-3 rounded-xl flex items-center gap-3 transition-all cursor-pointer ${
                         isSelected
-                          ? "bg-zinc-800 shadow-sm"
-                          : "hover:bg-zinc-50"
+                          ? "bg-gray-900 shadow-md"
+                          : "hover:bg-gray-50"
                       }`}
                     >
-                      {/* swatch */}
                       <div
-                        className="w-10 h-10 rounded-xl flex-shrink-0 shadow-sm"
+                        className="w-12 h-12 rounded-lg flex-shrink-0 shadow-sm"
                         style={{ background: tmpl.accent }}
                       />
                       <div className="flex-1 min-w-0">
-                        <p className={`text-xs font-bold leading-tight truncate ${isSelected ? "text-white" : "text-zinc-800"}`}>
+                        <p className={`text-sm font-bold truncate ${isSelected ? "text-white" : "text-gray-900"}`}>
                           {tmpl.name}
                         </p>
-                        <p className={`text-[10px] leading-tight mt-0.5 line-clamp-2 ${isSelected ? "text-zinc-300" : "text-zinc-400"}`}>
+                        <p className={`text-xs line-clamp-2 mt-1 ${isSelected ? "text-gray-300" : "text-gray-500"}`}>
                           {tmpl.description}
                         </p>
                         {tmpl.tags.length > 0 && (
-                          <div className="flex gap-1 mt-1.5 flex-wrap">
+                          <div className="flex gap-1 mt-2 flex-wrap">
                             {tmpl.tags.slice(0, 2).map((tag) => (
                               <span
                                 key={tag}
-                                className={`text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full ${
-                                  isSelected ? "bg-zinc-600 text-zinc-200" : "bg-zinc-100 text-zinc-500"
+                                className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                                  isSelected ? "bg-gray-700 text-gray-200" : "bg-gray-100 text-gray-600"
                                 }`}
                               >
                                 {tag}
@@ -366,8 +355,8 @@ export default function TemplatePicker({ value, onChange }: TemplatePickerProps)
                         )}
                       </div>
                       {isSelected && (
-                        <svg className="w-4 h-4 text-white flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        <svg className="w-5 h-5 text-white flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                         </svg>
                       )}
                     </button>
@@ -375,17 +364,20 @@ export default function TemplatePicker({ value, onChange }: TemplatePickerProps)
                 })}
               </div>
 
-              {/* Right: Live iframe preview */}
-              <div className="hidden sm:flex flex-1 flex-col items-center justify-center bg-zinc-50 relative overflow-hidden p-6">
+              {/* Right: Live preview */}
+              <div className="hidden sm:flex flex-1 flex-col items-center justify-center bg-gray-50 p-8 overflow-hidden">
                 {previewLoading ? (
                   <div className="flex flex-col items-center gap-3">
-                    <div className="w-8 h-8 border-2 border-zinc-300 border-t-zinc-700 rounded-full animate-spin" />
-                    <p className="text-xs text-zinc-400">Loading preview…</p>
+                    <svg className="w-10 h-10 text-gray-400 animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <p className="text-sm text-gray-500">Loading preview...</p>
                   </div>
                 ) : (
-                  <div className="relative flex flex-row items-center justify-center gap-6 w-full h-full max-h-[62vh] lg:max-h-[70vh] min-h-0 px-6">
-                    {/* Clean edge-to-edge preview viewport card */}
-                    <div className="relative h-full max-h-[480px] lg:max-h-[560px] aspect-[4/3] bg-white rounded-2xl overflow-hidden shadow-xl border border-zinc-200 flex-shrink-0">
+                  <div className="flex items-center gap-8 w-full h-full max-h-[600px]">
+                    {/* Preview viewport */}
+                    <div className="flex-1 h-full max-h-[500px] aspect-[9/16] bg-white rounded-2xl overflow-hidden shadow-xl border border-gray-200">
                       <iframe
                         ref={iframeRef}
                         srcDoc={previewSrc}
@@ -395,27 +387,27 @@ export default function TemplatePicker({ value, onChange }: TemplatePickerProps)
                       />
                     </div>
 
-                    {/* template info panel on the side */}
-                    <div className="flex flex-col text-left w-56 flex-shrink-0 bg-white border border-zinc-200 rounded-2xl p-5 shadow-md">
+                    {/* Info panel */}
+                    <div className="w-64 bg-white border border-gray-200 rounded-xl p-5 shadow-sm flex-shrink-0">
                       {(() => {
                         const tmpl = TEMPLATE_REGISTRY.find((t) => t.id === highlighted);
                         return tmpl ? (
                           <>
-                            <span className="text-[9px] font-bold uppercase tracking-wider text-zinc-400">
-                              Design Details
-                            </span>
-                            <h3 className="text-base font-extrabold text-zinc-850 text-[#18181b] mt-1 leading-tight font-serif">
-                              {tmpl.name}
-                            </h3>
-                            <div className="w-8 h-1 bg-zinc-800 rounded-full mt-2.5 mb-3" />
-                            <p className="text-[11px] text-zinc-500 leading-relaxed font-medium">
+                            <div className="mb-4">
+                              <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                Design Details
+                              </span>
+                              <h3 className="text-lg font-bold text-gray-900 mt-2 font-serif">
+                                {tmpl.name}
+                              </h3>
+                            </div>
+                            <div className="w-12 h-1 bg-gray-900 rounded-full mb-4" />
+                            <p className="text-sm text-gray-600 leading-relaxed mb-4">
                               {tmpl.description}
                             </p>
-                            
-                            {/* Accent theme indicator */}
-                            <div className="flex items-center gap-2 mt-4 pt-4 border-t border-zinc-100">
-                              <div className="w-3.5 h-3.5 rounded-full shadow-sm" style={{ background: tmpl.accent }} />
-                              <span className="text-[9px] text-zinc-400 font-bold uppercase tracking-wider">
+                            <div className="flex items-center gap-2 pt-4 border-t border-gray-100">
+                              <div className="w-4 h-4 rounded-full shadow-sm" style={{ background: tmpl.accent }} />
+                              <span className="text-xs text-gray-500 font-medium">
                                 Color Theme
                               </span>
                             </div>
@@ -429,23 +421,23 @@ export default function TemplatePicker({ value, onChange }: TemplatePickerProps)
 
             </div>
 
-            {/* Footer action */}
-            <div className="flex items-center justify-between px-6 py-4 border-t border-zinc-100 flex-shrink-0 gap-3">
-              <p className="text-xs text-zinc-400 hidden sm:block">
+            {/* Footer */}
+            <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200 bg-gray-50">
+              <p className="text-sm text-gray-600 hidden sm:block">
                 {highlighted !== value ? `Will use: ${TEMPLATE_REGISTRY.find((t) => t.id === highlighted)?.name}` : "This design is currently selected"}
               </p>
-              <div className="flex gap-2 ml-auto">
+              <div className="flex gap-3 ml-auto w-full sm:w-auto">
                 <button
                   type="button"
                   onClick={handleClose}
-                  className="px-4 py-2.5 text-sm font-semibold text-zinc-600 bg-zinc-100 hover:bg-zinc-200 rounded-xl transition-all"
+                  className="flex-1 sm:flex-none px-5 py-2.5 text-sm font-semibold text-gray-700 bg-white hover:bg-gray-100 border border-gray-300 rounded-lg transition-all cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="button"
                   onClick={handleConfirm}
-                  className="px-5 py-2.5 text-sm font-semibold text-white bg-zinc-800 hover:bg-zinc-900 rounded-xl transition-all shadow-sm"
+                  className="flex-1 sm:flex-none px-6 py-2.5 text-sm font-semibold text-white bg-gray-900 hover:bg-gray-800 rounded-lg transition-all shadow-sm cursor-pointer"
                 >
                   Select This Design
                 </button>

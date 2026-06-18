@@ -3,19 +3,28 @@ import CardBuilder from "@/components/builder/CardBuilder";
 
 export default function CreatePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#FBFBF9] via-[#F4F3EF] to-[#EAE8E2] text-zinc-800 flex flex-col font-sans">
+    <div className="min-h-screen bg-white text-gray-900 flex flex-col font-sans antialiased">
+
       {/* Header / Logo */}
-      <header className="w-full max-w-7xl mx-auto px-6 py-4 flex justify-between items-center border-b border-zinc-200/50">
-        <Link href="/" className="flex items-center group">
-          <img
-            src="/dearnote_logo.png"
-            alt="DearNote Logo"
-            className="h-12 w-auto object-contain transition-transform group-hover:scale-[1.02]"
-          />
-        </Link>
-        <Link href="/" className="text-xs text-zinc-500 hover:text-zinc-800 font-semibold uppercase tracking-wider flex items-center gap-1">
-          <span>←</span> Kembali ke Home
-        </Link>
+      <header className="w-full border-b border-gray-100 bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+          <Link href="/" className="flex items-center group">
+            <img
+              src="/dearnote_logo.png"
+              alt="DearNote Logo"
+              className="h-12 w-auto object-contain transition-transform group-hover:scale-105"
+            />
+          </Link>
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 font-medium transition-colors cursor-pointer group"
+          >
+            <svg className="w-5 h-5 transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Kembali ke Home
+          </Link>
+        </div>
       </header>
 
       {/* Main builder form body */}
@@ -24,8 +33,8 @@ export default function CreatePage() {
       </main>
 
       {/* Footer */}
-      <footer className="w-full py-6 text-center text-[10px] text-slate-500 font-medium">
-        Made with DearNote • Kartu yang diterbitkan aktif selama 90 hari
+      <footer className="w-full border-t border-gray-100 py-6 text-center text-sm text-gray-500">
+        <p>Made with DearNote • Kartu yang diterbitkan aktif selama 90 hari</p>
       </footer>
     </div>
   );

@@ -5,7 +5,7 @@ import imageCompression from "browser-image-compression";
 
 interface PhotoItem {
   key: string;
-  src: string; // Public URL for preview
+  src: string;
   caption?: string;
 }
 
@@ -34,24 +34,22 @@ export default function PhotoUploader({ value, onChange }: PhotoUploaderProps) {
       const newPhotos: PhotoItem[] = [...value];
 
       for (const file of files) {
-        // 1. Client-Side WebP Compression
         const options = {
-          maxSizeMB: 1, // Compress to under 1MB
+          maxSizeMB: 1,
           maxWidthOrHeight: 1200,
           useWebWorker: true,
           fileType: "image/webp",
         };
-        
+
         console.log(`Compressing ${file.name}...`);
         const compressedFile = await imageCompression(file, options);
         console.log(`Compressed size: ${(compressedFile.size / 1024).toFixed(1)} KB`);
 
-        // 2. Request Pre-signed Upload URL
         const res = await fetch("/api/upload-url", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            fileName: file.name.replace(/\.[^/.]+$/, "") + ".webp", // Set extension to WebP
+            fileName: file.name.replace(/\.[^/.]+$/, "") + ".webp",
             contentType: "image/webp",
             fileSize: compressedFile.size,
             kind: "photo",
@@ -65,7 +63,6 @@ export default function PhotoUploader({ value, onChange }: PhotoUploaderProps) {
 
         const { uploadUrl, key, publicUrl } = await res.json();
 
-        // 3. Upload Directly to R2 Bucket
         console.log(`Uploading ${key} directly to R2...`);
         const uploadRes = await fetch(uploadUrl, {
           method: "PUT",
@@ -81,7 +78,7 @@ export default function PhotoUploader({ value, onChange }: PhotoUploaderProps) {
 
         newPhotos.push({
           key,
-          src: publicUrl, // Local preview URL
+          src: publicUrl,
           caption: "",
         });
       }
@@ -92,7 +89,6 @@ export default function PhotoUploader({ value, onChange }: PhotoUploaderProps) {
       setError(err.message || "Terjadi kesalahan saat mengunggah foto.");
     } finally {
       setUploading(false);
-      // Reset input element
       e.target.value = "";
     }
   };
@@ -112,10 +108,10 @@ export default function PhotoUploader({ value, onChange }: PhotoUploaderProps) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <label className="block text-sm font-semibold text-zinc-700">
+        <label className="block text-sm font-semibold text-gray-900">
           Foto Kenangan (Maksimal 5)
         </label>
-        <span className="text-xs text-zinc-400 font-medium">{value.length}/5 Foto</span>
+        <span className="text-xs text-gray-500 font-medium">{value.length}/5 Foto</span>
       </div>
 
       {/* Photo Grid Previews */}
@@ -124,30 +120,33 @@ export default function PhotoUploader({ value, onChange }: PhotoUploaderProps) {
           {value.map((photo, idx) => (
             <div
               key={photo.key}
-              className="flex flex-col bg-white border border-zinc-200/60 rounded-xl overflow-hidden shadow-sm p-3 relative group"
+              className="flex flex-col bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow p-3 relative group"
             >
               {/* Delete button */}
               <button
                 type="button"
                 onClick={() => removePhoto(idx)}
-                className="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/60 hover:bg-red-600 text-white flex items-center justify-center transition-all z-10 text-xs"
+                className="absolute top-5 right-5 w-8 h-8 rounded-full bg-gray-900/80 hover:bg-red-600 text-white flex items-center justify-center transition-all z-10 cursor-pointer group/btn"
+                aria-label="Hapus foto"
               >
-                ✕
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </button>
 
               <img
                 src={photo.src}
                 alt={`Uploaded ${idx + 1}`}
-                className="w-full h-32 object-cover rounded-lg mb-2"
+                className="w-full h-40 object-cover rounded-lg mb-3"
               />
 
               <input
                 type="text"
-                placeholder="Tambahkan teks/caption foto..."
+                placeholder="Tambahkan caption foto..."
                 value={photo.caption || ""}
                 onChange={(e) => updateCaption(idx, e.target.value)}
                 maxLength={120}
-                className="w-full px-2 py-1.5 text-xs border border-zinc-200 rounded-md focus:outline-none focus:ring-1 focus:ring-zinc-400 font-medium text-zinc-650"
+                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 text-gray-900"
               />
             </div>
           ))}
@@ -158,20 +157,32 @@ export default function PhotoUploader({ value, onChange }: PhotoUploaderProps) {
       {value.length < 5 && (
         <div className="relative">
           <label
-            className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-xl cursor-pointer transition-all ${
+            className={`flex flex-col items-center justify-center w-full min-h-[140px] border-2 border-dashed rounded-xl transition-all ${
               uploading
-                ? "border-zinc-350 bg-zinc-50/20 cursor-not-allowed"
-                : "border-zinc-200 bg-zinc-50/5 hover:bg-zinc-50/10 hover:border-zinc-350"
+                ? "border-gray-300 bg-gray-50 cursor-not-allowed"
+                : "border-gray-300 bg-white hover:bg-gray-50 hover:border-gray-400 cursor-pointer"
             }`}
           >
-            <div className="flex flex-col items-center justify-center pt-5 pb-6 text-center px-4">
-              <span className="text-3xl mb-2">{uploading ? "⏳" : "📸"}</span>
-              <p className="text-sm font-semibold text-zinc-700">
-                {uploading ? "Mengompres & Mengunggah..." : "Pilih/Tarik Foto"}
-              </p>
-              <p className="text-xs text-zinc-400 mt-1">
-                Format: JPG, PNG, WEBP (Otomatis dikompres)
-              </p>
+            <div className="flex flex-col items-center justify-center py-6 px-4 text-center">
+              {uploading ? (
+                <>
+                  <svg className="w-10 h-10 text-gray-400 animate-spin mb-3" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  <p className="text-sm font-semibold text-gray-700">Mengompres & Mengunggah...</p>
+                  <p className="text-xs text-gray-500 mt-1">Mohon tunggu sebentar</p>
+                </>
+              ) : (
+                <>
+                  <svg className="w-12 h-12 text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  <p className="text-sm font-semibold text-gray-900 mb-1">Klik untuk memilih foto</p>
+                  <p className="text-xs text-gray-500">atau tarik & lepas file di sini</p>
+                  <p className="text-xs text-gray-400 mt-2">JPG, PNG, WEBP • Otomatis dikompres</p>
+                </>
+              )}
             </div>
             <input
               type="file"
@@ -186,7 +197,12 @@ export default function PhotoUploader({ value, onChange }: PhotoUploaderProps) {
       )}
 
       {error && (
-        <p className="text-xs text-red-500 font-medium transition-all">{error}</p>
+        <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+          <svg className="w-5 h-5 text-red-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <p className="text-sm text-red-800">{error}</p>
+        </div>
       )}
     </div>
   );

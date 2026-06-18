@@ -23,76 +23,16 @@ interface ColorPalette {
 }
 
 const PALETTES: Record<ThemeColor, ColorPalette> = {
-  charcoal: {
-    qr: "#27272A", // zinc-800
-    bg: "#FAF9F6", // Ivory
-    frame: "#EAE8E2", // Linen
-    text: "#18181B", // Zinc-900
-    border: "#C5A880", // Muted Gold/Bronze
-  },
-  burgundy: {
-    qr: "#6B1D2F", // Muted Burgundy
-    bg: "#FFFDFB", // Warm Rose Cream
-    frame: "#F5E6E8", // Muted Soft Pink
-    text: "#4A0E17", // Deep Wine
-    border: "#D4A373", // Warm Sand
-  },
-  sage: {
-    qr: "#2E3F35", // Dark Forest Sage
-    bg: "#F4F7F5", // Soft sage bg
-    frame: "#DFE5E1", // Sage frame
-    text: "#1E2B22", // Deep Sage Text
-    border: "#9CA99E", // Muted Sage Border
-  },
-  navy: {
-    qr: "#1E293B", // slate-800
-    bg: "#F8FAFC", // slate-50
-    frame: "#E2E8F0", // slate-200
-    text: "#0F172A", // slate-900
-    border: "#94A3B8", // slate-400
-  },
-  terracotta: {
-    qr: "#8B4F35", // Terracotta clay
-    bg: "#FCFAF7", // Warm soft cream
-    frame: "#F2E8DF", // Soft clay accent
-    text: "#5C2E16", // Deep clay
-    border: "#D9A07E", // Muted terracotta border
-  },
-  forest: {
-    qr: "#1E352F", // Deep pine forest
-    bg: "#FAFBF9", // Soft leaf cream
-    frame: "#E5EAE4", // Pale forest mist
-    text: "#0F201C", // Dark forest pine
-    border: "#A3B899", // Muted leaf sage
-  },
-  espresso: {
-    qr: "#3E2723", // Dark espresso
-    bg: "#FAF8F5", // Warm oat cream
-    frame: "#EFEBE9", // Warm taupe
-    text: "#271C19", // Deep coffee text
-    border: "#D7CCC8", // Soft mocha border
-  },
-  plum: {
-    qr: "#4A154B", // Plum purple
-    bg: "#FDFBFC", // Pale pinkish cream
-    frame: "#F5E6F5", // Soft plum mist
-    text: "#2D092E", // Deep plum/black
-    border: "#C5A880", // Gold/bronze accent
-  },
-  lavender: {
-    qr: "#5C5470", // Pastel lavender purple
-    bg: "#F9F7FC", // Pale lavender cream
-    frame: "#ECE8F5", // Soft lavender accent
-    text: "#352F44", // Deep indigo-slate
-    border: "#B3A3C4", // Pastel purple accent
-  },
-  peach: {
-    qr: "#3D6B5A", // Soft teal/mint
-    bg: "#FAFDFC", // Very soft pale mint
-    frame: "#F1E3D3", // Pastel peach accent
-    text: "#2A4B3E", // Deep forest text
-    border: "#E29578", // Warm pastel peach border
-  },
+  charcoal: { qr: "#27272A", bg: "#FAF9F6", frame: "#EAE8E2", text: "#18181B", border: "#C5A880" },
+  burgundy: { qr: "#6B1D2F", bg: "#FFFDFB", frame: "#F5E6E8", text: "#4A0E17", border: "#D4A373" },
+  sage: { qr: "#2E3F35", bg: "#F4F7F5", frame: "#DFE5E1", text: "#1E2B22", border: "#9CA99E" },
+  navy: { qr: "#1E293B", bg: "#F8FAFC", frame: "#E2E8F0", text: "#0F172A", border: "#94A3B8" },
+  terracotta: { qr: "#8B4F35", bg: "#FCFAF7", frame: "#F2E8DF", text: "#5C2E16", border: "#D9A07E" },
+  forest: { qr: "#1E352F", bg: "#FAFBF9", frame: "#E5EAE4", text: "#0F201C", border: "#A3B899" },
+  espresso: { qr: "#3E2723", bg: "#FAF8F5", frame: "#EFEBE9", text: "#271C19", border: "#D7CCC8" },
+  plum: { qr: "#4A154B", bg: "#FDFBFC", frame: "#F5E6F5", text: "#2D092E", border: "#C5A880" },
+  lavender: { qr: "#5C5470", bg: "#F9F7FC", frame: "#ECE8F5", text: "#352F44", border: "#B3A3C4" },
+  peach: { qr: "#3D6B5A", bg: "#FAFDFC", frame: "#F1E3D3", text: "#2A4B3E", border: "#E29578" },
 };
 
 export default function QrCodeCustomizer({ cardUrl, orderId, onClose }: QrCodeCustomizerProps) {
@@ -119,7 +59,6 @@ export default function QrCodeCustomizer({ cardUrl, orderId, onClose }: QrCodeCu
 
     const palette = PALETTES[themeColor];
 
-    // Helper: Draw Rounded Rectangle
     const fillRoundRect = (c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) => {
       c.beginPath();
       c.moveTo(x + r, y);
@@ -135,7 +74,6 @@ export default function QrCodeCustomizer({ cardUrl, orderId, onClose }: QrCodeCu
       c.fill();
     };
 
-    // Helper: Draw Symmetrical Heart
     const drawHeartPath = (c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) => {
       c.beginPath();
       c.moveTo(x + w / 2, y + h / 5);
@@ -146,36 +84,27 @@ export default function QrCodeCustomizer({ cardUrl, orderId, onClose }: QrCodeCu
       c.closePath();
     };
 
-    // 1. Draw Background
+    // Background setup based on frame design
     if (frameDesign === "heart-outline") {
-      // Clear canvas to keep transparent outside the heart shape
       ctx.clearRect(0, 0, canvasSize, canvasSize);
-      
-      // Fill the main heart card background
       ctx.fillStyle = palette.bg;
       drawHeartPath(ctx, 30, 35, 540, 530);
       ctx.fill();
-
-      // Stroke outer gold border
       ctx.strokeStyle = palette.border;
       ctx.lineWidth = 10;
       ctx.lineCap = "round";
       ctx.lineJoin = "round";
       drawHeartPath(ctx, 30, 35, 540, 530);
       ctx.stroke();
-
-      // Stroke inner border
       ctx.strokeStyle = palette.frame;
       ctx.lineWidth = 2.5;
       drawHeartPath(ctx, 48, 53, 504, 494);
       ctx.stroke();
     } else {
-      // Standard full rectangle background
       ctx.fillStyle = palette.bg;
       ctx.fillRect(0, 0, canvasSize, canvasSize);
     }
 
-    // 2. Render Frames / Background decorations
     let qrSize = 380;
     let qrX = 110;
     let qrY = 110;
@@ -184,82 +113,57 @@ export default function QrCodeCustomizer({ cardUrl, orderId, onClose }: QrCodeCu
       qrSize = 340;
       qrX = 130;
       qrY = 75;
-
-      // Draw polaroid card frame inner boundary
       ctx.strokeStyle = palette.border;
       ctx.lineWidth = 2;
       ctx.strokeRect(20, 20, canvasSize - 40, canvasSize - 40);
-
-      // Draw a subtle border around QR area
       ctx.strokeStyle = palette.frame;
       ctx.lineWidth = 1;
       ctx.strokeRect(qrX - 10, qrY - 10, qrSize + 20, qrSize + 20);
-
-      // Draw Polaroid Text
       ctx.fillStyle = palette.text;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      
-      // Title
       ctx.font = "bold 26px var(--font-playfair), Georgia, serif";
       ctx.fillText("Scan untuk Membuka Jurnal", canvasSize / 2, 490);
-      
-      // Subtitle / Brand
       ctx.font = "italic 16px var(--font-playfair), Georgia, serif";
       ctx.fillStyle = palette.border;
       ctx.fillText("Abadikan momen indah bersama DearNote", canvasSize / 2, 530);
-
-      // Draw small decorative heart at bottom center
       ctx.fillStyle = palette.qr;
       drawHeartPath(ctx, canvasSize / 2 - 8, 550, 16, 16);
       ctx.fill();
-
     } else if (frameDesign === "heart-silhouette") {
       qrSize = 270;
       qrX = 165;
       qrY = 165;
-
-      // Draw a large, soft silhouette heart behind the QR code
       ctx.fillStyle = themeColor === "charcoal" ? "#EAE8E2" : palette.frame;
       drawHeartPath(ctx, 50, 50, 500, 500);
       ctx.fill();
-
     } else if (frameDesign === "heart-outline") {
-      // "Kartu Hati": QR size is centered exactly at 165
       qrSize = 270;
       qrX = 165;
       qrY = 165;
-
-      // Draw text at the bottom tip of the heart
       ctx.fillStyle = palette.text;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.font = "italic 18px var(--font-playfair), Georgia, serif";
       ctx.fillText("DearNote", canvasSize / 2, 490);
-
-      // Draw a tiny heart below text
       ctx.fillStyle = palette.qr;
       drawHeartPath(ctx, canvasSize / 2 - 6, 515, 12, 12);
       ctx.fill();
     }
 
-    // 3. Generate QR Code Matrix
     const qrObj = QRCode.create(cardUrl, { errorCorrectionLevel: "H" });
     const matrix = qrObj.modules;
     const count = matrix.size;
     const mSize = qrSize / count;
 
-    // Calculate center logo boundary (5x5 modules skipped in center)
     const hasCenterLogo = centerLogo !== "none";
     const centerStart = Math.floor(count / 2) - 2;
     const centerEnd = Math.floor(count / 2) + 2;
 
-    // 4. Draw Modules
     ctx.fillStyle = palette.qr;
 
     for (let r = 0; r < count; r++) {
       for (let c = 0; c < count; c++) {
-        // Skip central area if we want to place a center logo
         if (hasCenterLogo && r >= centerStart && r <= centerEnd && c >= centerStart && c <= centerEnd) {
           continue;
         }
@@ -270,46 +174,31 @@ export default function QrCodeCustomizer({ cardUrl, orderId, onClose }: QrCodeCu
         const x = qrX + c * mSize;
         const y = qrY + r * mSize;
 
-        // Finder patterns (three large corners, size 7x7 modules)
         const isFinderPattern =
-          (r < 7 && c < 7) || // Top Left
-          (r < 7 && c >= count - 7) || // Top Right
-          (r >= count - 7 && c < 7); // Bottom Left
+          (r < 7 && c < 7) ||
+          (r < 7 && c >= count - 7) ||
+          (r >= count - 7 && c < 7);
 
         if (isFinderPattern) {
-          // Render Finder Patterns as slightly rounded rectangles for high compatibility and premium look
-          // We only want to draw the outer border (7x7) and inner dot (3x3), but since the matrix has them all as 1s,
-          // drawing a customized finder eye looks extremely clean.
-          // To draw custom eye, let's identify the top-left of each finder pattern
           let fRow = 0;
           let fCol = 0;
           if (r < 7 && c >= count - 7) fCol = count - 7;
           if (r >= count - 7 && c < 7) fRow = count - 7;
 
-          // Draw outer eye (7x7 modules) only once per finder pattern
           if (r === fRow && c === fCol) {
             const eyeSize = 7 * mSize;
             const eyeX = qrX + fCol * mSize;
             const eyeY = qrY + fRow * mSize;
-
-            // Clear this 7x7 area to draw custom finder eye
             ctx.fillStyle = palette.bg;
             ctx.fillRect(eyeX, eyeY, eyeSize, eyeSize);
-
-            // Draw outer rounded box
             ctx.fillStyle = palette.qr;
             fillRoundRect(ctx, eyeX, eyeY, eyeSize, eyeSize, mSize * 1.8);
-
-            // Draw inner cutout (white)
             ctx.fillStyle = palette.bg;
             fillRoundRect(ctx, eyeX + mSize, eyeY + mSize, eyeSize - 2 * mSize, eyeSize - 2 * mSize, mSize * 1.0);
-
-            // Draw center rounded dot (3x3)
             ctx.fillStyle = palette.qr;
             fillRoundRect(ctx, eyeX + 2 * mSize, eyeY + 2 * mSize, eyeSize - 4 * mSize, eyeSize - 4 * mSize, mSize * 0.6);
           }
         } else {
-          // Render normal pixel modules based on style
           if (pixelStyle === "square") {
             ctx.fillRect(x, y, mSize + 0.5, mSize + 0.5);
           } else if (pixelStyle === "dots") {
@@ -325,14 +214,12 @@ export default function QrCodeCustomizer({ cardUrl, orderId, onClose }: QrCodeCu
       }
     }
 
-    // 5. Draw Center Logo
     if (hasCenterLogo) {
       const logoModules = 5;
       const logoSize = logoModules * mSize;
       const logoX = qrX + centerStart * mSize;
       const logoY = qrY + centerStart * mSize;
 
-      // Draw solid bg clearing area with small rounded rect
       ctx.fillStyle = palette.bg;
       fillRoundRect(ctx, logoX - 2, logoY - 2, logoSize + 4, logoSize + 4, mSize * 0.6);
 
@@ -341,11 +228,11 @@ export default function QrCodeCustomizer({ cardUrl, orderId, onClose }: QrCodeCu
         drawHeartPath(ctx, logoX + logoSize * 0.15, logoY + logoSize * 0.15, logoSize * 0.7, logoSize * 0.7);
         ctx.fill();
       } else if (centerLogo === "note") {
-        // Draw note notebook symbol
-        ctx.font = `${logoSize * 0.65}px sans-serif`;
+        ctx.fillStyle = palette.qr;
+        ctx.font = `${logoSize * 0.5}px sans-serif`;
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText("📓", logoX + logoSize / 2, logoY + logoSize / 2 + 1);
+        ctx.fillText("📝", logoX + logoSize / 2, logoY + logoSize / 2);
       }
     }
   };
@@ -364,44 +251,47 @@ export default function QrCodeCustomizer({ cardUrl, orderId, onClose }: QrCodeCu
   };
 
   return (
-    <div className="fixed inset-0 bg-zinc-900/60 backdrop-blur-sm z-50 flex items-start justify-center p-4 overflow-y-auto md:items-center py-6 sm:py-10">
-      <div className="bg-[#FAF9F6] border border-zinc-200/80 shadow-2xl rounded-3xl max-w-4xl w-full flex flex-col md:flex-row p-6 sm:p-8 gap-8 animate-fade-in relative text-left my-auto">
-        
+    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+      <div className="bg-white border border-gray-200 shadow-2xl rounded-2xl max-w-4xl w-full flex flex-col md:flex-row p-6 sm:p-8 gap-8 relative my-auto">
+
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 w-9 h-9 rounded-full bg-zinc-100 hover:bg-zinc-200/80 text-zinc-500 hover:text-zinc-800 transition-all flex items-center justify-center font-bold text-lg cursor-pointer z-10"
+          className="absolute top-4 right-4 w-9 h-9 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600 hover:text-gray-900 transition-all flex items-center justify-center cursor-pointer z-10"
+          aria-label="Close"
         >
-          ✕
+          <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
         </button>
 
-        {/* Left Column: Canvas Preview */}
+        {/* Left: Canvas Preview */}
         <div className="flex flex-col items-center justify-center flex-1 space-y-4">
-          <div className="w-full max-w-[320px] aspect-square rounded-2xl overflow-hidden bg-white border border-zinc-200 shadow-md p-3 flex items-center justify-center">
+          <div className="w-full max-w-[320px] aspect-square rounded-2xl overflow-hidden bg-white border border-gray-200 shadow-md p-3 flex items-center justify-center">
             <canvas
               ref={canvasRef}
               className="w-full h-full object-contain"
               style={{ maxWidth: "100%", height: "auto" }}
             />
           </div>
-          <p className="text-[11px] text-zinc-400 font-semibold tracking-wider uppercase text-center">
-            Preview QR Code 
+          <p className="text-xs text-gray-500 font-medium uppercase tracking-wider text-center">
+            Preview QR Code
           </p>
         </div>
 
-        {/* Right Column: Customizer Controls */}
+        {/* Right: Controls */}
         <div className="flex-[1.2] flex flex-col space-y-6 justify-between">
           <div className="space-y-2">
-            <h2 className="font-serif text-2xl font-bold text-zinc-800">Modifikasi QR Code</h2>
-            <p className="text-xs text-zinc-500 font-medium">
+            <h2 className="font-serif text-2xl font-bold text-gray-900">Modifikasi QR Code</h2>
+            <p className="text-sm text-gray-600">
               Sesuaikan tampilan QR Code jurnal Anda sebelum diunduh.
             </p>
           </div>
 
-          <div className="space-y-4 text-xs font-semibold text-zinc-700">
-            {/* 1. Theme Color Selector */}
-            <div className="space-y-2">
-              <span className="text-[10px] text-zinc-400 uppercase tracking-wider block">Warna Tema</span>
+          <div className="space-y-6">
+            {/* Theme Colors */}
+            <div className="space-y-3">
+              <span className="text-xs font-semibold text-gray-700 uppercase tracking-wider block">Warna Tema</span>
               <div className="flex flex-wrap gap-2 sm:gap-3">
                 {(Object.keys(PALETTES) as ThemeColor[]).map((key) => {
                   const p = PALETTES[key];
@@ -411,32 +301,33 @@ export default function QrCodeCustomizer({ cardUrl, orderId, onClose }: QrCodeCu
                       key={key}
                       onClick={() => setThemeColor(key)}
                       style={{ backgroundColor: p.qr }}
-                      className={`w-7 h-7 rounded-full relative cursor-pointer transition-all transform hover:scale-110 border-2 ${
-                        isActive ? "border-zinc-800 ring-2 ring-zinc-400" : "border-transparent"
+                      className={`w-8 h-8 rounded-full cursor-pointer transition-all hover:scale-110 border-2 ${
+                        isActive ? "border-gray-900 ring-2 ring-gray-400" : "border-transparent"
                       }`}
                       title={key}
+                      aria-label={`Theme color ${key}`}
                     />
                   );
                 })}
               </div>
             </div>
 
-            {/* 2. Pixel Style */}
-            <div className="space-y-2">
-              <span className="text-[10px] text-zinc-400 uppercase tracking-wider block">Bentuk Pixel</span>
+            {/* Pixel Style */}
+            <div className="space-y-3">
+              <span className="text-xs font-semibold text-gray-700 uppercase tracking-wider block">Bentuk Pixel</span>
               <div className="grid grid-cols-3 gap-2">
                 {[
                   { id: "square", label: "Kotak" },
                   { id: "dots", label: "Bulat" },
-                  { id: "hearts", label: "Hati ❤️" },
+                  { id: "hearts", label: "Hati" },
                 ].map((item) => (
                   <button
                     key={item.id}
                     onClick={() => setPixelStyle(item.id as PixelStyle)}
-                    className={`py-2 px-3 rounded-xl border text-center transition-all cursor-pointer ${
+                    className={`py-2.5 px-3 rounded-lg border text-sm font-semibold transition-all cursor-pointer ${
                       pixelStyle === item.id
-                        ? "bg-zinc-800 text-white border-zinc-800 shadow-sm"
-                        : "bg-white text-zinc-650 border-zinc-200 hover:border-zinc-300"
+                        ? "bg-gray-900 text-white border-gray-900 shadow-sm"
+                        : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
                     }`}
                   >
                     {item.label}
@@ -445,9 +336,9 @@ export default function QrCodeCustomizer({ cardUrl, orderId, onClose }: QrCodeCu
               </div>
             </div>
 
-            {/* 3. Frame Design */}
-            <div className="space-y-2">
-              <span className="text-[10px] text-zinc-400 uppercase tracking-wider block">Desain Bingkai</span>
+            {/* Frame Design */}
+            <div className="space-y-3">
+              <span className="text-xs font-semibold text-gray-700 uppercase tracking-wider block">Desain Bingkai</span>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {[
                   { id: "none", label: "Tanpa" },
@@ -458,10 +349,10 @@ export default function QrCodeCustomizer({ cardUrl, orderId, onClose }: QrCodeCu
                   <button
                     key={item.id}
                     onClick={() => setFrameDesign(item.id as FrameDesign)}
-                    className={`py-2 px-1 rounded-xl border text-center text-[11px] transition-all cursor-pointer ${
+                    className={`py-2.5 px-2 rounded-lg border text-xs font-semibold transition-all cursor-pointer ${
                       frameDesign === item.id
-                        ? "bg-zinc-800 text-white border-zinc-800 shadow-sm"
-                        : "bg-white text-zinc-650 border-zinc-200 hover:border-zinc-300"
+                        ? "bg-gray-900 text-white border-gray-900 shadow-sm"
+                        : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
                     }`}
                   >
                     {item.label}
@@ -470,9 +361,9 @@ export default function QrCodeCustomizer({ cardUrl, orderId, onClose }: QrCodeCu
               </div>
             </div>
 
-            {/* 4. Center Logo */}
-            <div className="space-y-2">
-              <span className="text-[10px] text-zinc-400 uppercase tracking-wider block">Logo Tengah</span>
+            {/* Center Logo */}
+            <div className="space-y-3">
+              <span className="text-xs font-semibold text-gray-700 uppercase tracking-wider block">Logo Tengah</span>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {[
                   { id: "none", label: "Tanpa" },
@@ -483,10 +374,10 @@ export default function QrCodeCustomizer({ cardUrl, orderId, onClose }: QrCodeCu
                   <button
                     key={item.id}
                     onClick={() => setCenterLogo(item.id as CenterLogo)}
-                    className={`py-2 px-1 rounded-xl border text-center text-[11px] transition-all cursor-pointer ${
+                    className={`py-2.5 px-2 rounded-lg border text-xs font-semibold transition-all cursor-pointer ${
                       centerLogo === item.id
-                        ? "bg-zinc-800 text-white border-zinc-800 shadow-sm"
-                        : "bg-white text-zinc-650 border-zinc-200 hover:border-zinc-300"
+                        ? "bg-gray-900 text-white border-gray-900 shadow-sm"
+                        : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
                     }`}
                   >
                     {item.label}
@@ -496,17 +387,20 @@ export default function QrCodeCustomizer({ cardUrl, orderId, onClose }: QrCodeCu
             </div>
           </div>
 
-          {/* Action Buttons */}
+          {/* Actions */}
           <div className="pt-4 flex flex-col sm:flex-row gap-3">
             <button
               onClick={handleDownload}
-              className="flex-1 py-3 bg-zinc-800 hover:bg-zinc-900 text-white font-bold rounded-2xl shadow-xl transition-all transform hover:-translate-y-0.5 active:translate-y-0 text-center flex items-center justify-center gap-2 cursor-pointer text-xs uppercase tracking-wider"
+              className="flex-1 py-3 bg-gray-900 hover:bg-gray-800 text-white font-bold rounded-xl shadow-md transition-all inline-flex items-center justify-center gap-2 cursor-pointer"
             >
-              📥 Unduh QR Code
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              Unduh QR Code
             </button>
             <button
               onClick={onClose}
-              className="py-3 px-6 bg-zinc-100 hover:bg-zinc-200 text-zinc-650 font-bold rounded-2xl transition-all text-center cursor-pointer text-xs uppercase tracking-wider border border-zinc-200/40"
+              className="py-3 px-6 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition-all cursor-pointer border border-gray-300"
             >
               Tutup
             </button>

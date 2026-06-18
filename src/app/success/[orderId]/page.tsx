@@ -38,7 +38,7 @@ export default function SuccessPage(props: { params: Promise<{ orderId: string }
           ? `/api/simulate/${orderId}`
           : `/api/orders/${orderId}`;
         const res = await fetch(url);
-        
+
         if (!res.ok) {
           throw new Error("Gagal mengambil status pesanan.");
         }
@@ -80,11 +80,16 @@ export default function SuccessPage(props: { params: Promise<{ orderId: string }
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#FBFBF9] via-[#F4F3EF] to-[#EAE8E2] flex flex-col items-center justify-center p-6 text-center font-sans">
-        <div className="glass-card max-w-md w-full rounded-3xl p-8 shadow-xl bg-white/60 backdrop-blur-md border border-zinc-200/30 flex flex-col items-center">
-          <span className="animate-spin text-4xl mb-4">⏳</span>
-          <h2 className="font-serif text-2xl font-bold text-zinc-800 mb-2">Memuat Pesanan</h2>
-          <p className="text-sm text-zinc-500 font-medium">Sedang memverifikasi data transaksi Anda...</p>
+      <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6 text-center font-sans">
+        <div className="max-w-md w-full rounded-2xl p-10 border border-gray-200 bg-white shadow-sm flex flex-col items-center">
+          <div className="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center mb-6">
+            <svg className="w-8 h-8 text-gray-400 animate-spin" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+          </div>
+          <h2 className="font-serif text-2xl font-bold text-gray-900 mb-2">Memuat Pesanan</h2>
+          <p className="text-sm text-gray-600">Sedang memverifikasi data transaksi Anda...</p>
         </div>
       </div>
     );
@@ -93,71 +98,99 @@ export default function SuccessPage(props: { params: Promise<{ orderId: string }
   const isPublished = order?.status === "published";
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#FBFBF9] via-[#F4F3EF] to-[#EAE8E2] flex flex-col items-center justify-center p-4 sm:p-6 font-sans text-zinc-800">
-      <div className="glass-card max-w-xl w-full rounded-3xl p-6 sm:p-10 shadow-2xl bg-white/70 backdrop-blur-md border border-zinc-200/40 text-center space-y-6">
-        
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center p-4 sm:p-6 font-sans text-gray-900">
+      <div className="max-w-2xl w-full rounded-2xl p-8 sm:p-12 border border-gray-200 bg-white shadow-lg text-center space-y-8">
+
         {isPublished ? (
           <>
             {/* PUBLISHED STATE */}
-            <div className="space-y-2">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-zinc-100 text-zinc-650 text-4xl mb-2 shadow-inner">
-                ✨
+            <div className="space-y-4">
+              <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-50 text-green-600 mb-2">
+                <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
               </div>
-              <h1 className="font-serif text-3xl font-bold text-zinc-800">Catatan Anda Telah Aktif!</h1>
-              <p className="text-xs text-zinc-500 font-semibold uppercase tracking-wider">Jurnal kenangan interaktif Anda telah berhasil terbit</p>
+              <h1 className="font-serif text-3xl sm:text-4xl font-bold text-gray-900">Catatan Anda Telah Aktif!</h1>
+              <p className="text-sm text-gray-600">Jurnal kenangan interaktif Anda telah berhasil terbit</p>
             </div>
 
             {/* Card Link Display Box */}
-            <div className="bg-zinc-50/50 border border-zinc-200/60 rounded-2xl p-4 flex flex-col sm:flex-row items-center gap-3 justify-between text-left">
-              <div className="overflow-hidden w-full">
-                <span className="text-[10px] uppercase font-bold text-zinc-400 block tracking-wider mb-0.5">Link Publik Catatan</span>
-                <span className="text-xs font-semibold text-zinc-700 block truncate">{order?.cardUrl}</span>
+            <div className="bg-gray-50 border border-gray-200 rounded-xl p-5 flex flex-col sm:flex-row items-center gap-4 justify-between">
+              <div className="overflow-hidden w-full text-left">
+                <span className="text-xs font-semibold text-gray-500 block mb-1">Link Publik Catatan</span>
+                <span className="text-sm font-medium text-gray-900 block truncate">{order?.cardUrl}</span>
               </div>
               <button
                 onClick={copyToClipboard}
-                className="w-full sm:w-auto px-4 py-2 bg-zinc-800 hover:bg-zinc-900 text-white text-xs font-bold rounded-xl shadow-sm transition-all flex items-center justify-center gap-1.5 whitespace-nowrap cursor-pointer"
+                className="w-full sm:w-auto px-5 py-2.5 bg-gray-900 hover:bg-gray-800 text-white text-sm font-semibold rounded-lg shadow-sm transition-all flex items-center justify-center gap-2 whitespace-nowrap cursor-pointer"
               >
-                {copied ? "✓ Tersalin!" : "📋 Salin Link"}
+                {copied ? (
+                  <>
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Tersalin!
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                    Salin Link
+                  </>
+                )}
               </button>
             </div>
 
             {/* Redirect Button */}
-            <div className="pt-2">
+            <div>
               <a
                 href={order?.cardUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full py-4 bg-zinc-800 hover:bg-zinc-900 text-white font-bold rounded-2xl shadow-xl transition-all transform hover:-translate-y-0.5 active:translate-y-0 text-center flex items-center justify-center gap-2 text-sm uppercase tracking-wider"
+                className="inline-flex items-center justify-center gap-2 w-full py-4 bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-xl shadow-md hover:shadow-lg transition-all cursor-pointer"
               >
-                📓 Buka Catatan Kenangan Anda
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+                Buka Catatan Kenangan Anda
               </a>
             </div>
 
             {/* QR Code Section */}
             {order?.qrPngUrl && (
-              <div className="bg-white border border-zinc-200/40 rounded-2xl p-6 shadow-sm flex flex-col items-center space-y-4">
-                <h3 className="font-serif text-lg font-bold text-zinc-700">Scan QR Code untuk Membuka</h3>
-                <img
-                  src={order.qrPngUrl}
-                  alt="QR Code Link"
-                  className="w-40 h-40 border border-gray-150 rounded-lg shadow-inner"
-                />
+              <div className="bg-gray-50 border border-gray-200 rounded-xl p-8 flex flex-col items-center space-y-6">
+                <h3 className="font-serif text-xl font-bold text-gray-900">Scan QR Code untuk Membuka</h3>
+                <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
+                  <img
+                    src={order.qrPngUrl}
+                    alt="QR Code Link"
+                    className="w-48 h-48"
+                  />
+                </div>
                 <button
                   onClick={() => setShowCustomizer(true)}
-                  className="px-5 py-2.5 bg-zinc-100 hover:bg-zinc-200 border border-zinc-200/50 text-zinc-700 text-xs font-bold rounded-xl shadow-sm transition-all flex items-center justify-center gap-1.5 cursor-pointer uppercase tracking-wider"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-white hover:bg-gray-50 border border-gray-300 text-gray-900 font-semibold rounded-lg shadow-sm transition-all cursor-pointer"
                 >
-                  🎨 Modifikasi & Unduh QR
+                  <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                  </svg>
+                  Modifikasi & Unduh QR
                 </button>
               </div>
             )}
 
             {/* Important Warning Note */}
-            <div className="bg-zinc-50 border border-zinc-200/60 rounded-2xl p-4 text-left flex gap-3">
-              <span className="text-xl">⚠️</span>
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-5 text-left flex gap-4">
+              <div className="flex-shrink-0">
+                <svg className="w-6 h-6 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
               <div>
-                <h5 className="text-xs font-bold text-zinc-700 uppercase tracking-wider mb-1">Simpan Link ini!</h5>
-                <p className="text-[11px] text-zinc-500 leading-normal font-medium">
-                  DearNote **tidak menyediakan pembuatan akun**, sehingga tidak ada opsi pemulihan. Simpan alamat link atau unduh QR Code di atas agar tidak kehilangan akses catatan Anda.
+                <h5 className="text-sm font-bold text-amber-900 mb-2">Simpan Link ini!</h5>
+                <p className="text-sm text-amber-800 leading-relaxed">
+                  DearNote <strong>tidak menyediakan pembuatan akun</strong>, sehingga tidak ada opsi pemulihan. Simpan alamat link atau unduh QR Code di atas agar tidak kehilangan akses catatan Anda.
                 </p>
               </div>
             </div>
@@ -165,26 +198,35 @@ export default function SuccessPage(props: { params: Promise<{ orderId: string }
         ) : (
           <>
             {/* PENDING PAYMENT STATE */}
-            <div className="space-y-4 py-8">
+            <div className="space-y-6 py-8">
               <div className="relative flex items-center justify-center">
-                <span className="animate-ping absolute inline-flex h-12 w-12 rounded-full bg-zinc-300 opacity-20"></span>
-                <span className="relative inline-flex rounded-full h-10 w-10 bg-zinc-800 text-white text-lg items-center justify-center animate-bounce">
-                  💳
+                <span className="animate-ping absolute inline-flex h-20 w-20 rounded-full bg-blue-100 opacity-50"></span>
+                <span className="relative inline-flex rounded-full h-16 w-16 bg-blue-500 text-white items-center justify-center">
+                  <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                  </svg>
                 </span>
               </div>
-              <div className="space-y-1">
-                <h2 className="font-serif text-2xl font-bold text-zinc-850">Menunggu Pembayaran</h2>
-                <p className="text-xs text-zinc-400 font-semibold uppercase tracking-wider">Transaksi ID: {orderId}</p>
+              <div className="space-y-2">
+                <h2 className="font-serif text-3xl font-bold text-gray-900">Menunggu Pembayaran</h2>
+                <p className="text-xs text-gray-500 font-medium">Transaksi ID: {orderId}</p>
               </div>
-              <p className="text-xs text-zinc-500 font-medium max-w-sm mx-auto leading-relaxed">
+              <p className="text-sm text-gray-600 max-w-md mx-auto leading-relaxed">
                 Silakan selesaikan pembayaran Anda di jendela pembayaran. Halaman ini akan otomatis diperbarui begitu konfirmasi pembayaran sukses kami terima.
               </p>
             </div>
             {error && (
-              <p className="text-xs text-red-500 font-semibold bg-red-50 p-2.5 rounded-lg border border-red-100">{error}</p>
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                <p className="text-sm text-red-800 font-medium">{error}</p>
+              </div>
             )}
-            <div className="pt-4 flex gap-4 text-xs font-semibold justify-center text-zinc-500">
-              <Link href="/" className="hover:text-zinc-800">← Kembali ke Beranda</Link>
+            <div className="pt-4">
+              <Link href="/" className="text-sm text-gray-600 hover:text-gray-900 font-medium inline-flex items-center gap-2 cursor-pointer group">
+                <svg className="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Kembali ke Beranda
+              </Link>
             </div>
           </>
         )}
