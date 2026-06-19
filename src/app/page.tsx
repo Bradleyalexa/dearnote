@@ -164,7 +164,7 @@ export default function Home() {
               {[
                 { num: "1", title: "Tulis Cerita Anda", desc: "Pilih layout tema, tuliskan isi pesan Anda dengan leluasa. Pasang pengaman password opsional." },
                 { num: "2", title: "Sematkan Foto & Suara", desc: "Unggah hingga 5 foto memori beresolusi tinggi, lalu rekam pesan suara hangat maksimal 60 detik." },
-                { num: "3", title: "Terbitkan & Bagikan", desc: "Selesaikan pembayaran QRIS Rp5.000. Dapatkan link unik serta unduh QR Code berbentuk hati." }
+                { num: "3", title: "Terbitkan & Bagikan", desc: "Selesaikan pembayaran Rp8.000. Dapatkan link unik serta unduh QR Code berbentuk hati." }
               ].map((step, idx) => (
                 <div key={idx} className="bg-white border border-gray-200 p-8 rounded-2xl">
                   <div className="w-12 h-12 rounded-full bg-gray-900 text-white text-lg flex items-center justify-center font-bold mb-4">
@@ -216,7 +216,7 @@ export default function Home() {
 
               <div className="flex items-center justify-between border-t border-gray-100 pt-6">
                 <div>
-                  <span className="text-4xl font-bold text-gray-900 font-serif">Rp5.000</span>
+                  <span className="text-4xl font-bold text-gray-900 font-serif">Rp8.000</span>
                   <span className="text-xs text-gray-500 block mt-1">Sekali Terbit</span>
                 </div>
                 <Link
