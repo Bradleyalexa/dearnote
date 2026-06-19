@@ -10,9 +10,22 @@ interface QrCodeCustomizerProps {
 }
 
 type PixelStyle = "square" | "dots" | "hearts";
-type FrameDesign = "none" | "heart-outline" | "heart-silhouette" | "polaroid";
+type FrameDesign = "none" | "heart-outline" | "heart-silhouette" | "polaroid" | "heart-barcode";
+
+const getSeedRandom = (r: number, c: number, str: string) => {
+  let hash = 0;
+  const seedStr = `${r}_${c}_${str}`;
+  for (let i = 0; i < seedStr.length; i++) {
+    hash = seedStr.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return (Math.abs(Math.sin(hash)) * 10000) % 1;
+};
 type CenterLogo = "none" | "heart-red" | "heart-dark" | "note";
-type ThemeColor = "charcoal" | "burgundy" | "sage" | "navy" | "terracotta" | "forest" | "espresso" | "plum" | "lavender" | "peach";
+type ThemeColor = 
+  | "charcoal" | "burgundy" | "sage" | "navy" | "terracotta" 
+  | "forest" | "espresso" | "plum" | "lavender" | "peach"
+  | "crimson" | "rose" | "emerald" | "gold" | "teal"
+  | "coral" | "olive" | "chocolate" | "sky" | "mauve";
 
 interface ColorPalette {
   qr: string;
@@ -33,6 +46,16 @@ const PALETTES: Record<ThemeColor, ColorPalette> = {
   plum: { qr: "#4A154B", bg: "#FDFBFC", frame: "#F5E6F5", text: "#2D092E", border: "#C5A880" },
   lavender: { qr: "#5C5470", bg: "#F9F7FC", frame: "#ECE8F5", text: "#352F44", border: "#B3A3C4" },
   peach: { qr: "#3D6B5A", bg: "#FAFDFC", frame: "#F1E3D3", text: "#2A4B3E", border: "#E29578" },
+  crimson: { qr: "#C1272D", bg: "#FFFBFB", frame: "#FFEBEB", text: "#7C1014", border: "#E07A7F" },
+  rose: { qr: "#D27D8C", bg: "#FFFBFB", frame: "#FCF0F2", text: "#823A46", border: "#E8A2AE" },
+  emerald: { qr: "#0F4C43", bg: "#F7FAF8", frame: "#E2ECE9", text: "#052420", border: "#7BA8A0" },
+  gold: { qr: "#856404", bg: "#FCFAF2", frame: "#F5ECC8", text: "#533E01", border: "#D4AF37" },
+  teal: { qr: "#0A4D68", bg: "#F4FAFC", frame: "#E2F1F5", text: "#051F2C", border: "#7BB5C4" },
+  coral: { qr: "#C85C50", bg: "#FFFBF9", frame: "#FBECE8", text: "#762A21", border: "#E59F96" },
+  olive: { qr: "#556B2F", bg: "#FAFBF6", frame: "#EFF2E6", text: "#34421C", border: "#A3B87A" },
+  chocolate: { qr: "#4E3629", bg: "#FAF7F5", frame: "#F0E5DF", text: "#2E1C12", border: "#B69A8E" },
+  sky: { qr: "#3A6073", bg: "#F5F8FA", frame: "#E8EEF2", text: "#233E4D", border: "#8FAEC0" },
+  mauve: { qr: "#665566", bg: "#FAF9FA", frame: "#F1EFF1", text: "#403040", border: "#A89AA8" },
 };
 
 export default function QrCodeCustomizer({ cardUrl, orderId, onClose }: QrCodeCustomizerProps) {
@@ -74,8 +97,10 @@ export default function QrCodeCustomizer({ cardUrl, orderId, onClose }: QrCodeCu
       c.fill();
     };
 
-    const drawHeartPath = (c: CanvasRenderingContext2D, x: number, y: number, w: number, h: number) => {
-      c.beginPath();
+    const drawHeartPath = (c: CanvasRenderingContext2D | Path2D, x: number, y: number, w: number, h: number) => {
+      if ('beginPath' in c && typeof c.beginPath === 'function') {
+        c.beginPath();
+      }
       c.moveTo(x + w / 2, y + h / 5);
       c.bezierCurveTo(x + w / 2, y, x, y, x, y + h / 2.2);
       c.bezierCurveTo(x, y + h * 0.75, x + w / 2, y + h, x + w / 2, y + h);
@@ -149,6 +174,10 @@ export default function QrCodeCustomizer({ cardUrl, orderId, onClose }: QrCodeCu
       ctx.fillStyle = palette.qr;
       drawHeartPath(ctx, canvasSize / 2 - 6, 515, 12, 12);
       ctx.fill();
+    } else if (frameDesign === "heart-barcode") {
+      qrSize = 250;
+      qrX = 175;
+      qrY = 175;
     }
 
     const qrObj = QRCode.create(cardUrl, { errorCorrectionLevel: "H" });
@@ -162,53 +191,107 @@ export default function QrCodeCustomizer({ cardUrl, orderId, onClose }: QrCodeCu
 
     ctx.fillStyle = palette.qr;
 
-    for (let r = 0; r < count; r++) {
-      for (let c = 0; c < count; c++) {
-        if (hasCenterLogo && r >= centerStart && r <= centerEnd && c >= centerStart && c <= centerEnd) {
-          continue;
-        }
+    let minRow = 0;
+    let maxRow = count - 1;
+    let minCol = 0;
+    let maxCol = count - 1;
 
-        const isActive = matrix.get(r, c) === 1;
-        if (!isActive) continue;
+    const heartPath = new Path2D();
+    drawHeartPath(heartPath, 50, 20, 500, 550);
 
-        const x = qrX + c * mSize;
-        const y = qrY + r * mSize;
+    if (frameDesign === "heart-barcode") {
+      const extraLeft = Math.ceil(qrX / mSize);
+      const extraRight = Math.ceil((canvasSize - (qrX + qrSize)) / mSize);
+      const extraTop = Math.ceil(qrY / mSize);
+      const extraBottom = Math.ceil((canvasSize - (qrY + qrSize)) / mSize);
 
-        const isFinderPattern =
-          (r < 7 && c < 7) ||
-          (r < 7 && c >= count - 7) ||
-          (r >= count - 7 && c < 7);
+      minRow = -extraTop;
+      maxRow = count - 1 + extraBottom;
+      minCol = -extraLeft;
+      maxCol = count - 1 + extraRight;
+    }
 
-        if (isFinderPattern) {
-          let fRow = 0;
-          let fCol = 0;
-          if (r < 7 && c >= count - 7) fCol = count - 7;
-          if (r >= count - 7 && c < 7) fRow = count - 7;
+    for (let r = minRow; r <= maxRow; r++) {
+      for (let c = minCol; c <= maxCol; c++) {
+        const isInsideQr = r >= 0 && r < count && c >= 0 && c < count;
 
-          if (r === fRow && c === fCol) {
-            const eyeSize = 7 * mSize;
-            const eyeX = qrX + fCol * mSize;
-            const eyeY = qrY + fRow * mSize;
-            ctx.fillStyle = palette.bg;
-            ctx.fillRect(eyeX, eyeY, eyeSize, eyeSize);
-            ctx.fillStyle = palette.qr;
-            fillRoundRect(ctx, eyeX, eyeY, eyeSize, eyeSize, mSize * 1.8);
-            ctx.fillStyle = palette.bg;
-            fillRoundRect(ctx, eyeX + mSize, eyeY + mSize, eyeSize - 2 * mSize, eyeSize - 2 * mSize, mSize * 1.0);
-            ctx.fillStyle = palette.qr;
-            fillRoundRect(ctx, eyeX + 2 * mSize, eyeY + 2 * mSize, eyeSize - 4 * mSize, eyeSize - 4 * mSize, mSize * 0.6);
+        if (isInsideQr) {
+          if (hasCenterLogo && r >= centerStart && r <= centerEnd && c >= centerStart && c <= centerEnd) {
+            continue;
           }
-        } else {
-          if (pixelStyle === "square") {
-            ctx.fillRect(x, y, mSize + 0.5, mSize + 0.5);
-          } else if (pixelStyle === "dots") {
-            ctx.beginPath();
-            ctx.arc(x + mSize / 2, y + mSize / 2, mSize / 2 * 0.82, 0, Math.PI * 2);
-            ctx.fill();
-          } else if (pixelStyle === "hearts") {
+
+          const isActive = matrix.get(r, c) === 1;
+          if (!isActive) continue;
+
+          const x = qrX + c * mSize;
+          const y = qrY + r * mSize;
+
+          const isFinderPattern =
+            (r < 7 && c < 7) ||
+            (r < 7 && c >= count - 7) ||
+            (r >= count - 7 && c < 7);
+
+          if (isFinderPattern) {
+            let fRow = 0;
+            let fCol = 0;
+            if (r < 7 && c >= count - 7) fCol = count - 7;
+            if (r >= count - 7 && c < 7) fRow = count - 7;
+
+            if (r === fRow && c === fCol) {
+              const eyeSize = 7 * mSize;
+              const eyeX = qrX + fCol * mSize;
+              const eyeY = qrY + fRow * mSize;
+              ctx.fillStyle = palette.bg;
+              ctx.fillRect(eyeX, eyeY, eyeSize, eyeSize);
+              ctx.fillStyle = palette.qr;
+              fillRoundRect(ctx, eyeX, eyeY, eyeSize, eyeSize, mSize * 1.8);
+              ctx.fillStyle = palette.bg;
+              fillRoundRect(ctx, eyeX + mSize, eyeY + mSize, eyeSize - 2 * mSize, eyeSize - 2 * mSize, mSize * 1.0);
+              ctx.fillStyle = palette.qr;
+              fillRoundRect(ctx, eyeX + 2 * mSize, eyeY + 2 * mSize, eyeSize - 4 * mSize, eyeSize - 4 * mSize, mSize * 0.6);
+            }
+          } else {
             ctx.fillStyle = palette.qr;
-            drawHeartPath(ctx, x, y, mSize * 0.95, mSize * 0.95);
-            ctx.fill();
+            if (pixelStyle === "square") {
+              ctx.fillRect(x, y, mSize + 0.5, mSize + 0.5);
+            } else if (pixelStyle === "dots") {
+              ctx.beginPath();
+              ctx.arc(x + mSize / 2, y + mSize / 2, mSize / 2 * 0.82, 0, Math.PI * 2);
+              ctx.fill();
+            } else if (pixelStyle === "hearts") {
+              ctx.fillStyle = palette.qr;
+              drawHeartPath(ctx, x, y, mSize * 0.95, mSize * 0.95);
+              ctx.fill();
+            }
+          }
+        } else if (frameDesign === "heart-barcode") {
+          // 2-module quiet zone around the QR code matrix (0..count-1)
+          if (r >= -2 && r < count + 2 && c >= -2 && c < count + 2) {
+            continue;
+          }
+
+          const x = qrX + c * mSize;
+          const y = qrY + r * mSize;
+          const px = x + mSize / 2;
+          const py = y + mSize / 2;
+
+          // Check if coordinate is inside the heart outline path
+          if (ctx.isPointInPath(heartPath, px, py)) {
+            // Deterministic random pixel module with 50% density
+            if (getSeedRandom(r, c, cardUrl) < 0.50) {
+              ctx.fillStyle = palette.qr;
+              if (pixelStyle === "square") {
+                ctx.fillRect(x, y, mSize + 0.5, mSize + 0.5);
+              } else if (pixelStyle === "dots") {
+                ctx.beginPath();
+                ctx.arc(x + mSize / 2, y + mSize / 2, mSize / 2 * 0.82, 0, Math.PI * 2);
+                ctx.fill();
+              } else if (pixelStyle === "hearts") {
+                ctx.fillStyle = palette.qr;
+                drawHeartPath(ctx, x, y, mSize * 0.95, mSize * 0.95);
+                ctx.fill();
+              }
+            }
           }
         }
       }
@@ -339,12 +422,13 @@ export default function QrCodeCustomizer({ cardUrl, orderId, onClose }: QrCodeCu
             {/* Frame Design */}
             <div className="space-y-3">
               <span className="text-xs font-semibold text-gray-700 uppercase tracking-wider block">Desain Bingkai</span>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {[
                   { id: "none", label: "Tanpa" },
                   { id: "heart-silhouette", label: "Latar Hati" },
                   { id: "heart-outline", label: "Kartu Hati" },
                   { id: "polaroid", label: "Polaroid" },
+                  { id: "heart-barcode", label: "Barcode Hati" },
                 ].map((item) => (
                   <button
                     key={item.id}
