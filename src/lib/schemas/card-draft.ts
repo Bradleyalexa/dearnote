@@ -17,6 +17,7 @@ export const TEMPLATES = [
   "birthday_magic",
   "blooming_note",
   "graduation_note",
+  "graduation_memory_lane",
 ] as const;
 
 export const TemplateSchema = z.enum(TEMPLATES);

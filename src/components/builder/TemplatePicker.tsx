@@ -126,6 +126,14 @@ export const TEMPLATE_REGISTRY: {
     accent: "linear-gradient(135deg, #1B2B4D, #D4AF37, #4A90E2)",
     tags: ["Graduation", "Achievement", "Flagship"],
   },
+  {
+    id: "graduation_memory_lane",
+    name: "Graduation Memory Lane",
+    description: "Elegant single-page graduation memory lane. Cozy cream & gold theme, photo scrapbook grid, and audio card with pink P.S. details.",
+    category: "interaktif",
+    accent: "linear-gradient(135deg, #FDF7E7, #D4AF37, #FDF0F2)",
+    tags: ["Graduation", "Scrapbook", "Memory Lane"],
+  },
 ];
 
 type Category = "semua" | "minimal" | "romantic" | "playful" | "interaktif";

@@ -13,6 +13,7 @@ import { generateEternalLoveHtml } from "./templates/eternal-love";
 import { generateBirthdayMagicHtml } from "./templates/birthday-magic";
 import { generateBloomingNoteHtml } from "./templates/blooming-note";
 import { generateGraduationNoteHtml } from "./templates/graduation-note";
+import { generateGraduationMemoryLaneHtml } from "./templates/graduation-memory-lane";
 
 /**
  * Main coordinator that returns the HTML page content based on the selected template.
@@ -66,6 +67,8 @@ export function generateIndexHtml(config: PublishedConfig): string {
       return generateBloomingNoteHtml(config);
     case "graduation_note":
       return generateGraduationNoteHtml(config);
+    case "graduation_memory_lane":
+      return generateGraduationMemoryLaneHtml(config);
     default:
       return generateClassicEditorialHtml(config);
   }

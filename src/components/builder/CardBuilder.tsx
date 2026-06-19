@@ -263,6 +263,11 @@ export default function CardBuilder() {
             maxLength={300}
             className="w-full px-4 py-3 border border-zinc-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-zinc-400 text-sm font-medium text-zinc-700"
           />
+          {formValues.template === "graduation_memory_lane" && (
+            <p className="text-xs text-amber-600 font-medium">
+              💡 Khusus template <strong>Graduation Memory Lane</strong>, isi bagian ini jika ingin memunculkan kartu <strong>P.S. (Postscript)</strong> pink di bagian paling bawah catatan.
+            </p>
+          )}
           {errors.finalMessage && (
             <p className="text-xs text-red-600">{errors.finalMessage.message}</p>
           )}
