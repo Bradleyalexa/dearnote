@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CardDraftSchema, CardDraft } from "@/lib/schemas/card-draft";
@@ -349,8 +350,20 @@ export default function CardBuilder() {
           )}
         </button>
 
-        <p className="text-xs text-gray-500 text-center">
-          Setelah pembayaran dikonfirmasi, catatan akan langsung terbit dan <strong>tidak dapat diedit kembali</strong>.
+        <p className="text-xs text-gray-500 text-center leading-relaxed">
+          Setelah pembayaran dikonfirmasi, catatan akan langsung terbit dan <strong>tidak dapat diedit kembali</strong>. Dengan menerbitkan catatan, Anda menyetujui{" "}
+          <Link href="/terms" target="_blank" className="underline hover:text-gray-800 transition-colors">
+            Syarat & Ketentuan
+          </Link>
+          ,{" "}
+          <Link href="/privacy" target="_blank" className="underline hover:text-gray-800 transition-colors">
+            Kebijakan Privasi
+          </Link>
+          , serta{" "}
+          <Link href="/refund" target="_blank" className="underline hover:text-gray-800 transition-colors">
+            Kebijakan Refund
+          </Link>{" "}
+          kami.
         </p>
       </form>
 

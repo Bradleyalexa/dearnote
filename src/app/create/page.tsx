@@ -35,6 +35,19 @@ export default function CreatePage() {
       {/* Footer */}
       <footer className="w-full border-t border-gray-100 py-6 text-center text-sm text-gray-500">
         <p>Made with DearNote • Kartu yang diterbitkan aktif selama 90 hari</p>
+        <div className="flex justify-center gap-4 mt-2 text-xs text-gray-400">
+          <Link href="/terms" target="_blank" className="hover:text-gray-600 transition-colors underline decoration-dotted">
+            Syarat & Ketentuan
+          </Link>
+          <span>•</span>
+          <Link href="/refund" target="_blank" className="hover:text-gray-600 transition-colors underline decoration-dotted">
+            Kebijakan Refund
+          </Link>
+          <span>•</span>
+          <Link href="/privacy" target="_blank" className="hover:text-gray-600 transition-colors underline decoration-dotted">
+            Kebijakan Privasi
+          </Link>
+        </div>
       </footer>
     </div>
   );
