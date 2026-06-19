@@ -14,6 +14,8 @@ import TemplatePicker from "./TemplatePicker";
 export default function CardBuilder() {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [showPaymentConfirm, setShowPaymentConfirm] = useState(false);
+  const [validatedData, setValidatedData] = useState<CardDraft | null>(null);
 
   const {
     register,
@@ -39,7 +41,6 @@ export default function CardBuilder() {
   });
 
   const formValues = watch();
-  const [paymentGroup, setPaymentGroup] = useState<"qris_ewallet" | "bank_card">("qris_ewallet");
 
   const scrollToPreview = () => {
     if (typeof window !== "undefined" && window.innerWidth < 1024) {
@@ -50,7 +51,13 @@ export default function CardBuilder() {
     }
   };
 
-  const onSubmit = async (data: CardDraft) => {
+  const onSubmit = (data: CardDraft) => {
+    setValidatedData(data);
+    setShowPaymentConfirm(true);
+  };
+
+  const confirmAndPay = async () => {
+    if (!validatedData) return;
     setSubmitting(true);
     setSubmitError(null);
 
@@ -59,8 +66,8 @@ export default function CardBuilder() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          paymentGroup,
-          draft: data,
+          paymentGroup: "bank_card", // Force Rp8.000 pricing group
+          draft: validatedData,
         }),
       });
 
@@ -261,62 +268,6 @@ export default function CardBuilder() {
           )}
         </div>
 
-        {/* 9. Payment Method */}
-        <div className="space-y-4 pt-6 border-t border-gray-200">
-          <label className="block text-sm font-semibold text-gray-900">Pilih Metode Pembayaran</label>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div
-              onClick={() => setPaymentGroup("qris_ewallet")}
-              className={`border-2 rounded-xl p-4 cursor-pointer transition-all ${
-                paymentGroup === "qris_ewallet"
-                  ? "border-gray-900 bg-gray-50 shadow-sm"
-                  : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
-              }`}
-            >
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
-                  </svg>
-                  <span className="text-sm font-bold text-gray-900">QRIS / E-Wallet</span>
-                </div>
-                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                  paymentGroup === "qris_ewallet" ? "border-gray-900" : "border-gray-300"
-                }`}>
-                  {paymentGroup === "qris_ewallet" && <div className="w-2.5 h-2.5 rounded-full bg-gray-900" />}
-                </div>
-              </div>
-              <p className="text-xs text-gray-600 mb-3">GoPay, OVO, Dana, LinkAja, ShopeePay, dll</p>
-              <div className="text-2xl font-bold text-gray-900">Rp5.000</div>
-            </div>
-
-            <div
-              onClick={() => setPaymentGroup("bank_card")}
-              className={`border-2 rounded-xl p-4 cursor-pointer transition-all ${
-                paymentGroup === "bank_card"
-                  ? "border-gray-900 bg-gray-50 shadow-sm"
-                  : "border-gray-200 hover:border-gray-300 hover:bg-gray-50"
-              }`}
-            >
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-2">
-                  <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                  </svg>
-                  <span className="text-sm font-bold text-gray-900">Transfer Bank / Kartu</span>
-                </div>
-                <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                  paymentGroup === "bank_card" ? "border-gray-900" : "border-gray-300"
-                }`}>
-                  {paymentGroup === "bank_card" && <div className="w-2.5 h-2.5 rounded-full bg-gray-900" />}
-                </div>
-              </div>
-              <p className="text-xs text-gray-600 mb-3">VA BCA/Mandiri/BRI, Visa/Mastercard</p>
-              <div className="text-2xl font-bold text-gray-900">Rp8.000</div>
-            </div>
-          </div>
-        </div>
-
         {submitError && (
           <div className="flex items-center gap-2 p-4 bg-red-50 border border-red-200 rounded-lg">
             <svg className="w-5 h-5 text-red-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -371,6 +322,83 @@ export default function CardBuilder() {
       <div id="live-preview" className="lg:sticky lg:top-8 w-full">
         <LivePreview draft={formValues} />
       </div>
+
+      {/* Payment Confirmation Modal */}
+      {showPaymentConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-hidden">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-gray-900/60 backdrop-blur-xs transition-opacity duration-300"
+            onClick={() => !submitting && setShowPaymentConfirm(false)}
+          />
+
+          {/* Modal Card */}
+          <div className="relative bg-white w-full max-w-md rounded-2xl shadow-2xl flex flex-col z-10 border border-gray-150 p-6 animate-in fade-in zoom-in-95 duration-200 text-center">
+            {/* Icon */}
+            <div className="mx-auto w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-4 text-gray-900">
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+              </svg>
+            </div>
+
+            {/* Title */}
+            <h3 className="font-serif text-2xl font-bold text-gray-900 mb-2">
+              Terbitkan Catatan
+            </h3>
+            
+            {/* Description */}
+            <p className="text-sm text-gray-600 mb-6 leading-relaxed">
+              Catatan kenangan Anda siap diterbitkan secara online selama 90 hari tanpa iklan.
+            </p>
+
+            {/* Price Card */}
+            <div className="bg-gray-50 border border-gray-150 rounded-xl p-4 mb-6">
+              <span className="text-xs text-gray-500 uppercase font-semibold tracking-wider block mb-1">Total Pembayaran</span>
+              <span className="text-3xl font-serif font-bold text-gray-900">Rp8.000</span>
+              <span className="text-xs text-gray-500 block mt-1">Mendukung semua QRIS, E-wallet, & Transfer Bank</span>
+            </div>
+
+            {submitError && (
+              <div className="mb-4 flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg text-left">
+                <svg className="w-4 h-4 text-red-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <p className="text-xs text-red-800">{submitError}</p>
+              </div>
+            )}
+
+            {/* Actions */}
+            <div className="space-y-3">
+              <button
+                onClick={confirmAndPay}
+                disabled={submitting}
+                className="w-full py-3.5 bg-gray-900 hover:bg-gray-800 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer text-sm"
+              >
+                {submitting ? (
+                  <>
+                    <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Memproses Pembayaran...
+                  </>
+                ) : (
+                  "Lanjutkan Pembayaran"
+                )}
+              </button>
+              
+              <button
+                type="button"
+                onClick={() => !submitting && setShowPaymentConfirm(false)}
+                disabled={submitting}
+                className="w-full py-3 bg-white hover:bg-gray-50 text-gray-500 hover:text-gray-700 font-semibold rounded-xl border border-gray-200 transition-all cursor-pointer text-sm"
+              >
+                Batal
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

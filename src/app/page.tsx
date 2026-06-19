@@ -71,7 +71,7 @@ export default function Home() {
               </svg>
             </Link>
             <p className="text-xs text-gray-500 font-medium mt-4">
-              Hanya Rp5.000 per catatan • Selesai dalam 5 menit
+              Hanya Rp8.000 per catatan • Selesai dalam 5 menit
             </p>
           </div>
         </section>

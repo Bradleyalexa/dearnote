@@ -1,0 +1,8 @@
+# DearNote
+
+> DearNote is a web tool that enables users to create animated digital greeting cards and memory journals without requiring an account.
+
+DearNote operates on a one‑time payment model; after publishing, each card is accessible via a unique link and a heart‑shaped QR code for 90 days.
+
+## Home
+- [DearNote Home](https://dearnote.asia): landing page introducing the greeting‑card creation service.
