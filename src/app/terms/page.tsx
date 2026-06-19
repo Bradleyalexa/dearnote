@@ -297,6 +297,10 @@ export default function TermsPage() {
       {/* Footer */}
       <footer className="w-full border-t border-gray-100 py-6 text-center text-xs text-gray-500">
         <p>© {new Date().getFullYear()} DearNote. Semua hak cipta dilindungi.</p>
+        <div className="mt-2 space-y-0.5 text-gray-400">
+          <p>Jakarta Barat, Indonesia</p>
+          <p>Kontak: <a href="mailto:hidearnote@gmail.com" className="hover:text-gray-600 underline">hidearnote@gmail.com</a></p>
+        </div>
       </footer>
     </div>
   );

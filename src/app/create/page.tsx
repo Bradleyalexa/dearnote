@@ -48,6 +48,10 @@ export default function CreatePage() {
             Kebijakan Privasi
           </Link>
         </div>
+        <div className="mt-3 text-xs text-gray-400 space-y-0.5">
+          <p>Jakarta Barat, Indonesia</p>
+          <p>Kontak: <a href="mailto:hidearnote@gmail.com" className="hover:text-gray-600 underline">hidearnote@gmail.com</a></p>
+        </div>
       </footer>
     </div>
   );

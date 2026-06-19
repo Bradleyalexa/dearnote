@@ -318,7 +318,11 @@ export default function Home() {
             Kebijakan Privasi
           </button>
         </div>
-        <p className="text-xs text-gray-400 mt-3">Dibuat dengan cinta untuk mengabadikan momen berharga Anda secara digital.</p>
+        <div className="mt-4 text-xs text-gray-400 space-y-1">
+          <p>Jakarta Barat, Indonesia</p>
+          <p>Kontak: <a href="mailto:hidearnote@gmail.com" className="hover:text-gray-600 underline">hidearnote@gmail.com</a></p>
+        </div>
+        <p className="text-xs text-gray-400 mt-4">Dibuat dengan cinta untuk mengabadikan momen berharga Anda secara digital.</p>
       </footer>
 
       {/* Modal Container */}
