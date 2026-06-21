@@ -10,7 +10,7 @@ export const TEMPLATE_REGISTRY: {
   id: TemplateType;
   name: string;
   description: string;
-  category: "semua" | "minimal" | "romantic" | "playful" | "interaktif";
+  category: "semua" | "minimal" | "romantic" | "playful" | "interaktif" | "hari_raya";
   accent: string;
   tags: string[];
 }[] = [
@@ -134,9 +134,41 @@ export const TEMPLATE_REGISTRY: {
     accent: "linear-gradient(135deg, #FDF7E7, #D4AF37, #FDF0F2)",
     tags: ["Graduation", "Scrapbook", "Memory Lane"],
   },
+  {
+    id: "sweet_cradle",
+    name: "Sweet Cradle Surprise",
+    description: "Heartwarming newborn baby congratulations flagship template. Interactive cradle rocking, spinning mobile, baby footprint wax seal, and sweet pastel lullaby elements.",
+    category: "playful",
+    accent: "linear-gradient(135deg, #FFF0F5, #E0FFFF, #FFFACD)",
+    tags: ["Newborn", "Family", "Congratulations", "Flagship"],
+  },
+  {
+    id: "tender_welcome",
+    name: "Tender Welcome Nursery",
+    description: "Elegant minimalist newborn congratulations template for parents. Warm sand-beige linen theme, hand-pressed leaf wax seal, gentle morning sunbeam glow, and olive branch motifs.",
+    category: "minimal",
+    accent: "linear-gradient(135deg, #F5EBE6, #E8EFE9, #DDD3C0)",
+    tags: ["Newborn", "Parents", "Minimalist", "Warm"],
+  },
+  {
+    id: "christmas_magic",
+    name: "Christmas Magic",
+    description: "Magical Christmas flagship template! Shake the interactive snow globe, decorate & light up the Christmas tree, read cozy cards on glowing fairy lights, and watch Santa fly across the night sky!",
+    category: "hari_raya",
+    accent: "linear-gradient(135deg, #A8201A, #143601, #F0E6D2)",
+    tags: ["Christmas", "Holiday", "Interactive", "Flagship"],
+  },
+  {
+    id: "ramadhan_blessings",
+    name: "Ramadan Blessings",
+    description: "Warm and peaceful Ramadan/Eid flagship template. Light the hanging lantern, strike the Bedug drum, unwrap the Ketupat, read scroll letters, and watch lanterns float up!",
+    category: "hari_raya",
+    accent: "linear-gradient(135deg, #004B23, #D4AF37, #0D1B2A)",
+    tags: ["Ramadhan", "Lebaran", "Eid", "Interactive", "Flagship"],
+  },
 ];
 
-type Category = "semua" | "minimal" | "romantic" | "playful" | "interaktif";
+type Category = "semua" | "minimal" | "romantic" | "playful" | "interaktif" | "hari_raya";
 
 const CATEGORY_LABELS: Record<Category, string> = {
   semua: "All",
@@ -144,6 +176,7 @@ const CATEGORY_LABELS: Record<Category, string> = {
   romantic: "Romantic",
   playful: "Playful",
   interaktif: "Interactive",
+  hari_raya: "Hari Raya",
 };
 
 export function makeDummyDraft(templateId: TemplateType) {
@@ -202,6 +235,8 @@ export default function TemplatePicker({ value, onChange }: TemplatePickerProps)
             const el = document.getElementById('envelope'); if (el && typeof openEnvelope === 'function') openEnvelope();
             const mn = document.getElementById('moon'); if (mn && typeof openMoon === 'function') openMoon();
             const rb = document.getElementById('ribbon'); if (rb && typeof openGiftBox === 'function') openGiftBox();
+            const sg = document.getElementById('snowglobe'); if (sg && typeof openSnowGlobe === 'function') openSnowGlobe();
+            const lt = document.getElementById('lantern'); if (lt && typeof lightLantern === 'function') lightLantern();
             if (typeof triggerWakeup === 'function') triggerWakeup();
           }, 500);
         });

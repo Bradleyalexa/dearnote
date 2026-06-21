@@ -8,9 +8,11 @@ import { makeDummyDraft } from "./TemplatePicker";
 
 interface LivePreviewProps {
   draft: CardDraft;
+  /** Blob URL of custom BGM for CORS-free audio preview (from BackgroundMusicSelector) */
+  bgMusicPreviewUrl?: string | null;
 }
 
-export default function LivePreview({ draft }: LivePreviewProps) {
+export default function LivePreview({ draft, bgMusicPreviewUrl }: LivePreviewProps) {
   const [srcDoc, setSrcDoc] = useState<string>("");
   const [activeTab, setActiveTab] = useState<"cover" | "inside">("inside");
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -38,12 +40,20 @@ export default function LivePreview({ draft }: LivePreviewProps) {
     }
 
     if (draft.bgMusic) {
-      const encodedBgSrc = draft.bgMusic.src
-        .split("/")
-        .map((seg) => encodeURIComponent(seg))
-        .join("/");
+      const src = draft.bgMusic.src;
+      // Use blob URL for custom uploads (CORS-free, always accessible in the same session).
+      // For predefined tracks (relative paths like /audio/...), encode only path segments.
+      // Never encode absolute https:// URLs — encodeURIComponent would mangle the protocol.
+      let resolvedSrc: string;
+      if (bgMusicPreviewUrl) {
+        resolvedSrc = bgMusicPreviewUrl;
+      } else if (src.startsWith("http://") || src.startsWith("https://")) {
+        resolvedSrc = src; // absolute URL — use as-is (may fail due to CORS in local dev)
+      } else {
+        resolvedSrc = src.split("/").map((seg) => encodeURIComponent(seg)).join("/");
+      }
       config.bgMusic = {
-        src: encodedBgSrc,
+        src: resolvedSrc,
         durationSeconds: draft.bgMusic.durationSeconds,
       };
     }
@@ -109,7 +119,7 @@ export default function LivePreview({ draft }: LivePreviewProps) {
     html = html.replace("</body>", `${watermarkInject}</body>`);
 
     setSrcDoc(html);
-  }, [draft, activeTab]);
+  }, [draft, activeTab, bgMusicPreviewUrl]);
 
   useEffect(() => {
     if (!isAutoFit) return;

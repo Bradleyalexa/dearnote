@@ -16,6 +16,8 @@ export default function CardBuilder() {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [showPaymentConfirm, setShowPaymentConfirm] = useState(false);
   const [validatedData, setValidatedData] = useState<CardDraft | null>(null);
+  // Blob URL of custom BGM for CORS-free preview in LivePreview
+  const [bgMusicBlobUrl, setBgMusicBlobUrl] = useState<string | null>(null);
 
   const {
     register,
@@ -249,7 +251,11 @@ export default function CardBuilder() {
           control={control}
           name="bgMusic"
           render={({ field }) => (
-            <BackgroundMusicSelector value={field.value} onChange={field.onChange} />
+            <BackgroundMusicSelector
+              value={field.value}
+              onChange={field.onChange}
+              onBlobUrlChange={setBgMusicBlobUrl}
+            />
           )}
         />
 
@@ -325,7 +331,7 @@ export default function CardBuilder() {
 
       {/* Right Column: Live Preview (1 col on desktop) */}
       <div id="live-preview" className="lg:sticky lg:top-8 w-full">
-        <LivePreview draft={formValues} />
+        <LivePreview draft={formValues} bgMusicPreviewUrl={bgMusicBlobUrl} />
       </div>
 
       {/* Payment Confirmation Modal */}

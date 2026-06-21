@@ -14,6 +14,10 @@ import { generateBirthdayMagicHtml } from "./templates/birthday-magic";
 import { generateBloomingNoteHtml } from "./templates/blooming-note";
 import { generateGraduationNoteHtml } from "./templates/graduation-note";
 import { generateGraduationMemoryLaneHtml } from "./templates/graduation-memory-lane";
+import { generateSweetCradleHtml } from "./templates/sweet-cradle";
+import { generateTenderWelcomeHtml } from "./templates/tender-welcome";
+import { generateChristmasMagicHtml } from "./templates/christmas-magic";
+import { generateRamadhanBlessingsHtml } from "./templates/ramadhan-blessings";
 
 /**
  * Main coordinator that returns the HTML page content based on the selected template.
@@ -69,6 +73,14 @@ export function generateIndexHtml(config: PublishedConfig): string {
       return generateGraduationNoteHtml(config);
     case "graduation_memory_lane":
       return generateGraduationMemoryLaneHtml(config);
+    case "sweet_cradle":
+      return generateSweetCradleHtml(config);
+    case "tender_welcome":
+      return generateTenderWelcomeHtml(config);
+    case "christmas_magic":
+      return generateChristmasMagicHtml(config);
+    case "ramadhan_blessings":
+      return generateRamadhanBlessingsHtml(config);
     default:
       return generateClassicEditorialHtml(config);
   }

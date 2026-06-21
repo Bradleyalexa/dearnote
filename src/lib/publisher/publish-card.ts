@@ -103,28 +103,33 @@ export async function publishCard(orderId: string): Promise<string> {
 
     // Copy Background Music
     if (draft.bgMusic) {
-      const trackId = draft.bgMusic.key;
       const destKey = `cards/${cardId}/assets/bg-music.mp3`;
-      console.log(`[Publisher] Loading background music track ${trackId} from local disk...`);
-      
-      // Resolve actual file: prefer src path (e.g. /audio/track2.mp3), fallback to key as filename
-      const srcPath = draft.bgMusic.src; // e.g. "/audio/track2.mp3"
-      const srcBasename = srcPath ? path.basename(srcPath) : `${trackId}.mp3`;
-      const localPath = path.join(process.cwd(), "public", "audio", srcBasename);
-      
-      if (fs.existsSync(localPath)) {
-        const fileBuffer = fs.readFileSync(localPath);
-        console.log(`[Publisher] Uploading background music: ${localPath} -> R2:${destKey}`);
-        await putObject(destKey, fileBuffer, "audio/mpeg");
+      const srcKey  = draft.bgMusic.key;
+      const srcPath = draft.bgMusic.src;
+
+      // Custom user-uploaded file: key is a full R2 path (e.g. "pending/order_xxx/assets/…")
+      if (srcKey && srcKey.includes("/")) {
+        console.log(`[Publisher] Copying custom uploaded BGM from R2: ${srcKey} -> ${destKey}`);
+        await copyObject(srcKey, destKey);
       } else {
-        // Fallback: try using key as filename (legacy)
-        const legacyPath = path.join(process.cwd(), "public", "audio", `${trackId}.mp3`);
-        if (fs.existsSync(legacyPath)) {
-          const fileBuffer = fs.readFileSync(legacyPath);
-          console.log(`[Publisher] Uploading background music (legacy key): ${legacyPath} -> R2:${destKey}`);
+        // Predefined track: resolve from local public/audio/ directory
+        const srcBasename = srcPath ? path.basename(srcPath) : `${srcKey}.mp3`;
+        const localPath = path.join(process.cwd(), "public", "audio", srcBasename);
+
+        if (fs.existsSync(localPath)) {
+          const fileBuffer = fs.readFileSync(localPath);
+          console.log(`[Publisher] Uploading background music: ${localPath} -> R2:${destKey}`);
           await putObject(destKey, fileBuffer, "audio/mpeg");
         } else {
-          console.error(`[Publisher] Background music file not found locally: ${localPath}`);
+          // Fallback: try using key as filename (legacy)
+          const legacyPath = path.join(process.cwd(), "public", "audio", `${srcKey}.mp3`);
+          if (fs.existsSync(legacyPath)) {
+            const fileBuffer = fs.readFileSync(legacyPath);
+            console.log(`[Publisher] Uploading background music (legacy key): ${legacyPath} -> R2:${destKey}`);
+            await putObject(destKey, fileBuffer, "audio/mpeg");
+          } else {
+            console.error(`[Publisher] Background music file not found locally: ${localPath}`);
+          }
         }
       }
     }
