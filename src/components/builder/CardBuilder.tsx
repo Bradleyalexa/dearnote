@@ -39,6 +39,7 @@ export default function CardBuilder() {
       voiceNote: undefined,
       bgMusic: undefined,
       finalMessage: "",
+      themeColor: "green",
     },
   });
 
@@ -114,6 +115,44 @@ export default function CardBuilder() {
             onChange={(id) => { setValue("template", id); scrollToPreview(); }}
           />
         </div>
+
+        {/* 1b. Theme Color Picker (Only for Herbarium Book) */}
+        {formValues.template === "herbarium_book" && (
+          <div className="space-y-3 p-4 bg-zinc-50 border border-zinc-200 rounded-2xl">
+            <label className="block text-sm font-semibold text-gray-900">
+              Pilih Warna Sampul Buku <span className="text-red-500">*</span>
+            </label>
+            <div className="flex flex-wrap gap-3">
+              {[
+                { id: "green", label: "Forest Green", bg: "bg-[#2E5A44]", border: "border-[#173627]" },
+                { id: "navy", label: "Midnight Navy", bg: "bg-[#1A2F4C]", border: "border-[#0B182B]" },
+                { id: "burgundy", label: "Ruby Burgundy", bg: "bg-[#6B1D2F]", border: "border-[#3D0C17]" },
+                { id: "mocha", label: "Mocha Amber", bg: "bg-[#5C4033]", border: "border-[#2B1E17]" },
+                { id: "lavender", label: "Lavender Amethyst", bg: "bg-[#7E6088]", border: "border-[#4D3656]" },
+                { id: "pink", label: "Sakura Pink", bg: "bg-[#FF758F]", border: "border-[#FF5C8A]" },
+                { id: "pastel_pink", label: "Pastel Pink", bg: "bg-[#F9B2D7]", border: "border-[#EB6AA9]" },
+                { id: "pastel_blue", label: "Pastel Slate", bg: "bg-[#576A8F]", border: "border-[#3C4E70]" },
+                { id: "pastel_mint", label: "Pastel Mint", bg: "bg-[#BADFDB]", border: "border-[#93C9C4]" },
+                { id: "pastel_yellow", label: "Pastel Yellow", bg: "bg-[#FEE2AD]", border: "border-[#E3C288]" },
+              ].map((color) => (
+                <button
+                  key={color.id}
+                  type="button"
+                  onClick={() => setValue("themeColor", color.id)}
+                  className={`flex items-center gap-2 px-3 py-2.5 rounded-xl text-xs font-semibold border-2 transition-all cursor-pointer ${
+                    (formValues.themeColor || "green") === color.id
+                      ? "border-zinc-800 ring-2 ring-zinc-500/20 text-zinc-900 bg-white"
+                      : "border-zinc-200 hover:border-zinc-300 text-zinc-600 bg-white"
+                  }`}
+                >
+                  <span className={`w-3.5 h-3.5 rounded-full ${color.bg} border ${color.border}`} />
+                  {color.label}
+                </button>
+              ))}
+            </div>
+            <input type="hidden" {...register("themeColor")} />
+          </div>
+        )}
 
         {/* 2. Sender and Recipient */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">

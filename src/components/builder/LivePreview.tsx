@@ -208,7 +208,7 @@ export default function LivePreview({ draft, bgMusicPreviewUrl }: LivePreviewPro
                 srcDoc={srcDoc}
                 title="Live Card Preview"
                 className="w-full h-full border-none"
-                sandbox="allow-scripts allow-same-origin"
+                sandbox="allow-scripts"
               />
             </div>
 

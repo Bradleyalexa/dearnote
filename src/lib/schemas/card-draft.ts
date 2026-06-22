@@ -22,6 +22,9 @@ export const TEMPLATES = [
   "tender_welcome",
   "christmas_magic",
   "ramadhan_blessings",
+  "mothers_day",
+  "herbarium_book",
+  "teachers_day",
 ] as const;
 
 export const TemplateSchema = z.enum(TEMPLATES);
@@ -60,6 +63,7 @@ export const CardDraftSchema = z.object({
   voiceNote: DraftVoiceNoteSchema.optional(),
   bgMusic: DraftBgMusicSchema.optional(),
   finalMessage: z.string().max(300, { message: "Pesan penutup maksimal 300 karakter" }).optional(),
+  themeColor: z.string().max(30).optional(),
 });
 
 export type CardDraft = z.infer<typeof CardDraftSchema>;
@@ -95,6 +99,7 @@ export const PublishedConfigSchema = z.object({
   voiceNote: PublishedVoiceNoteSchema.optional(),
   bgMusic: PublishedBgMusicSchema.optional(),
   finalMessage: z.string().max(300).optional(),
+  themeColor: z.string().max(30).optional(),
   publishedAt: z.string().datetime(),
   expiresAt: z.string().datetime(),
 });

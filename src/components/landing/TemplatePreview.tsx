@@ -7,6 +7,7 @@ import { generateBirthdayMagicHtml } from "@/lib/publisher/templates/birthday-ma
 import { generateBloomingNoteHtml } from "@/lib/publisher/templates/blooming-note";
 import { generatePinkBookFoldsHtml } from "@/lib/publisher/templates/pink-book-folds";
 import { PublishedConfig } from "@/lib/schemas/card-draft";
+import { injectTailwindWarningSuppress } from "@/lib/publisher/generate-index-html";
 
 type TemplateKey = "pooh" | "graduation" | "birthday" | "blooming" | "pinkbook";
 
@@ -149,6 +150,7 @@ export default function TemplatePreview({ activeTemplate }: TemplatePreviewProps
       </script>
     `;
     html = html.replace("</body>", `${bypassScript}</body>`);
+    html = injectTailwindWarningSuppress(html);
 
     setSrcDoc(html);
   }, [activeTemplate]);
@@ -185,7 +187,7 @@ export default function TemplatePreview({ activeTemplate }: TemplatePreviewProps
               srcDoc={srcDoc}
               title="Template Preview"
               className="w-full h-full border-none select-none"
-              sandbox="allow-scripts allow-same-origin"
+              sandbox="allow-scripts"
             />
           </div>
 

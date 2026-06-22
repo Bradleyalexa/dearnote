@@ -166,6 +166,30 @@ export const TEMPLATE_REGISTRY: {
     accent: "linear-gradient(135deg, #004B23, #D4AF37, #0D1B2A)",
     tags: ["Ramadhan", "Lebaran", "Eid", "Interactive", "Flagship"],
   },
+  {
+    id: "mothers_day",
+    name: "Mother's Herbarium Book",
+    description: "Elegant 3D pressed-flower herbarium journal. Flip open the linen cover, turn pages of handwritten memories, and discover cozy taped Polaroids with falling flower petals.",
+    category: "romantic",
+    accent: "linear-gradient(135deg, #FFF0F2, #FFB3C1, #FF8EA6)",
+    tags: ["Mother's Day", "Family", "Interactive", "Flagship"],
+  },
+  {
+    id: "herbarium_book",
+    name: "Classic Herbarium Book",
+    description: "Elegant 3D pressed-flower journal. Drag & drop flowers, cycle polaroid photo stack, and slide out a secret pocket letter. Suitable for partners, best friends, or crushes.",
+    category: "romantic",
+    accent: "linear-gradient(135deg, #FCF7ED, #DFD3BE, #8B5A2B)",
+    tags: ["Herbarium", "Interactive", "General", "Flagship"],
+  },
+  {
+    id: "teachers_day",
+    name: "Teacher's Chalkboard Notebook",
+    description: "Chalkboard-themed tribute book for teachers. Erase the chalkboard cover with the sponge eraser, grade your teacher with interactive stars/stickers on the report card, cycle photos, and open a 3D red apple gift note.",
+    category: "playful",
+    accent: "linear-gradient(135deg, #1B2E24, #C5A880, #FAF9F6)",
+    tags: ["Teacher's Day", "School", "Interactive", "Flagship"],
+  },
 ];
 
 type Category = "semua" | "minimal" | "romantic" | "playful" | "interaktif" | "hari_raya";
@@ -425,7 +449,7 @@ export default function TemplatePicker({ value, onChange }: TemplatePickerProps)
                         ref={iframeRef}
                         srcDoc={previewSrc}
                         className="w-full h-full border-none"
-                        sandbox="allow-scripts allow-same-origin"
+                        sandbox="allow-scripts"
                         title="Template Preview"
                       />
                     </div>

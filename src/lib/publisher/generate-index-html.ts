@@ -18,6 +18,9 @@ import { generateSweetCradleHtml } from "./templates/sweet-cradle";
 import { generateTenderWelcomeHtml } from "./templates/tender-welcome";
 import { generateChristmasMagicHtml } from "./templates/christmas-magic";
 import { generateRamadhanBlessingsHtml } from "./templates/ramadhan-blessings";
+import { generateMothersDayHtml } from "./templates/mothers-day";
+import { generateHerbariumBookHtml } from "./templates/herbarium-book";
+import { generateTeachersDayHtml } from "./templates/teachers-day";
 
 /**
  * Main coordinator that returns the HTML page content based on the selected template.
@@ -40,48 +43,132 @@ import { generateRamadhanBlessingsHtml } from "./templates/ramadhan-blessings";
  *  graduation_note     → Graduation Note (premium navy & gold, diploma scroll, confetti celebration)
  */
 export function generateIndexHtml(config: PublishedConfig): string {
+  let html = "";
   switch (config.template) {
     case "classic_editorial":
-      return generateClassicEditorialHtml(config);
+      html = generateClassicEditorialHtml(config);
+      break;
     case "polaroid_scrapbook":
     // "polaroid_scrapbook" key kept for backward-compat, maps to scrapbook design
     case "scrapbook":
-      return generateScrapbookHtml(config);
+      html = generateScrapbookHtml(config);
+      break;
     case "pink_book_folds":
-      return generatePinkBookFoldsHtml(config);
+      html = generatePinkBookFoldsHtml(config);
+      break;
     case "apology_letter":
-      return generateApologyLetterHtml(config);
+      html = generateApologyLetterHtml(config);
+      break;
     case "open_when_cards":
-      return generateOpenWhenCardsHtml(config);
+      html = generateOpenWhenCardsHtml(config);
+      break;
     case "nocturnal_journal":
-      return generateNocturnalJournalHtml(config);
+      html = generateNocturnalJournalHtml(config);
+      break;
     case "gift_box_reveal":
-      return generateGiftBoxRevealHtml(config);
+      html = generateGiftBoxRevealHtml(config);
+      break;
     case "playful_gift":
-      return generatePlayfulGiftHtml(config);
+      html = generatePlayfulGiftHtml(config);
+      break;
     case "playful_dog":
-      return generatePlayfulDogHtml(config);
+      html = generatePlayfulDogHtml(config);
+      break;
     case "playful_pooh":
-      return generatePlayfulPoohHtml(config);
+      html = generatePlayfulPoohHtml(config);
+      break;
     case "eternal_love":
-      return generateEternalLoveHtml(config);
+      html = generateEternalLoveHtml(config);
+      break;
     case "birthday_magic":
-      return generateBirthdayMagicHtml(config);
+      html = generateBirthdayMagicHtml(config);
+      break;
     case "blooming_note":
-      return generateBloomingNoteHtml(config);
+      html = generateBloomingNoteHtml(config);
+      break;
     case "graduation_note":
-      return generateGraduationNoteHtml(config);
+      html = generateGraduationNoteHtml(config);
+      break;
     case "graduation_memory_lane":
-      return generateGraduationMemoryLaneHtml(config);
+      html = generateGraduationMemoryLaneHtml(config);
+      break;
     case "sweet_cradle":
-      return generateSweetCradleHtml(config);
+      html = generateSweetCradleHtml(config);
+      break;
     case "tender_welcome":
-      return generateTenderWelcomeHtml(config);
+      html = generateTenderWelcomeHtml(config);
+      break;
     case "christmas_magic":
-      return generateChristmasMagicHtml(config);
+      html = generateChristmasMagicHtml(config);
+      break;
     case "ramadhan_blessings":
-      return generateRamadhanBlessingsHtml(config);
+      html = generateRamadhanBlessingsHtml(config);
+      break;
+    case "mothers_day":
+      html = generateMothersDayHtml(config);
+      break;
+    case "herbarium_book":
+      html = generateHerbariumBookHtml(config);
+      break;
+    case "teachers_day":
+      html = generateTeachersDayHtml(config);
+      break;
     default:
-      return generateClassicEditorialHtml(config);
+      html = generateClassicEditorialHtml(config);
   }
+  return injectTailwindWarningSuppress(html);
+}
+
+export function injectTailwindWarningSuppress(html: string): string {
+  if (!html) return html;
+  const suppressScript = `
+  <!-- Suppress Tailwind Play CDN production warning -->
+  <script>
+    (function() {
+      const origWarn = console.warn;
+      console.warn = function(...args) {
+        if (args[0] && typeof args[0] === 'string' && args[0].includes('cdn.tailwindcss.com')) return;
+        if (typeof origWarn === 'function') origWarn.apply(console, args);
+      };
+      const origLog = console.log;
+      console.log = function(...args) {
+        if (args[0] && typeof args[0] === 'string' && args[0].includes('cdn.tailwindcss.com')) return;
+        if (typeof origLog === 'function') origLog.apply(console, args);
+      };
+    })();
+  </script>
+  <!-- Enforce no horizontal scrolling, wrap long text, and enlarge photo captions globally -->
+  <style>
+    html, body {
+      overflow-x: hidden !important;
+      max-width: 100vw;
+    }
+    /* Wrap long words / force wrapping on all letter body, note, journal, and paragraph text containers */
+    p, span, div, h1, h2, h3, h4, h5, h6, 
+    .letter-body, .lined-journal-area, .notebook-journal-text, 
+    #letter-body, #letter-body-content, #typewriter-text {
+      overflow-wrap: break-word !important;
+      word-wrap: break-word !important;
+      word-break: break-word !important;
+    }
+    /* Make photo captions larger and ensure they wrap instead of truncating */
+    .polaroid-caption, .editorial-caption, .yearbook-caption, 
+    .corkboard-polaroid p, .polaroid-card p, .polaroid-frame p {
+      font-size: 13px !important;
+      white-space: normal !important;
+      overflow: visible !important;
+      text-overflow: clip !important;
+      word-break: break-word !important;
+      overflow-wrap: break-word !important;
+      line-height: 1.4 !important;
+    }
+    /* Adjust handwriting/script font sizes specifically */
+    .font-handwriting, .font-script {
+      font-size: 14px !important;
+    }
+  </style>\n`;
+  if (html.includes("<head>")) {
+    return html.replace("<head>", "<head>" + suppressScript);
+  }
+  return suppressScript + html;
 }
