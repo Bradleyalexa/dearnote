@@ -2,7 +2,7 @@ import { PublishedConfig } from "../../schemas/card-draft";
 
 export function generateFarewellKeepsakeHtml(config: PublishedConfig): string {
   const hasSecretCode = !!config.secretCode;
-  const letterTitle = config.letterTitle || "Pesan Perpisahan Hangat";
+  const letterTitle = config.letterTitle || "Farewell";
   const escapedLetterBody = JSON.stringify(config.letterBody);
   const photosJson = JSON.stringify(config.photos);
   const hasVoiceNote = !!config.voiceNote;
@@ -243,17 +243,8 @@ export function generateFarewellKeepsakeHtml(config: PublishedConfig): string {
 
     <!-- Letter Header -->
     <div class="text-center border-b border-[#8A6D56]/15 pb-8 mb-8">
-      <h1 class="font-playfair text-3xl sm:text-4xl font-semibold text-[#3D332A] tracking-tight mb-4">${letterTitle}</h1>
-      <div class="flex flex-col gap-2 items-center justify-center text-[10px] font-bold text-[#8A6D56]/80 uppercase tracking-widest">
-        <div class="flex flex-wrap items-center justify-center gap-1.5">
-          <span class="text-[#73685C]/60 font-medium">Kepada:</span>
-          <span class="text-[#3D332A] font-bold break-words max-w-[240px] sm:max-w-md">${config.toName}</span>
-        </div>
-        <div class="flex flex-wrap items-center justify-center gap-1.5">
-          <span class="text-[#73685C]/60 font-medium">Dari:</span>
-          <span class="text-[#3D332A] font-bold break-words max-w-[240px] sm:max-w-md">${config.fromName}</span>
-        </div>
-      </div>
+      <h1 class="font-playfair text-3xl sm:text-4xl font-semibold text-[#3D332A] tracking-tight mb-2">${letterTitle}</h1>
+      <p class="font-playfair text-3xl sm:text-4xl italic text-[#8A6D56] font-medium tracking-wide mt-3">dear, ${config.toName}</p>
     </div>
 
     <!-- Letter Body (with Typewriter) -->
