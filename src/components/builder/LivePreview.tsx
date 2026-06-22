@@ -24,23 +24,45 @@ export default function LivePreview({ draft, bgMusicPreviewUrl }: LivePreviewPro
   const targetWidth = 380;
   const targetHeight = 696;
 
-  useEffect(() => {
-    const config = generateConfig("preview_id", draft);
+  const [debouncedDraft, setDebouncedDraft] = useState<CardDraft>(draft);
 
-    config.photos = draft.photos.map((p) => ({
+  useEffect(() => {
+    const isInstantChange =
+      draft.template !== debouncedDraft.template ||
+      draft.themeColor !== debouncedDraft.themeColor ||
+      JSON.stringify(draft.photos) !== JSON.stringify(debouncedDraft.photos) ||
+      draft.voiceNote?.src !== debouncedDraft.voiceNote?.src ||
+      draft.bgMusic?.src !== debouncedDraft.bgMusic?.src;
+
+    if (isInstantChange) {
+      setDebouncedDraft(draft);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setDebouncedDraft(draft);
+    }, 1500);
+
+    return () => clearTimeout(timer);
+  }, [draft, debouncedDraft]);
+
+  useEffect(() => {
+    const config = generateConfig("preview_id", debouncedDraft);
+
+    config.photos = debouncedDraft.photos.map((p) => ({
       src: p.src,
       caption: p.caption,
     }));
 
-    if (draft.voiceNote) {
+    if (debouncedDraft.voiceNote) {
       config.voiceNote = {
-        src: draft.voiceNote.src,
-        durationSeconds: draft.voiceNote.durationSeconds,
+        src: debouncedDraft.voiceNote.src,
+        durationSeconds: debouncedDraft.voiceNote.durationSeconds,
       };
     }
 
-    if (draft.bgMusic) {
-      const src = draft.bgMusic.src;
+    if (debouncedDraft.bgMusic) {
+      const src = debouncedDraft.bgMusic.src;
       // Use blob URL for custom uploads (CORS-free, always accessible in the same session).
       // For predefined tracks (relative paths like /audio/...), encode only path segments.
       // Never encode absolute https:// URLs — encodeURIComponent would mangle the protocol.
@@ -54,7 +76,7 @@ export default function LivePreview({ draft, bgMusicPreviewUrl }: LivePreviewPro
       }
       config.bgMusic = {
         src: resolvedSrc,
-        durationSeconds: draft.bgMusic.durationSeconds,
+        durationSeconds: debouncedDraft.bgMusic.durationSeconds,
       };
     }
 
@@ -119,7 +141,7 @@ export default function LivePreview({ draft, bgMusicPreviewUrl }: LivePreviewPro
     html = html.replace("</body>", `${watermarkInject}</body>`);
 
     setSrcDoc(html);
-  }, [draft, activeTab, bgMusicPreviewUrl]);
+  }, [debouncedDraft, activeTab, bgMusicPreviewUrl]);
 
   useEffect(() => {
     if (!isAutoFit) return;

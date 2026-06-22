@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -45,6 +45,38 @@ export default function CardBuilder() {
 
   const formValues = watch();
 
+  // Load draft from localStorage on mount
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("dearnote_draft");
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          Object.entries(parsed).forEach(([key, val]) => {
+            if (val !== undefined && val !== null) {
+              setValue(key as any, val);
+            }
+          });
+        } catch (e) {
+          console.error("Failed to parse saved draft", e);
+        }
+      }
+    }
+  }, [setValue]);
+
+  // Auto-save draft to localStorage with 1.5s debounce
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const timer = setTimeout(() => {
+        // Avoid saving completely empty form states
+        if (formValues.fromName || formValues.toName || formValues.letterBody) {
+          localStorage.setItem("dearnote_draft", JSON.stringify(formValues));
+        }
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [formValues]);
+
   const scrollToPreview = () => {
     if (typeof window !== "undefined" && window.innerWidth < 1024) {
       const el = document.getElementById("live-preview");
@@ -80,6 +112,9 @@ export default function CardBuilder() {
       }
 
       const { paymentUrl } = await res.json();
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("dearnote_draft");
+      }
       window.location.href = paymentUrl;
     } catch (err: any) {
       console.error(err);
