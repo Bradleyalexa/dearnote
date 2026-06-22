@@ -25,6 +25,9 @@ export const TEMPLATES = [
   "mothers_day",
   "herbarium_book",
   "teachers_day",
+  "fathers_day",
+  "cute_apology",
+  "farewell_keepsake",
 ] as const;
 
 export const TemplateSchema = z.enum(TEMPLATES);

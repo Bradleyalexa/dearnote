@@ -190,6 +190,30 @@ export const TEMPLATE_REGISTRY: {
     accent: "linear-gradient(135deg, #1B2E24, #C5A880, #FAF9F6)",
     tags: ["Teacher's Day", "School", "Interactive", "Flagship"],
   },
+  {
+    id: "fathers_day",
+    name: "Father's Classic Wallet",
+    description: "Classic dark-leather wallet journal tribute to Father. Unbuckle the brass snap fastener, click interactive stamps on Dad's badge board, view warm polaroid photos on a workbench desk, and slide out a vintage pocket watch message.",
+    category: "playful",
+    accent: "linear-gradient(135deg, #3D2B1F, #5C4033, #0F2A4A)",
+    tags: ["Father's Day", "Family", "Interactive", "Flagship"],
+  },
+  {
+    id: "cute_apology",
+    name: "Cute Couple Apology",
+    description: "Kirim permintaan maaf menggemaskan ke pasanganmu. Lepas plester luka pink di amplop, kumpulkan poin maaf lewat sesajen Boba/Cokelat, dan pecahkan kue keberuntungan.",
+    category: "playful",
+    accent: "linear-gradient(135deg, #FFB5C5, #FFE4E1, #FAF0E6)",
+    tags: ["Apology", "Couple", "Cute", "Interactive", "Flagship"],
+  },
+  {
+    id: "farewell_keepsake",
+    name: "Sincere Farewell",
+    description: "Desain bersih, elegan, dan khidmat untuk perpisahan rekan kerja, teman, atau guru. Minim interaksi, berfokus penuh pada ketulusan pesan, foto berbingkai rapi, dan pesan suara hangat.",
+    category: "minimal",
+    accent: "linear-gradient(135deg, #E6E6E6, #D4AF37, #FFFFFF)",
+    tags: ["Farewell", "Goodbye", "Minimalist", "Sincere"],
+  },
 ];
 
 type Category = "semua" | "minimal" | "romantic" | "playful" | "interaktif" | "hari_raya";

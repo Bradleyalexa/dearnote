@@ -752,7 +752,7 @@ export function generateTeachersDayHtml(config: PublishedConfig): string {
               const pins = ["red", "blue", "green"];
               const selectedPin = pins[i % 3];
               return `
-              <div class="corkboard-polaroid p-2 w-[210px] absolute transition-all duration-500" 
+              <div class="corkboard-polaroid p-2 w-[240px] absolute transition-all duration-500" 
                 id="pcard-${i}"
                 onclick="cyclePhoto(${i})">
                 <div class="pushpin ${selectedPin}"></div>

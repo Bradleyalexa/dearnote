@@ -21,6 +21,9 @@ import { generateRamadhanBlessingsHtml } from "./templates/ramadhan-blessings";
 import { generateMothersDayHtml } from "./templates/mothers-day";
 import { generateHerbariumBookHtml } from "./templates/herbarium-book";
 import { generateTeachersDayHtml } from "./templates/teachers-day";
+import { generateFathersDayHtml } from "./templates/fathers-day";
+import { generateCuteApologyHtml } from "./templates/cute-apology";
+import { generateFarewellKeepsakeHtml } from "./templates/farewell-keepsake";
 
 /**
  * Main coordinator that returns the HTML page content based on the selected template.
@@ -112,6 +115,15 @@ export function generateIndexHtml(config: PublishedConfig): string {
       break;
     case "teachers_day":
       html = generateTeachersDayHtml(config);
+      break;
+    case "fathers_day":
+      html = generateFathersDayHtml(config);
+      break;
+    case "cute_apology":
+      html = generateCuteApologyHtml(config);
+      break;
+    case "farewell_keepsake":
+      html = generateFarewellKeepsakeHtml(config);
       break;
     default:
       html = generateClassicEditorialHtml(config);
