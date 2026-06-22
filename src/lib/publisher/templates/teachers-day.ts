@@ -1071,21 +1071,27 @@ export function generateTeachersDayHtml(config: PublishedConfig): string {
       $('page-4')
     ];
 
+    function updateZIndices() {
+      pages.forEach((p, idx) => {
+        if (!p) return;
+        if (p.classList.contains('flipped')) {
+          p.style.zIndex = idx + 1; // Flipped layers sit on bottom
+        } else {
+          p.style.zIndex = 40 - idx * 10; // Unflipped layers stack on top
+        }
+      });
+    }
+    updateZIndices();
+
     function turnPage(pageIndex, goNext) {
       if (goNext) {
         pages[pageIndex - 1].classList.add('flipped');
         currentPageIndex = pageIndex;
-        // z-index adjustment to prevent backface visual overlap
-        setTimeout(() => {
-          pages[pageIndex - 1].style.zIndex = 10 + pageIndex;
-        }, 300);
       } else {
-        pages[pageIndex - 1].classList.remove('flipped');
+        pages[pageIndex - 2].classList.remove('flipped');
         currentPageIndex = pageIndex - 1;
-        setTimeout(() => {
-          pages[pageIndex - 1].style.zIndex = 40 - (pageIndex - 1);
-        }, 300);
       }
+      updateZIndices();
     }
 
     // 6. Typewriter engine for Page 2 Letter

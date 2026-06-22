@@ -21,6 +21,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "DearNote - Jurnal Kenangan & Keepsake Interaktif",
   description: "Abadikan momen berharga Anda dalam catatan kenangan interaktif.",
+  icons: {
+    icon: "/img/dearnote_logo_round.jpeg",
+  },
 };
 
 export default function RootLayout({
