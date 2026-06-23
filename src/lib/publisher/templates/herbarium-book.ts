@@ -623,7 +623,7 @@ export function generateHerbariumBookHtml(config: PublishedConfig): string {
         <div id="herbarium-canvas">
           <!-- Small initial guidelines inside canvas -->
           <div id="canvas-hint" class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center text-[10px] text-zinc-400 pointer-events-none select-none">
-            <span>🌸 Rangkai seikat buket bunga cantik di sini.</span>
+            <span>🌸 Flower for you!</span>
             <span class="mt-1">Drag bunga untuk memindahkan, putar gagang ↻, perbesar ⤢, atau lepas di luar kotak untuk menghapus.</span>
           </div>
         </div>
