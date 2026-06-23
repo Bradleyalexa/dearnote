@@ -3,6 +3,7 @@ import { nanoid } from "nanoid";
 import { CardDraftSchema } from "@/lib/schemas/card-draft";
 import { putJson, getObject } from "@/lib/r2/client";
 import { rateLimit, getClientIp } from "@/lib/rate-limit";
+import { createCheckoutPayment } from "@/lib/doku/client";
 
 export async function POST(req: NextRequest) {
   // --- Rate Limiting: max 5 orders per IP per 10 minutes ---
@@ -71,7 +72,24 @@ export async function POST(req: NextRequest) {
 
     const createdAt = new Date().toISOString();
 
-    // 5. Build Order JSON
+    // 5. Call Doku Checkout API to generate real hosted checkout URL
+    let paymentUrl = "";
+    try {
+      const dokuResult = await createCheckoutPayment({
+        amount,
+        invoiceNumber: orderId,
+        paymentGroup,
+      });
+      paymentUrl = dokuResult.paymentUrl;
+    } catch (err: any) {
+      console.error("Failed to generate Doku payment link:", err);
+      return NextResponse.json(
+        { error: "Failed to generate Doku payment session" },
+        { status: 500 }
+      );
+    }
+
+    // 6. Build Order JSON
     const orderData = {
       orderId,
       cardId,
@@ -80,12 +98,12 @@ export async function POST(req: NextRequest) {
       paymentGroup,
       status: "pending_payment",
       paymentProvider: "doku",
-      paymentUrl: `/success/${orderId}?simulate=true`, // Simulated redirection for V0
+      paymentUrl,
       createdAt,
       updatedAt: createdAt,
     };
 
-    // 6. Save data to R2 Bucket (Acting as S3 File Database)
+    // 7. Save data to R2 Bucket (Acting as S3 File Database)
     const draftKey = `pending/${orderId}/draft.json`;
     const orderKey = `orders/${orderId}.json`;
 
