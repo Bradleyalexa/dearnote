@@ -29,7 +29,7 @@ export async function createCheckoutPayment({
   // Configure payment methods allowed for each category
   const paymentMethodTypes =
     paymentGroup === "qris_ewallet"
-      ? ["QRIS", "EMONEY_OVO", "EMONEY_SHOPEEPAY", "EMONEY_DOKU"]
+      ? ["QRIS", "EMONEY_OVO", "EMONEY_SHOPEE_PAY", "EMONEY_DOKU"]
       : ["CREDIT_CARD"];
 
   // 1. Prepare Request Body

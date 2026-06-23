@@ -38,6 +38,7 @@ export function generateConfig(cardId: string, draft: CardDraft): PublishedConfi
       : undefined,
     finalMessage: draft.finalMessage || undefined,
     themeColor: draft.themeColor || undefined,
+    flowers: draft.flowers || undefined,
     publishedAt: publishedAt.toISOString(),
     expiresAt: expiresAt.toISOString(),
   };

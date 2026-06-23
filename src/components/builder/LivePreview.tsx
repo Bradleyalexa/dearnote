@@ -10,9 +10,10 @@ interface LivePreviewProps {
   draft: CardDraft;
   /** Blob URL of custom BGM for CORS-free audio preview (from BackgroundMusicSelector) */
   bgMusicPreviewUrl?: string | null;
+  onFlowersChange?: (flowers: any[]) => void;
 }
 
-export default function LivePreview({ draft, bgMusicPreviewUrl }: LivePreviewProps) {
+export default function LivePreview({ draft, bgMusicPreviewUrl, onFlowersChange }: LivePreviewProps) {
   const [srcDoc, setSrcDoc] = useState<string>("");
   const [activeTab, setActiveTab] = useState<"cover" | "inside">("inside");
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -25,6 +26,33 @@ export default function LivePreview({ draft, bgMusicPreviewUrl }: LivePreviewPro
   const targetHeight = 696;
 
   const [debouncedDraft, setDebouncedDraft] = useState<CardDraft>(draft);
+  const [reloadKey, setReloadKey] = useState<number>(0);
+  const savedFlowersRef = useRef<any>(null);
+
+  // Listen for flower arrangement state messages from the preview iframe
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data && event.data.type === "save_flowers") {
+        savedFlowersRef.current = event.data.flowers;
+        if (onFlowersChange) {
+          onFlowersChange(event.data.flowers);
+        }
+      }
+    };
+    window.addEventListener("message", handleMessage);
+    return () => window.removeEventListener("message", handleMessage);
+  }, [onFlowersChange]);
+
+  // Sync saved flower positions from draft when template/flowers change
+  useEffect(() => {
+    if (draft.template === "herbarium_book" || draft.template === "mothers_day") {
+      if (draft.flowers && draft.flowers.length > 0) {
+        savedFlowersRef.current = draft.flowers;
+      }
+    } else {
+      savedFlowersRef.current = null;
+    }
+  }, [draft.template, draft.flowers]);
 
   useEffect(() => {
     const isInstantChange =
@@ -36,6 +64,19 @@ export default function LivePreview({ draft, bgMusicPreviewUrl }: LivePreviewPro
 
     if (isInstantChange) {
       setDebouncedDraft(draft);
+      return;
+    }
+
+    // Check if other text content changed
+    const hasTextChanged =
+      draft.fromName !== debouncedDraft.fromName ||
+      draft.toName !== debouncedDraft.toName ||
+      draft.letterTitle !== debouncedDraft.letterTitle ||
+      draft.letterBody !== debouncedDraft.letterBody ||
+      draft.finalMessage !== debouncedDraft.finalMessage;
+
+    if (!hasTextChanged) {
+      // If only flowers changed, do not trigger a reload
       return;
     }
 
@@ -140,8 +181,20 @@ export default function LivePreview({ draft, bgMusicPreviewUrl }: LivePreviewPro
     `;
     html = html.replace("</body>", `${watermarkInject}</body>`);
 
+    const stateInject = `
+      <script>
+        window.IS_DEARNOTE_PREVIEW = true;
+        ${savedFlowersRef.current ? `window.PREV_FLOWERS_STATE = ${JSON.stringify(savedFlowersRef.current)};` : ""}
+      </script>
+    `;
+    if (html.includes("<head>")) {
+      html = html.replace("<head>", "<head>" + stateInject);
+    } else {
+      html = stateInject + html;
+    }
+
     setSrcDoc(html);
-  }, [debouncedDraft, activeTab, bgMusicPreviewUrl]);
+  }, [debouncedDraft, activeTab, bgMusicPreviewUrl, reloadKey]);
 
   useEffect(() => {
     if (!isAutoFit) return;
@@ -166,9 +219,8 @@ export default function LivePreview({ draft, bgMusicPreviewUrl }: LivePreviewPro
   };
 
   const reloadPreview = () => {
-    if (iframeRef.current) {
-      iframeRef.current.srcdoc = srcDoc;
-    }
+    savedFlowersRef.current = null;
+    setReloadKey((prev) => prev + 1);
   };
 
   return (

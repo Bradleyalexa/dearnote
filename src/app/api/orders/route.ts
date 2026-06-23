@@ -4,6 +4,7 @@ import { CardDraftSchema } from "@/lib/schemas/card-draft";
 import { putJson, getObject } from "@/lib/r2/client";
 import { rateLimit, getClientIp } from "@/lib/rate-limit";
 import { createCheckoutPayment } from "@/lib/doku/client";
+import { publishCard } from "@/lib/publisher/publish-card";
 
 export async function POST(req: NextRequest) {
   // --- Rate Limiting: max 5 orders per IP per 10 minutes ---
@@ -72,21 +73,26 @@ export async function POST(req: NextRequest) {
 
     const createdAt = new Date().toISOString();
 
-    // 5. Call Doku Checkout API to generate real hosted checkout URL
+    // 5. Call Doku Checkout API to generate real hosted checkout URL or bypass it
     let paymentUrl = "";
-    try {
-      const dokuResult = await createCheckoutPayment({
-        amount,
-        invoiceNumber: orderId,
-        paymentGroup,
-      });
-      paymentUrl = dokuResult.paymentUrl;
-    } catch (err: any) {
-      console.error("Failed to generate Doku payment link:", err);
-      return NextResponse.json(
-        { error: "Failed to generate Doku payment session" },
-        { status: 500 }
-      );
+    const isPaymentDisabled = process.env.DISABLE_PAYMENT === "true" || process.env.NEXT_PUBLIC_DISABLE_PAYMENT === "true";
+    if (isPaymentDisabled) {
+      paymentUrl = `/success/${orderId}`;
+    } else {
+      try {
+        const dokuResult = await createCheckoutPayment({
+          amount,
+          invoiceNumber: orderId,
+          paymentGroup,
+        });
+        paymentUrl = dokuResult.paymentUrl;
+      } catch (err: any) {
+        console.error("Failed to generate Doku payment link:", err);
+        return NextResponse.json(
+          { error: "Failed to generate Doku payment session" },
+          { status: 500 }
+        );
+      }
     }
 
     // 6. Build Order JSON
@@ -97,7 +103,7 @@ export async function POST(req: NextRequest) {
       currency: "IDR",
       paymentGroup,
       status: "pending_payment",
-      paymentProvider: "doku",
+      paymentProvider: isPaymentDisabled ? "none" : "doku",
       paymentUrl,
       createdAt,
       updatedAt: createdAt,
@@ -111,6 +117,20 @@ export async function POST(req: NextRequest) {
     await putJson(draftKey, parseResult.data);
     // Save order JSON
     await putJson(orderKey, orderData);
+
+    // Auto-publish if payment is bypassed
+    if (isPaymentDisabled) {
+      try {
+        console.log(`[Bypass] Auto-publishing order ${orderId} immediately...`);
+        await publishCard(orderId);
+      } catch (pubErr) {
+        console.error("[Bypass] Failed to auto-publish bypassed card:", pubErr);
+        return NextResponse.json(
+          { error: "Failed to auto-publish card" },
+          { status: 500 }
+        );
+      }
+    }
 
     return NextResponse.json({
       orderId,

@@ -1,6 +1,10 @@
 import { PublishedConfig } from "../../schemas/card-draft";
 
 export function generateHerbariumBookHtml(config: PublishedConfig): string {
+  const appUrl = typeof window !== "undefined"
+    ? window.location.origin
+    : (process.env.APP_URL || "https://dearnote.asia");
+
   const hasSecretCode = !!config.secretCode;
   const letterTitle = config.letterTitle || "Catatan Kenangan Spesial Untukmu";
   const escapedLetterBody = JSON.stringify(config.letterBody);
@@ -626,13 +630,14 @@ export function generateHerbariumBookHtml(config: PublishedConfig): string {
       </div>
 
       <!-- Flower Select Buttons Deck -->
-      <div class="mt-3">
+      <div class="mt-3" id="flower-select-deck">
         <div class="flex justify-around px-2">
           <button class="flower-btn" onclick="spawnFlower(0)" title="Lavender">🪻</button>
           <button class="flower-btn" onclick="spawnFlower(1)" title="Rose">🌹</button>
           <button class="flower-btn" onclick="spawnFlower(2)" title="Carnation">🌺</button>
           <button class="flower-btn" onclick="spawnFlower(3)" title="Daisy">🌼</button>
           <button class="flower-btn" onclick="spawnFlower(4)" title="Orchid">🌸</button>
+          <button class="flower-btn" onclick="spawnFlower(5)" title="Flower">🌷</button>
         </div>
       </div>
 
@@ -775,6 +780,7 @@ export function generateHerbariumBookHtml(config: PublishedConfig): string {
 
   <!-- Script Logic -->
   <script>
+    window.PREV_FLOWERS_STATE = ${JSON.stringify(config.flowers || [])};
     const CONFIG = {
       secretCode: ${JSON.stringify(config.secretCode || "")},
       fromName: ${JSON.stringify(config.fromName)},
@@ -969,32 +975,32 @@ export function generateHerbariumBookHtml(config: PublishedConfig): string {
 
     // 5. 5-Flower Bouquet choices (using user assets path)
     const flowerDetails = [
-      { name: "Lavender", src: "/img/herbarium/lavender.png" },
-      { name: "Rose", src: "/img/herbarium/rose.png" },
-      { name: "Carnation", src: "/img/herbarium/carnation.png" },
-      { name: "Daisy", src: "/img/herbarium/daisy.png" },
-      { name: "Orchid", src: "/img/herbarium/orchid.png" }
+      { name: "Lavender", src: "${appUrl}/img/herbarium/lavender.png" },
+      { name: "Rose", src: "${appUrl}/img/herbarium/rose.png" },
+      { name: "Carnation", src: "${appUrl}/img/herbarium/carnation.png" },
+      { name: "Daisy", src: "${appUrl}/img/herbarium/daisy.png" },
+      { name: "Orchid", src: "${appUrl}/img/herbarium/orchid.png" },
+      { name: "Flower", src: "${appUrl}/img/herbarium/flower.png" }
     ];
+
+    const isPreview = !!window.IS_DEARNOTE_PREVIEW;
+    if (!isPreview) {
+      const deck = $('flower-select-deck');
+      if (deck) deck.remove();
+    }
 
     // ── Interactive Flower Arranger Engine (Drag, Drop, Rotate, Scale & Delete) ──
     const herbariumCanvas = $('herbarium-canvas');
     let selectedFlower = null;
-    let isDragging = false;
-    let isRotating = false;
-    let isScaling = false;
-    let startX, startY;
-    let startAngle = 0;
-    let startDistance = 1;
-    let flowerStartX, flowerStartY;
-    let flowerStartRotation = 0;
-    let flowerStartScale = 1.0;
 
     // Deselect flower when clicking outside on canvas
-    herbariumCanvas.addEventListener('pointerdown', (e) => {
-      if (e.target === herbariumCanvas || e.target.id === 'canvas-hint') {
-        selectFlowerEl(null);
-      }
-    });
+    if (isPreview) {
+      herbariumCanvas.addEventListener('pointerdown', (e) => {
+        if (e.target === herbariumCanvas || e.target.id === 'canvas-hint') {
+          selectFlowerEl(null);
+        }
+      });
+    }
 
     function selectFlowerEl(el) {
       if (selectedFlower) {
@@ -1012,6 +1018,20 @@ export function generateHerbariumBookHtml(config: PublishedConfig): string {
         selectedFlower.querySelector('.rotate-handle').style.display = 'flex';
         selectedFlower.querySelector('.scale-handle').style.display = 'flex';
       }
+    }
+
+    function saveFlowerState() {
+      const flowers = [];
+      herbariumCanvas.querySelectorAll('.canvas-flower').forEach(el => {
+        flowers.push({
+          idx: parseInt(el.dataset.idx),
+          x: parseFloat(el.dataset.x || '0'),
+          y: parseFloat(el.dataset.y || '0'),
+          rotation: parseFloat(el.dataset.rotation || '0'),
+          scale: parseFloat(el.dataset.scale || '1.0')
+        });
+      });
+      window.parent.postMessage({ type: 'save_flowers', flowers: flowers }, '*');
     }
 
     function spawnFlower(idx) {
@@ -1034,6 +1054,7 @@ export function generateHerbariumBookHtml(config: PublishedConfig): string {
       flower.style.top = '0px';
       
       // Custom geometry properties
+      flower.dataset.idx = idx;
       flower.dataset.x = startXVal;
       flower.dataset.y = startYVal;
       flower.dataset.rotation = Math.random() * 20 - 10;
@@ -1049,26 +1070,30 @@ export function generateHerbariumBookHtml(config: PublishedConfig): string {
         <div class="scale-handle absolute -bottom-3 -right-3 w-6 h-6 bg-blue-500 text-white rounded-full text-[9px] flex items-center justify-center cursor-se-resize" style="display:none; z-index:100">⤢</div>
       \`;
 
-      // Attach Delete click event
-      flower.querySelector('.delete-btn').addEventListener('pointerdown', (e) => {
-        e.stopPropagation();
-        flower.remove();
-        if (selectedFlower === flower) selectedFlower = null;
-      });
+      // Attach Delete click event and interaction listeners only in preview
+      if (isPreview) {
+        flower.querySelector('.delete-btn').addEventListener('pointerdown', (e) => {
+          e.stopPropagation();
+          flower.remove();
+          if (selectedFlower === flower) selectedFlower = null;
+          saveFlowerState();
+        });
 
-      // Drag event binding
-      flower.addEventListener('pointerdown', (e) => startDrag(e, flower));
+        // Drag event binding
+        flower.addEventListener('pointerdown', (e) => startDrag(e, flower));
 
-      // Rotate handle event binding
-      const rotateHandle = flower.querySelector('.rotate-handle');
-      rotateHandle.addEventListener('pointerdown', (e) => startRotate(e, flower));
+        // Rotate handle event binding
+        const rotateHandle = flower.querySelector('.rotate-handle');
+        rotateHandle.addEventListener('pointerdown', (e) => startRotate(e, flower));
 
-      // Scale handle event binding
-      const scaleHandle = flower.querySelector('.scale-handle');
-      scaleHandle.addEventListener('pointerdown', (e) => startScale(e, flower));
+        // Scale handle event binding
+        const scaleHandle = flower.querySelector('.scale-handle');
+        scaleHandle.addEventListener('pointerdown', (e) => startScale(e, flower));
+      }
 
       herbariumCanvas.appendChild(flower);
       selectFlowerEl(flower);
+      saveFlowerState();
 
       // Spawn sound trigger or sparkle
       const rect = flower.getBoundingClientRect();
@@ -1094,51 +1119,26 @@ export function generateHerbariumBookHtml(config: PublishedConfig): string {
       e.preventDefault();
       selectFlowerEl(el);
       
-      isDragging = true;
-      startX = e.clientX;
-      startY = e.clientY;
-      flowerStartX = parseFloat(el.dataset.x);
-      flowerStartY = parseFloat(el.dataset.y);
+      const startX = e.clientX;
+      const startY = e.clientY;
+      const flowerStartX = parseFloat(el.dataset.x || '0');
+      const flowerStartY = parseFloat(el.dataset.y || '0');
 
       // Temporarily bypass transition for snap dragging
       el.style.transition = 'none';
 
-      function onDrag(e) {
-        if (!isDragging) return;
-        const dx = e.clientX - startX;
-        const dy = e.clientY - startY;
+      function onDrag(moveEvent) {
+        const dx = moveEvent.clientX - startX;
+        const dy = moveEvent.clientY - startY;
         
         el.dataset.x = flowerStartX + dx;
         el.dataset.y = flowerStartY + dy;
         updateFlowerTransform(el);
       }
 
-      function endDrag(e) {
-        if (!isDragging) return;
-        isDragging = false;
+      function endDrag() {
         el.style.transition = '';
-
-        // Check if dragged outside the canvas bounds
-        const canvasRect = herbariumCanvas.getBoundingClientRect();
-        const flowerRect = el.getBoundingClientRect();
-        const flowerCenterX = flowerRect.left + flowerRect.width / 2;
-        const flowerCenterY = flowerRect.top + flowerRect.height / 2;
-
-        if (
-          flowerCenterX < canvasRect.left || 
-          flowerCenterX > canvasRect.right || 
-          flowerCenterY < canvasRect.top || 
-          flowerCenterY > canvasRect.bottom
-        ) {
-          // Deletion animation
-          el.style.transition = 'transform 0.4s ease, opacity 0.4s ease';
-          el.style.opacity = '0';
-          el.style.transform += ' scale(0.1)';
-          setTimeout(() => {
-            el.remove();
-            if (selectedFlower === el) selectedFlower = null;
-          }, 400);
-        }
+        saveFlowerState();
 
         document.removeEventListener('pointermove', onDrag);
         document.removeEventListener('pointerup', endDrag);
@@ -1153,20 +1153,18 @@ export function generateHerbariumBookHtml(config: PublishedConfig): string {
     function startRotate(e, el) {
       e.preventDefault();
       e.stopPropagation();
-      isRotating = true;
 
       const rect = el.getBoundingClientRect();
       const flowerCenterX = rect.left + rect.width / 2;
       const flowerCenterY = rect.top + rect.height / 2;
 
-      startAngle = Math.atan2(e.clientY - flowerCenterY, e.clientX - flowerCenterX) * 180 / Math.PI;
-      flowerStartRotation = parseFloat(el.dataset.rotation);
+      const startAngle = Math.atan2(e.clientY - flowerCenterY, e.clientX - flowerCenterX) * 180 / Math.PI;
+      const flowerStartRotation = parseFloat(el.dataset.rotation || '0');
 
       el.style.transition = 'none';
 
-      function onRotate(e) {
-        if (!isRotating) return;
-        const angle = Math.atan2(e.clientY - flowerCenterY, e.clientX - flowerCenterX) * 180 / Math.PI;
+      function onRotate(moveEvent) {
+        const angle = Math.atan2(moveEvent.clientY - flowerCenterY, moveEvent.clientX - flowerCenterX) * 180 / Math.PI;
         const diff = angle - startAngle;
         
         el.dataset.rotation = flowerStartRotation + diff;
@@ -1174,9 +1172,8 @@ export function generateHerbariumBookHtml(config: PublishedConfig): string {
       }
 
       function endRotate() {
-        if (!isRotating) return;
-        isRotating = false;
         el.style.transition = '';
+        saveFlowerState();
         
         document.removeEventListener('pointermove', onRotate);
         document.removeEventListener('pointerup', endRotate);
@@ -1191,20 +1188,18 @@ export function generateHerbariumBookHtml(config: PublishedConfig): string {
     function startScale(e, el) {
       e.preventDefault();
       e.stopPropagation();
-      isScaling = true;
 
       const rect = el.getBoundingClientRect();
       const flowerCenterX = rect.left + rect.width / 2;
       const flowerCenterY = rect.top + rect.height / 2;
 
-      startDistance = Math.hypot(e.clientY - flowerCenterY, e.clientX - flowerCenterX);
-      flowerStartScale = parseFloat(el.dataset.scale || 1.0);
+      const startDistance = Math.hypot(e.clientY - flowerCenterY, e.clientX - flowerCenterX);
+      const flowerStartScale = parseFloat(el.dataset.scale || '1.0');
 
       el.style.transition = 'none';
 
-      function onScale(e) {
-        if (!isScaling) return;
-        const currentDistance = Math.hypot(e.clientY - flowerCenterY, e.clientX - flowerCenterX);
+      function onScale(moveEvent) {
+        const currentDistance = Math.hypot(moveEvent.clientY - flowerCenterY, moveEvent.clientX - flowerCenterX);
         let newScale = flowerStartScale * (currentDistance / startDistance);
         
         // Clamp scale value between 0.4 and 2.0
@@ -1215,9 +1210,8 @@ export function generateHerbariumBookHtml(config: PublishedConfig): string {
       }
 
       function endScale() {
-        if (!isScaling) return;
-        isScaling = false;
         el.style.transition = '';
+        saveFlowerState();
 
         document.removeEventListener('pointermove', onScale);
         document.removeEventListener('pointerup', endScale);
@@ -1236,6 +1230,63 @@ export function generateHerbariumBookHtml(config: PublishedConfig): string {
       
       const width = herbariumCanvas.clientWidth || 280;
       const height = herbariumCanvas.clientHeight || 320;
+
+      if (window.PREV_FLOWERS_STATE && window.PREV_FLOWERS_STATE.length > 0) {
+        const hint = $('canvas-hint');
+        if (hint) hint.style.display = 'none';
+
+        window.PREV_FLOWERS_STATE.forEach(flowerState => {
+          const idx = flowerState.idx;
+          const flower = document.createElement('div');
+          flower.className = 'canvas-flower absolute select-none';
+          
+          flower.style.width = '160px';
+          flower.style.height = '260px';
+          flower.style.left = '0px';
+          flower.style.top = '0px';
+          
+          flower.dataset.idx = idx;
+          flower.dataset.x = flowerState.x;
+          flower.dataset.y = flowerState.y;
+          flower.dataset.rotation = flowerState.rotation;
+          flower.dataset.scale = flowerState.scale;
+          
+          updateFlowerTransform(flower);
+
+          flower.innerHTML = \`
+            <img src="\${flowerDetails[idx].src}" class="w-full h-full object-contain pointer-events-none">
+            <div class="selection-box absolute inset-[-4px] border-2 border-dashed border-pink-400 rounded pointer-events-none" style="display:none"></div>
+            <button class="delete-btn absolute -top-3 -right-3 w-6 h-6 bg-red-500 text-white rounded-full text-xs font-bold flex items-center justify-center" style="display:none; z-index:100">×</button>
+            <div class="rotate-handle absolute -bottom-3 -left-3 w-6 h-6 bg-yellow-500 text-white rounded-full text-xs flex items-center justify-center cursor-alias" style="display:none; z-index:100">↻</div>
+            <div class="scale-handle absolute -bottom-3 -right-3 w-6 h-6 bg-blue-500 text-white rounded-full text-[9px] flex items-center justify-center cursor-se-resize" style="display:none; z-index:100">⤢</div>
+          \`;
+
+          // Attach Delete click event and interaction listeners only in preview
+          if (isPreview) {
+            flower.querySelector('.delete-btn').addEventListener('pointerdown', (e) => {
+              e.stopPropagation();
+              flower.remove();
+              if (selectedFlower === flower) selectedFlower = null;
+              saveFlowerState();
+            });
+
+            // Drag event binding
+            flower.addEventListener('pointerdown', (e) => startDrag(e, flower));
+
+            // Rotate handle event binding
+            const rotateHandle = flower.querySelector('.rotate-handle');
+            rotateHandle.addEventListener('pointerdown', (e) => startRotate(e, flower));
+
+            // Scale handle event binding
+            const scaleHandle = flower.querySelector('.scale-handle');
+            scaleHandle.addEventListener('pointerdown', (e) => startScale(e, flower));
+          }
+
+          herbariumCanvas.appendChild(flower);
+        });
+        selectFlowerEl(null);
+        return;
+      }
 
       // Spawn Lavender (left-slanted)
       spawnFlower(0);

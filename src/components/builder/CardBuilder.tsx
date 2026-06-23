@@ -40,6 +40,7 @@ export default function CardBuilder() {
       bgMusic: undefined,
       finalMessage: "",
       themeColor: "green",
+      flowers: [],
     },
   });
 
@@ -405,7 +406,11 @@ export default function CardBuilder() {
 
       {/* Right Column: Live Preview (1 col on desktop) */}
       <div id="live-preview" className="lg:sticky lg:top-8 w-full">
-        <LivePreview draft={formValues} bgMusicPreviewUrl={bgMusicBlobUrl} />
+        <LivePreview
+          draft={formValues}
+          bgMusicPreviewUrl={bgMusicBlobUrl}
+          onFlowersChange={(flowers) => setValue("flowers", flowers)}
+        />
       </div>
 
       {/* Payment Confirmation Modal */}

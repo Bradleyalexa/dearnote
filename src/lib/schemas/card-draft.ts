@@ -54,6 +54,15 @@ export const DraftBgMusicSchema = z.object({
   durationSeconds: z.number().optional(),
 });
 
+// Flower item schema for pressed-flower arrangement state
+export const FlowerItemSchema = z.object({
+  idx: z.number(),
+  x: z.number(),
+  y: z.number(),
+  rotation: z.number(),
+  scale: z.number(),
+});
+
 // Schema for card drafts created by the user (pre-payment)
 export const CardDraftSchema = z.object({
   template: TemplateSchema,
@@ -67,6 +76,7 @@ export const CardDraftSchema = z.object({
   bgMusic: DraftBgMusicSchema.optional(),
   finalMessage: z.string().max(300, { message: "Pesan penutup maksimal 300 karakter" }).optional(),
   themeColor: z.string().max(30).optional(),
+  flowers: z.array(FlowerItemSchema).optional(),
 });
 
 export type CardDraft = z.infer<typeof CardDraftSchema>;
@@ -103,6 +113,7 @@ export const PublishedConfigSchema = z.object({
   bgMusic: PublishedBgMusicSchema.optional(),
   finalMessage: z.string().max(300).optional(),
   themeColor: z.string().max(30).optional(),
+  flowers: z.array(FlowerItemSchema).optional(),
   publishedAt: z.string().datetime(),
   expiresAt: z.string().datetime(),
 });
