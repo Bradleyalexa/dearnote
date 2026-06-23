@@ -401,7 +401,7 @@ export function generateMothersDayHtml(config: PublishedConfig): string {
       
       <!-- Labeled Canvas Container -->
       <div class="flex flex-col items-center">
-        <span class="text-[8px] tracking-widest uppercase text-pink-500 font-bold block mb-1.5 self-start">Rangkai Bunga untuk Mama</span>
+        <span class="text-xs sm:text-sm tracking-wider uppercase text-pink-500 font-bold block mb-2 self-start">Flowers for you</span>
         
         <!-- Interactive Drawing Canvas -->
         <div id="herbarium-canvas">
@@ -776,6 +776,7 @@ export function generateMothersDayHtml(config: PublishedConfig): string {
     // ── Interactive Flower Arranger Engine (Drag, Drop, Rotate, Scale & Delete) ──
     const herbariumCanvas = $('herbarium-canvas');
     let selectedFlower = null;
+    let isPinching = false;
 
     // Deselect flower when clicking outside on canvas
     if (isPreview) {
@@ -875,6 +876,48 @@ export function generateMothersDayHtml(config: PublishedConfig): string {
         scaleHandle.addEventListener('pointerdown', (e) => startScale(e, flower));
       }
 
+      // Touch pinch-to-zoom event listeners for mobile/touchscreen
+      let initialPinchDistance = 0;
+      let flowerStartScale = 1.0;
+
+      flower.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 2) {
+          e.preventDefault();
+          isPinching = true;
+          selectFlowerEl(flower);
+          const dist = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+          );
+          initialPinchDistance = dist;
+          flowerStartScale = parseFloat(flower.dataset.scale || '1.0');
+          flower.style.transition = 'none';
+        }
+      }, { passive: false });
+
+      flower.addEventListener('touchmove', (e) => {
+        if (e.touches.length === 2 && initialPinchDistance > 0) {
+          e.preventDefault();
+          const currentDist = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+          );
+          let newScale = flowerStartScale * (currentDist / initialPinchDistance);
+          newScale = Math.max(0.4, Math.min(2.0, newScale));
+          flower.dataset.scale = newScale;
+          updateFlowerTransform(flower);
+        }
+      }, { passive: false });
+
+      flower.addEventListener('touchend', (e) => {
+        if (initialPinchDistance > 0) {
+          flower.style.transition = '';
+          initialPinchDistance = 0;
+          isPinching = false;
+          saveFlowerState();
+        }
+      });
+
       herbariumCanvas.appendChild(flower);
       selectFlowerEl(flower);
       saveFlowerState();
@@ -912,6 +955,7 @@ export function generateMothersDayHtml(config: PublishedConfig): string {
       el.style.transition = 'none';
 
       function onDrag(moveEvent) {
+        if (isPinching) return;
         const dx = moveEvent.clientX - startX;
         const dy = moveEvent.clientY - startY;
         
@@ -1065,6 +1109,48 @@ export function generateMothersDayHtml(config: PublishedConfig): string {
             const scaleHandle = flower.querySelector('.scale-handle');
             scaleHandle.addEventListener('pointerdown', (e) => startScale(e, flower));
           }
+
+          // Touch pinch-to-zoom event listeners for mobile/touchscreen
+          let initialPinchDistance = 0;
+          let flowerStartScale = 1.0;
+
+          flower.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 2) {
+              e.preventDefault();
+              isPinching = true;
+              selectFlowerEl(flower);
+              const dist = Math.hypot(
+                e.touches[0].clientX - e.touches[1].clientX,
+                e.touches[0].clientY - e.touches[1].clientY
+              );
+              initialPinchDistance = dist;
+              flowerStartScale = parseFloat(flower.dataset.scale || '1.0');
+              flower.style.transition = 'none';
+            }
+          }, { passive: false });
+
+          flower.addEventListener('touchmove', (e) => {
+            if (e.touches.length === 2 && initialPinchDistance > 0) {
+              e.preventDefault();
+              const currentDist = Math.hypot(
+                e.touches[0].clientX - e.touches[1].clientX,
+                e.touches[0].clientY - e.touches[1].clientY
+              );
+              let newScale = flowerStartScale * (currentDist / initialPinchDistance);
+              newScale = Math.max(0.4, Math.min(2.0, newScale));
+              flower.dataset.scale = newScale;
+              updateFlowerTransform(flower);
+            }
+          }, { passive: false });
+
+          flower.addEventListener('touchend', (e) => {
+            if (initialPinchDistance > 0) {
+              flower.style.transition = '';
+              initialPinchDistance = 0;
+              isPinching = false;
+              saveFlowerState();
+            }
+          });
 
           herbariumCanvas.appendChild(flower);
         });
