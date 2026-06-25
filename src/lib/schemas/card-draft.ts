@@ -28,6 +28,7 @@ export const TEMPLATES = [
   "fathers_day",
   "cute_apology",
   "farewell_keepsake",
+  "evasive_confession",
 ] as const;
 
 export const TemplateSchema = z.enum(TEMPLATES);
@@ -77,6 +78,7 @@ export const CardDraftSchema = z.object({
   finalMessage: z.string().max(300, { message: "Pesan penutup maksimal 300 karakter" }).optional(),
   themeColor: z.string().max(30).optional(),
   flowers: z.array(FlowerItemSchema).optional(),
+  openingGame: z.string().optional(),
 });
 
 export type CardDraft = z.infer<typeof CardDraftSchema>;
@@ -114,6 +116,7 @@ export const PublishedConfigSchema = z.object({
   finalMessage: z.string().max(300).optional(),
   themeColor: z.string().max(30).optional(),
   flowers: z.array(FlowerItemSchema).optional(),
+  openingGame: z.string().optional(),
   publishedAt: z.string().datetime(),
   expiresAt: z.string().datetime(),
 });

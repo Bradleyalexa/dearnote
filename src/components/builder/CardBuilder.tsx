@@ -41,6 +41,7 @@ export default function CardBuilder() {
       finalMessage: "",
       themeColor: "green",
       flowers: [],
+      openingGame: "cat_paw",
     },
   });
 
@@ -187,6 +188,41 @@ export default function CardBuilder() {
               ))}
             </div>
             <input type="hidden" {...register("themeColor")} />
+          </div>
+        )}
+
+        {/* 1c. Opening Game Picker (Only for Evasive Confession) */}
+        {formValues.template === "evasive_confession" && (
+          <div className="space-y-3 p-4 bg-rose-50/50 border border-rose-100 rounded-2xl">
+            <label className="block text-sm font-semibold text-gray-900">
+              Pilih Game Pembuka Catatan <span className="text-red-500">*</span>
+            </label>
+            <p className="text-xs text-gray-600">
+              Pilih game interaktif imut yang harus dimainkan penerima sebelum membuka pesan pengakuanmu.
+            </p>
+            <div className="grid grid-cols-2 gap-3 mt-2">
+              {[
+                { id: "cat_paw", label: "Cakar Kucing 🐾", desc: "Towel cakar kucing imut" },
+                { id: "claw_machine", label: "Capit Boneka 🧸", desc: "Capit boneka cinta" },
+                { id: "tape_peeling", label: "Kupas Selotip 🎀", desc: "Kupas selotip washi tape" },
+                { id: "catch_hearts", label: "Tangkap Hati 🧺", desc: "Tangkap hati jatuh" },
+              ].map((game) => (
+                <button
+                  key={game.id}
+                  type="button"
+                  onClick={() => setValue("openingGame", game.id)}
+                  className={`flex flex-col text-left p-3 rounded-xl border-2 transition-all cursor-pointer ${
+                    (formValues.openingGame || "cat_paw") === game.id
+                      ? "border-rose-500 bg-white ring-2 ring-rose-500/20 text-rose-950"
+                      : "border-zinc-200 hover:border-rose-200 text-zinc-600 bg-white"
+                  }`}
+                >
+                  <span className="text-sm font-bold block">{game.label}</span>
+                  <span className="text-[10px] text-zinc-500 mt-1 leading-normal">{game.desc}</span>
+                </button>
+              ))}
+            </div>
+            <input type="hidden" {...register("openingGame")} />
           </div>
         )}
 

@@ -11,22 +11,16 @@ export const TEMPLATE_REGISTRY: {
   name: string;
   description: string;
   category: "semua" | "minimal" | "romantic" | "playful" | "interaktif" | "hari_raya";
+  audience: ("couple" | "friend" | "family" | "general")[];
   accent: string;
   tags: string[];
 }[] = [
-  {
-    id: "eternal_love",
-    name: "Eternal Love Cinema",
-    description: "Most premium couple template — cinematic chapters, canvas particles, typewriter, polaroid gallery & fireworks finale.",
-    category: "romantic",
-    accent: "linear-gradient(135deg, #2c1020, #c8936a)",
-    tags: ["Couple", "Anniversary", "Flagship"],
-  },
   {
     id: "classic_editorial",
     name: "Classic Editorial",
     description: "Elegant serif typography, warm cream paper, subtle dust particles.",
     category: "minimal",
+    audience: ["general"],
     accent: "linear-gradient(135deg, #F5F0E8, #DDD3C0)",
     tags: ["Farewell", "Thank You", "Family"],
   },
@@ -35,6 +29,7 @@ export const TEMPLATE_REGISTRY: {
     name: "Nocturnal Journal",
     description: "Starry night sky, dark, quiet, and minimalist.",
     category: "minimal",
+    audience: ["general"],
     accent: "linear-gradient(135deg, #1A1A2E, #16213E)",
     tags: ["Family", "Farewell", "Memories"],
   },
@@ -43,6 +38,7 @@ export const TEMPLATE_REGISTRY: {
     name: "Apology Letter",
     description: "Wax-sealed envelope, heartfelt handwritten letter — touching.",
     category: "minimal",
+    audience: ["general"],
     accent: "linear-gradient(135deg, #E8E0D8, #CFC4B8)",
     tags: ["Apology"],
   },
@@ -51,6 +47,7 @@ export const TEMPLATE_REGISTRY: {
     name: "Vintage Scrapbook",
     description: "Dark brown cover, draggable polaroids, nostalgic feel.",
     category: "romantic",
+    audience: ["couple", "friend"],
     accent: "linear-gradient(135deg, #BF8A60, #8C6040)",
     tags: ["Couple", "Friendship"],
   },
@@ -59,6 +56,7 @@ export const TEMPLATE_REGISTRY: {
     name: "Pink Book Folds",
     description: "Cute pastel pink binder, 3D page animations, cassette tape.",
     category: "romantic",
+    audience: ["couple"],
     accent: "linear-gradient(135deg, #FFCCE0, #FFB3D1)",
     tags: ["Couple", "Birthday"],
   },
@@ -67,6 +65,7 @@ export const TEMPLATE_REGISTRY: {
     name: "Open When Cards",
     description: "Collection of interactive envelope flip-cards for various moments.",
     category: "interaktif",
+    audience: ["couple", "friend"],
     accent: "linear-gradient(135deg, #FAF6F0, #DDD0BC)",
     tags: ["LDR", "Friendship", "Birthday"],
   },
@@ -75,6 +74,7 @@ export const TEMPLATE_REGISTRY: {
     name: "Gift Box Reveal",
     description: "3D gift box, pull ribbon, celebratory confetti!",
     category: "interaktif",
+    audience: ["general"],
     accent: "linear-gradient(135deg, #FF9A9E, #FF6B6B)",
     tags: ["Birthday", "Graduation", "Anniversary"],
   },
@@ -83,6 +83,7 @@ export const TEMPLATE_REGISTRY: {
     name: "Playful Cute Gift",
     description: "Cute pastel pink gift box, cheerful balloons & bubbles.",
     category: "playful",
+    audience: ["general"],
     accent: "linear-gradient(135deg, #FFE5EC, #F0E6FF)",
     tags: ["Birthday", "Couple"],
   },
@@ -91,6 +92,7 @@ export const TEMPLATE_REGISTRY: {
     name: "Playful Shiba Dog",
     description: "Interactive Shiba Inu! Tap to wake up, feed bones, play ball.",
     category: "playful",
+    audience: ["couple", "friend"],
     accent: "linear-gradient(135deg, #FFF9E6, #FFE4CC)",
     tags: ["Couple", "Friendship", "Birthday"],
   },
@@ -99,6 +101,7 @@ export const TEMPLATE_REGISTRY: {
     name: "Playful Pooh Bear",
     description: "Sleeping Pooh, wake up, eat honey, play with bees — super cute!",
     category: "playful",
+    audience: ["couple", "friend"],
     accent: "linear-gradient(135deg, #FFFDE6, #FFCB4C33)",
     tags: ["Couple", "Friendship", "Birthday"],
   },
@@ -107,6 +110,7 @@ export const TEMPLATE_REGISTRY: {
     name: "Birthday Magic",
     description: "Ultimate flagship birthday template! Pop rising balloons, blow out interactive cake candles, swipe 3D memories, and trigger fireworks!",
     category: "playful",
+    audience: ["general"],
     accent: "linear-gradient(135deg, #FF99C8, #FCF6BD, #D0F4DE, #A9DEF9, #E4C1F9)",
     tags: ["Birthday", "Anniversary", "Flagship"],
   },
@@ -114,7 +118,8 @@ export const TEMPLATE_REGISTRY: {
     id: "blooming_note",
     name: "Blooming Note",
     description: "Heartwarming floral surprise flagship. Tap the wax-sealed envelope to watch procedurally growing vines and blooming wildflowers fill the screen.",
-    category: "playful",
+    category: "interaktif",
+    audience: ["general"],
     accent: "linear-gradient(135deg, #FFB7B2, #E8C7EA, #B5EAD7)",
     tags: ["Anniversary", "Birthday", "Flagship"],
   },
@@ -123,6 +128,7 @@ export const TEMPLATE_REGISTRY: {
     name: "Graduation Note",
     description: "Premium flagship graduation celebration. Sophisticated navy & gold design, elegant diploma scroll reveal, confetti burst.",
     category: "interaktif",
+    audience: ["friend", "family"],
     accent: "linear-gradient(135deg, #1B2B4D, #D4AF37, #4A90E2)",
     tags: ["Graduation", "Achievement", "Flagship"],
   },
@@ -131,6 +137,7 @@ export const TEMPLATE_REGISTRY: {
     name: "Graduation Memory Lane",
     description: "Elegant single-page graduation memory lane. Cozy cream & gold theme, photo scrapbook grid, and audio card with pink P.S. details.",
     category: "interaktif",
+    audience: ["friend", "family"],
     accent: "linear-gradient(135deg, #FDF7E7, #D4AF37, #FDF0F2)",
     tags: ["Graduation", "Scrapbook", "Memory Lane"],
   },
@@ -139,14 +146,25 @@ export const TEMPLATE_REGISTRY: {
     name: "Sweet Cradle Surprise",
     description: "Heartwarming newborn baby congratulations flagship template. Interactive cradle rocking, spinning mobile, baby footprint wax seal, and sweet pastel lullaby elements.",
     category: "playful",
+    audience: ["family"],
     accent: "linear-gradient(135deg, #FFF0F5, #E0FFFF, #FFFACD)",
     tags: ["Newborn", "Family", "Congratulations", "Flagship"],
+  },  
+  {
+    id: "eternal_love",
+    name: "Eternal Love Cinema",
+    description: "Most premium couple template — cinematic chapters, canvas particles, typewriter, polaroid gallery & fireworks finale.",
+    category: "romantic",
+    audience: ["couple"],
+    accent: "linear-gradient(135deg, #2c1020, #c8936a)",
+    tags: ["Couple", "Anniversary", "Flagship"],
   },
   {
     id: "tender_welcome",
     name: "Tender Welcome Nursery",
     description: "Elegant minimalist newborn congratulations template for parents. Warm sand-beige linen theme, hand-pressed leaf wax seal, gentle morning sunbeam glow, and olive branch motifs.",
     category: "minimal",
+    audience: ["family"],
     accent: "linear-gradient(135deg, #F5EBE6, #E8EFE9, #DDD3C0)",
     tags: ["Newborn", "Parents", "Minimalist", "Warm"],
   },
@@ -155,6 +173,7 @@ export const TEMPLATE_REGISTRY: {
     name: "Christmas Magic",
     description: "Magical Christmas flagship template! Shake the interactive snow globe, decorate & light up the Christmas tree, read cozy cards on glowing fairy lights, and watch Santa fly across the night sky!",
     category: "hari_raya",
+    audience: ["general"],
     accent: "linear-gradient(135deg, #A8201A, #143601, #F0E6D2)",
     tags: ["Christmas", "Holiday", "Interactive", "Flagship"],
   },
@@ -163,6 +182,7 @@ export const TEMPLATE_REGISTRY: {
     name: "Ramadan Blessings",
     description: "Warm and peaceful Ramadan/Eid flagship template. Light the hanging lantern, strike the Bedug drum, unwrap the Ketupat, read scroll letters, and watch lanterns float up!",
     category: "hari_raya",
+    audience: ["general"],
     accent: "linear-gradient(135deg, #004B23, #D4AF37, #0D1B2A)",
     tags: ["Ramadhan", "Lebaran", "Eid", "Interactive", "Flagship"],
   },
@@ -171,6 +191,7 @@ export const TEMPLATE_REGISTRY: {
     name: "Mother's Herbarium Book",
     description: "Elegant 3D pressed-flower herbarium journal. Flip open the linen cover, turn pages of handwritten memories, and discover cozy taped Polaroids with falling flower petals.",
     category: "hari_raya",
+    audience: ["family"],
     accent: "linear-gradient(135deg, #FFF0F2, #FFB3C1, #FF8EA6)",
     tags: ["Mother's Day", "Family", "Interactive", "Flagship"],
   },
@@ -179,6 +200,7 @@ export const TEMPLATE_REGISTRY: {
     name: "Classic Herbarium Book",
     description: "Elegant 3D pressed-flower journal. Drag & drop flowers, cycle polaroid photo stack, and slide out a secret pocket letter. Suitable for partners, best friends, or crushes.",
     category: "romantic",
+    audience: ["couple", "friend"],
     accent: "linear-gradient(135deg, #FCF7ED, #DFD3BE, #8B5A2B)",
     tags: ["Herbarium", "Interactive", "General", "Flagship"],
   },
@@ -187,6 +209,7 @@ export const TEMPLATE_REGISTRY: {
     name: "Teacher's Chalkboard Notebook",
     description: "Chalkboard-themed tribute book for teachers. Erase the chalkboard cover with the sponge eraser, grade your teacher with interactive stars/stickers on the report card, cycle photos, and open a 3D red apple gift note.",
     category: "hari_raya",
+    audience: ["general"],
     accent: "linear-gradient(135deg, #1B2E24, #C5A880, #FAF9F6)",
     tags: ["Teacher's Day", "School", "Interactive", "Flagship"],
   },
@@ -195,6 +218,7 @@ export const TEMPLATE_REGISTRY: {
     name: "Father's Classic Wallet",
     description: "Classic dark-leather wallet journal tribute to Father. Unbuckle the brass snap fastener, click interactive stamps on Dad's badge board, view warm polaroid photos on a workbench desk, and slide out a vintage pocket watch message.",
     category: "hari_raya",
+    audience: ["family"],
     accent: "linear-gradient(135deg, #3D2B1F, #5C4033, #0F2A4A)",
     tags: ["Father's Day", "Family", "Interactive", "Flagship"],
   },
@@ -202,7 +226,8 @@ export const TEMPLATE_REGISTRY: {
     id: "cute_apology",
     name: "Cute Couple Apology",
     description: "Kirim permintaan maaf menggemaskan ke pasanganmu. Lepas plester luka pink di amplop, kumpulkan poin maaf lewat sesajen Boba/Cokelat, dan pecahkan kue keberuntungan.",
-    category: "playful",
+    category: "interaktif",
+    audience: ["couple"],
     accent: "linear-gradient(135deg, #FFB5C5, #FFE4E1, #FAF0E6)",
     tags: ["Apology", "Couple", "Cute", "Interactive", "Flagship"],
   },
@@ -211,20 +236,44 @@ export const TEMPLATE_REGISTRY: {
     name: "Sincere Farewell",
     description: "Desain bersih, elegan, dan khidmat untuk perpisahan rekan kerja, teman, atau guru. Minim interaksi, berfokus penuh pada ketulusan pesan, foto berbingkai rapi, dan pesan suara hangat.",
     category: "minimal",
+    audience: ["friend", "general"],
     accent: "linear-gradient(135deg, #E6E6E6, #D4AF37, #FFFFFF)",
     tags: ["Farewell", "Goodbye", "Minimalist", "Sincere"],
   },
+  {
+    id: "evasive_confession",
+    name: "Evasive Confession",
+    description: "Desain retro Windows 95 pink super lucu dengan 4 pilihan mini-game interaktif pembuka. Tombol 'Gak' akan kabur saat didekati, memaksanya menjawab 'Mau'!",
+    category: "interaktif",
+    audience: ["couple"],
+    accent: "linear-gradient(135deg, #FF6B8B, #FF8E9E, #FFCCD5)",
+    tags: ["Confession", "Retro", "Interactive", "Flagship"],
+  },
 ];
 
-type Category = "semua" | "minimal" | "romantic" | "playful" | "interaktif" | "hari_raya";
+type FilterType =
+  | "semua"
+  | "minimal"
+  | "romantic"
+  | "playful"
+  | "interaktif"
+  | "hari_raya"
+  | "couple"
+  | "friend"
+  | "family"
+  | "general";
 
-const CATEGORY_LABELS: Record<Category, string> = {
+const FILTER_LABELS: Record<FilterType, string> = {
   semua: "All",
   minimal: "Minimal",
   romantic: "Romantic",
   playful: "Playful",
   interaktif: "Interactive",
   hari_raya: "Hari Raya",
+  couple: "For Couple",
+  friend: "For Friend",
+  family: "For Family",
+  general: "General",
 };
 
 export function makeDummyDraft(templateId: TemplateType) {
@@ -249,7 +298,7 @@ interface TemplatePickerProps {
 
 export default function TemplatePicker({ value, onChange }: TemplatePickerProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [category, setCategory] = useState<Category>("semua");
+  const [filter, setFilter] = useState<FilterType>("semua");
   const [highlighted, setHighlighted] = useState<TemplateType>(value);
   const [previewSrc, setPreviewSrc] = useState<string>("");
   const [previewLoading, setPreviewLoading] = useState(false);
@@ -262,10 +311,14 @@ export default function TemplatePicker({ value, onChange }: TemplatePickerProps)
 
   const currentTemplate = TEMPLATE_REGISTRY.find((t) => t.id === value);
 
-  const filtered =
-    category === "semua"
-      ? TEMPLATE_REGISTRY
-      : TEMPLATE_REGISTRY.filter((t) => t.category === category);
+  const filtered = TEMPLATE_REGISTRY.filter((t) => {
+    if (filter === "semua") return true;
+    const isCategory = ["minimal", "romantic", "playful", "interaktif", "hari_raya"].includes(filter);
+    if (isCategory) {
+      return t.category === filter;
+    }
+    return t.audience.includes(filter as "couple" | "friend" | "family" | "general");
+  }).reverse();
 
   const generatePreview = useCallback((templateId: TemplateType) => {
     setPreviewLoading(true);
@@ -286,6 +339,7 @@ export default function TemplatePicker({ value, onChange }: TemplatePickerProps)
             const sg = document.getElementById('snowglobe'); if (sg && typeof openSnowGlobe === 'function') openSnowGlobe();
             const lt = document.getElementById('lantern'); if (lt && typeof lightLantern === 'function') lightLantern();
             if (typeof triggerWakeup === 'function') triggerWakeup();
+            if (typeof bypassOpeningGame === 'function') bypassOpeningGame();
           }, 500);
         });
       </script>
@@ -381,21 +435,21 @@ export default function TemplatePicker({ value, onChange }: TemplatePickerProps)
               </button>
             </div>
 
-            {/* Category tabs */}
+            {/* Filter tabs */}
             <div className="border-b border-gray-100">
               <div className="flex gap-2 px-6 py-3 overflow-x-auto" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-                {(Object.keys(CATEGORY_LABELS) as Category[]).map((cat) => (
+                {(Object.keys(FILTER_LABELS) as FilterType[]).map((f) => (
                   <button
-                    key={cat}
+                    key={f}
                     type="button"
-                    onClick={() => setCategory(cat)}
+                    onClick={() => setFilter(f)}
                     className={`px-4 py-2 rounded-lg text-sm font-semibold whitespace-nowrap transition-all cursor-pointer flex-shrink-0 ${
-                      category === cat
+                      filter === f
                         ? "bg-gray-900 text-white shadow-sm"
                         : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                     }`}
                   >
-                    {CATEGORY_LABELS[cat]}
+                    {FILTER_LABELS[f]}
                   </button>
                 ))}
               </div>

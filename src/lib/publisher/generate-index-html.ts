@@ -24,6 +24,7 @@ import { generateTeachersDayHtml } from "./templates/teachers-day";
 import { generateFathersDayHtml } from "./templates/fathers-day";
 import { generateCuteApologyHtml } from "./templates/cute-apology";
 import { generateFarewellKeepsakeHtml } from "./templates/farewell-keepsake";
+import { generateEvasiveConfessionHtml } from "./templates/evasive-confession";
 
 /**
  * Main coordinator that returns the HTML page content based on the selected template.
@@ -44,6 +45,7 @@ import { generateFarewellKeepsakeHtml } from "./templates/farewell-keepsake";
  *  birthday_magic      → Birthday Magic (colorful celebration, cake and balloons)
  *  blooming_note       → Blooming Note (floral garden, sprouting flowers, nature theme)
  *  graduation_note     → Graduation Note (premium navy & gold, diploma scroll, confetti celebration)
+ *  evasive_confession  → Evasive Confession (pink retro Windows 95 confession dialog, 4 mini-games)
  */
 export function generateIndexHtml(config: PublishedConfig): string {
   let html = "";
@@ -124,6 +126,9 @@ export function generateIndexHtml(config: PublishedConfig): string {
       break;
     case "farewell_keepsake":
       html = generateFarewellKeepsakeHtml(config);
+      break;
+    case "evasive_confession":
+      html = generateEvasiveConfessionHtml(config);
       break;
     default:
       html = generateClassicEditorialHtml(config);

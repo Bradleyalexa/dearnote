@@ -39,6 +39,7 @@ export function generateConfig(cardId: string, draft: CardDraft): PublishedConfi
     finalMessage: draft.finalMessage || undefined,
     themeColor: draft.themeColor || undefined,
     flowers: draft.flowers || undefined,
+    openingGame: draft.openingGame || undefined,
     publishedAt: publishedAt.toISOString(),
     expiresAt: expiresAt.toISOString(),
   };
