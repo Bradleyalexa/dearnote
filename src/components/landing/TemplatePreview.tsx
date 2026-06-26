@@ -3,13 +3,13 @@
 import { useEffect, useState, useRef } from "react";
 import { generatePlayfulPoohHtml } from "@/lib/publisher/templates/playful-pooh";
 import { generateGraduationNoteHtml } from "@/lib/publisher/templates/graduation-note";
-import { generateBirthdayMagicHtml } from "@/lib/publisher/templates/birthday-magic";
+import { generateEvasiveConfessionHtml } from "@/lib/publisher/templates/evasive-confession";
 import { generateBloomingNoteHtml } from "@/lib/publisher/templates/blooming-note";
 import { generatePinkBookFoldsHtml } from "@/lib/publisher/templates/pink-book-folds";
 import { PublishedConfig } from "@/lib/schemas/card-draft";
 import { injectTailwindWarningSuppress } from "@/lib/publisher/generate-index-html";
 
-type TemplateKey = "pooh" | "graduation" | "birthday" | "blooming" | "pinkbook";
+type TemplateKey = "pooh" | "graduation" | "evasive" | "blooming" | "pinkbook";
 
 interface TemplatePreviewProps {
   activeTemplate: TemplateKey;
@@ -45,17 +45,17 @@ const demoConfigs: Record<TemplateKey, PublishedConfig> = {
     publishedAt: new Date().toISOString(),
     expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
   },
-  birthday: {
-    cardId: "demo_bday",
-    template: "birthday_magic",
-    fromName: "Teman-teman",
+  evasive: {
+    cardId: "demo_evasive",
+    template: "evasive_confession",
+    fromName: "Secret Admirer",
     toName: "Sarah",
-    letterTitle: "Happy Birthday!",
-    letterBody: "Selamat ulang tahun untuk orang yang paling istimewa! Semoga tahun ini membawa kebahagiaan, kesuksesan, dan banyak momen indah yang tak terlupakan. Mari rayakan hari spesialmu dengan penuh suka cita!",
+    letterTitle: "Evasive Confession",
+    letterBody: "Aku sebenarnya sudah lama memperhatikanmu. Mau gak jadi pacarku? Hehe. Pilihan jawabannya ada di tombol di bawah ya!",
     photos: [
-      { src: "/img/graduation_pic_mockup.png", caption: "Momen ulang tahun yang ceria" }
+      { src: "/img/holiday_bali_pic_mockup.png", caption: "Momen manis bersamamu" }
     ],
-    finalMessage: "Wishing you a magical birthday filled with sweet surprises!",
+    finalMessage: "Yay! Akhirnya kamu menerimaku! 💖",
     publishedAt: new Date().toISOString(),
     expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
   },
@@ -92,7 +92,7 @@ const demoConfigs: Record<TemplateKey, PublishedConfig> = {
 const templateGenerators: Record<TemplateKey, (config: PublishedConfig) => string> = {
   pooh: generatePlayfulPoohHtml,
   graduation: generateGraduationNoteHtml,
-  birthday: generateBirthdayMagicHtml,
+  evasive: generateEvasiveConfessionHtml,
   blooming: generateBloomingNoteHtml,
   pinkbook: generatePinkBookFoldsHtml,
 };

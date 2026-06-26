@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import TemplatePreview from "@/components/landing/TemplatePreview";
 
-type TemplateKey = "pooh" | "graduation" | "birthday" | "blooming" | "pinkbook";
+type TemplateKey = "pooh" | "graduation" | "evasive" | "blooming" | "pinkbook";
 
 export default function Home() {
   const [activeTemplate, setActiveTemplate] = useState<TemplateKey>("graduation");
@@ -93,7 +93,7 @@ export default function Home() {
                 {[
                   { id: "pooh", label: "Playful Pooh", desc: "Beruang Pooh yang lucu tidur nyenyak dengan pot madu, nuansa hangat kuning keemasan." },
                   { id: "graduation", label: "Graduation Note", desc: "Diploma elegan dengan wax seal emas, kanvas krem premium, font serif mewah." },
-                  { id: "birthday", label: "Birthday Magic", desc: "Kue ulang tahun interaktif dengan lilin yang bisa ditiup, balon mengapung." },
+                  { id: "evasive", label: "Evasive Confession", desc: "Dialog pengakuan cinta retro ala Windows 95 pink dengan mini-game seru yang interaktif." },
                   { id: "blooming", label: "Blooming Flower", desc: "Amplop dengan wax seal yang mekar menjadi taman bunga indah." },
                   { id: "pinkbook", label: "Pink Book Folds", desc: "Buku scrapbook 3D dengan halaman yang bisa dibalik, polaroid yang bisa di-drag." }
                 ].map((tab) => (
