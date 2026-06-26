@@ -211,7 +211,7 @@ export default function SuccessPage(props: { params: Promise<{ orderId: string }
                 <p className="text-xs text-gray-500 font-medium">Transaksi ID: {orderId}</p>
               </div>
               <p className="text-sm text-gray-600 max-w-md mx-auto leading-relaxed">
-                Silakan selesaikan pembayaran Anda di jendela pembayaran. Halaman ini akan otomatis diperbarui begitu konfirmasi pembayaran sukses kami terima.
+                Halaman ini akan otomatis diperbarui begitu konfirmasi pembayaran sukses kami terima.
               </p>
             </div>
             {error && (
