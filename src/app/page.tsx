@@ -4,10 +4,10 @@ import { useState } from "react";
 import Link from "next/link";
 import TemplatePreview from "@/components/landing/TemplatePreview";
 
-type TemplateKey = "pooh" | "graduation" | "evasive" | "blooming" | "pinkbook";
+type TemplateKey = "pooh" | "graduation" | "evasive" | "blooming" | "pinkbook" | "cat";
 
 export default function Home() {
-  const [activeTemplate, setActiveTemplate] = useState<TemplateKey>("evasive");
+  const [activeTemplate, setActiveTemplate] = useState<TemplateKey>("cat");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [activeModal, setActiveModal] = useState<"terms" | "refund" | "privacy" | null>(null);
 
@@ -91,6 +91,7 @@ export default function Home() {
               {/* Tabs */}
               <div className="flex flex-row lg:flex-col gap-3 w-full lg:w-72 overflow-x-auto lg:overflow-visible pb-4 lg:pb-0">
                 {[
+                  { id: "cat", label: "Playful Cozy Cat 🐾", desc: "Main dengan kucing jahe interaktif! Kejar laser merah, suapi kue ikan, dan manjakan si manis sampai ia membukakan surat spesial." },
                   { id: "pooh", label: "Playful Pooh", desc: "Beruang Pooh yang lucu tidur nyenyak dengan pot madu, nuansa hangat kuning keemasan." },
                   { id: "graduation", label: "Graduation Note", desc: "Diploma elegan dengan wax seal emas, kanvas krem premium, font serif mewah." },
                   { id: "evasive", label: "Evasive Confession", desc: "Dialog pengakuan cinta retro ala Windows 95 pink dengan mini-game seru yang interaktif." },

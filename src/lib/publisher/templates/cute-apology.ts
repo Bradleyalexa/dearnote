@@ -767,8 +767,8 @@ export function generateCuteApologyHtml(config: PublishedConfig): string {
     <div id="page-3" class="book-page check-bg flex flex-col justify-between" style="z-index: 20">
       <div class="flex-1 flex flex-col min-h-0">
         <div class="text-center pb-2 border-b border-pink-150 mb-4 ml-4">
-          <h2 class="text-[8px] font-bold text-pink-500 uppercase tracking-widest font-fredoka">Kenangan Indah Kita</h2>
-          <h1 class="font-fredoka text-sm font-bold text-pink-600">Dokumentasi Momen Bahagia</h1>
+          <h2 class="text-[8px] font-bold text-pink-500 uppercase tracking-widest font-fredoka">my apologies</h2>
+          <h1 class="font-fredoka text-sm font-bold text-pink-600">galeri sorryyy</h1>
         </div>
 
         <!-- Polaroid Stack -->

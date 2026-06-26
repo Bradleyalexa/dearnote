@@ -25,6 +25,7 @@ import { generateFathersDayHtml } from "./templates/fathers-day";
 import { generateCuteApologyHtml } from "./templates/cute-apology";
 import { generateFarewellKeepsakeHtml } from "./templates/farewell-keepsake";
 import { generateEvasiveConfessionHtml } from "./templates/evasive-confession";
+import { generatePlayfulCatHtml } from "./templates/playful-cat";
 
 /**
  * Main coordinator that returns the HTML page content based on the selected template.
@@ -129,6 +130,9 @@ export function generateIndexHtml(config: PublishedConfig): string {
       break;
     case "evasive_confession":
       html = generateEvasiveConfessionHtml(config);
+      break;
+    case "playful_cat":
+      html = generatePlayfulCatHtml(config);
       break;
     default:
       html = generateClassicEditorialHtml(config);

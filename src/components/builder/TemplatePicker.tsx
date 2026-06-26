@@ -106,6 +106,15 @@ export const TEMPLATE_REGISTRY: {
     tags: ["Couple", "Friendship", "Birthday"],
   },
   {
+    id: "playful_cat",
+    name: "Playful Cozy Cat",
+    description: "Buka kiriman kotak misterius, mainkan laser merah, suapi kue ikan, dan manjakan si manis untuk membaca pesanmu.",
+    category: "playful",
+    audience: ["couple", "friend"],
+    accent: "linear-gradient(135deg, #FFE4E1, #FAF0E6, #FFF9E6)",
+    tags: ["Cute", "Cat", "Interactive", "Flagship"],
+  },
+  {
     id: "birthday_magic",
     name: "Birthday Magic",
     description: "Ultimate flagship birthday template! Pop rising balloons, blow out interactive cake candles, swipe 3D memories, and trigger fireworks!",

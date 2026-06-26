@@ -6,10 +6,11 @@ import { generateGraduationNoteHtml } from "@/lib/publisher/templates/graduation
 import { generateEvasiveConfessionHtml } from "@/lib/publisher/templates/evasive-confession";
 import { generateBloomingNoteHtml } from "@/lib/publisher/templates/blooming-note";
 import { generatePinkBookFoldsHtml } from "@/lib/publisher/templates/pink-book-folds";
+import { generatePlayfulCatHtml } from "@/lib/publisher/templates/playful-cat";
 import { PublishedConfig } from "@/lib/schemas/card-draft";
 import { injectTailwindWarningSuppress } from "@/lib/publisher/generate-index-html";
 
-type TemplateKey = "pooh" | "graduation" | "evasive" | "blooming" | "pinkbook";
+type TemplateKey = "pooh" | "graduation" | "evasive" | "blooming" | "pinkbook" | "cat";
 
 interface TemplatePreviewProps {
   activeTemplate: TemplateKey;
@@ -17,6 +18,20 @@ interface TemplatePreviewProps {
 
 // Sample demo configs for each template
 const demoConfigs: Record<TemplateKey, PublishedConfig> = {
+  cat: {
+    cardId: "demo_cat",
+    template: "playful_cat",
+    fromName: "Kamu",
+    toName: "Sarah",
+    letterTitle: "Catatan Spesial untuk Kucing Favoritku! 🐾",
+    letterBody: "Hai Sarah! Aku buat template kucing super gemas ini khusus untukmu. Semoga kamu terhibur bermain dengan kucing jahe interaktif ini dan menyukai pesan rahasia yang ia bawakan. Terima kasih telah selalu menjadi teman terbaikku! Nyaa~ 🐱💖",
+    photos: [
+      { src: "/img/holiday_bali_pic_mockup.png", caption: "Hari menyenangkan bersamamu" }
+    ],
+    finalMessage: "Semoga harimu menyenangkan! Purrr~ 🥰",
+    publishedAt: new Date().toISOString(),
+    expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
+  },
   pooh: {
     cardId: "demo_pooh",
     template: "playful_pooh",
@@ -95,6 +110,7 @@ const templateGenerators: Record<TemplateKey, (config: PublishedConfig) => strin
   evasive: generateEvasiveConfessionHtml,
   blooming: generateBloomingNoteHtml,
   pinkbook: generatePinkBookFoldsHtml,
+  cat: generatePlayfulCatHtml,
 };
 
 export default function TemplatePreview({ activeTemplate }: TemplatePreviewProps) {
@@ -130,6 +146,9 @@ export default function TemplatePreview({ activeTemplate }: TemplatePreviewProps
           setTimeout(() => {
             // Pooh: wake up
             if (typeof triggerWakeup === 'function') triggerWakeup();
+
+            // Cat: auto open parcel box
+            if (typeof openDeliveryBox === 'function') openDeliveryBox();
 
             // Envelope-based: open envelope
             const envelope = document.getElementById('envelope');

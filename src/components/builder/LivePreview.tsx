@@ -74,7 +74,8 @@ export default function LivePreview({ draft, bgMusicPreviewUrl, onFlowersChange 
       draft.toName !== debouncedDraft.toName ||
       draft.letterTitle !== debouncedDraft.letterTitle ||
       draft.letterBody !== debouncedDraft.letterBody ||
-      draft.finalMessage !== debouncedDraft.finalMessage;
+      draft.finalMessage !== debouncedDraft.finalMessage ||
+      draft.secretCode !== debouncedDraft.secretCode;
 
     if (!hasTextChanged) {
       // If only flowers changed, do not trigger a reload
