@@ -17,6 +17,82 @@ interface PhotoUploaderProps {
 export default function PhotoUploader({ value, onChange }: PhotoUploaderProps) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+
+  const handleDragStart = (e: React.DragEvent, index: number) => {
+    setDraggedIndex(index);
+    e.dataTransfer.effectAllowed = "move";
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    if (draggedIndex === index) return;
+    setDragOverIndex(index);
+  };
+
+  const handleDrop = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    if (draggedIndex === null || draggedIndex === index) return;
+
+    const reordered = [...value];
+    const [removed] = reordered.splice(draggedIndex, 1);
+    reordered.splice(index, 0, removed);
+
+    onChange(reordered);
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+  };
+
+  // Mobile Touch Drag & Drop support using elementFromPoint
+  const handleTouchStart = (index: number) => {
+    setDraggedIndex(index);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (draggedIndex === null) return;
+    const touch = e.touches[0];
+    const target = document.elementFromPoint(touch.clientX, touch.clientY);
+    if (!target) return;
+
+    const itemEl = target.closest("[data-drag-index]");
+    if (!itemEl) return;
+
+    const indexAttr = itemEl.getAttribute("data-drag-index");
+    if (indexAttr === null) return;
+
+    const targetIndex = parseInt(indexAttr, 10);
+    if (targetIndex !== draggedIndex) {
+      const reordered = [...value];
+      const [removed] = reordered.splice(draggedIndex, 1);
+      reordered.splice(targetIndex, 0, removed);
+      onChange(reordered);
+      setDraggedIndex(targetIndex);
+      setDragOverIndex(targetIndex);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+  };
+
+  const moveItem = (index: number, direction: "left" | "right") => {
+    const targetIndex = direction === "left" ? index - 1 : index + 1;
+    if (targetIndex < 0 || targetIndex >= value.length) return;
+
+    const reordered = [...value];
+    const temp = reordered[index];
+    reordered[index] = reordered[targetIndex];
+    reordered[targetIndex] = temp;
+
+    onChange(reordered);
+  };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -108,48 +184,116 @@ export default function PhotoUploader({ value, onChange }: PhotoUploaderProps) {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <label className="block text-sm font-semibold text-gray-900">
-          Foto Kenangan (Maksimal 5)
-        </label>
+        <div>
+          <label className="block text-sm font-semibold text-gray-900">
+            Foto Kenangan (Maksimal 5)
+          </label>
+          {value.length > 1 && (
+            <p className="text-xs text-gray-500 font-medium">Tarik handle ☰ atau gunakan tombol panah untuk menyusun urutan</p>
+          )}
+        </div>
         <span className="text-xs text-gray-500 font-medium">{value.length}/5 Foto</span>
       </div>
 
       {/* Photo Grid Previews */}
       {value.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {value.map((photo, idx) => (
-            <div
-              key={photo.key}
-              className="flex flex-col bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow p-3 relative group"
-            >
-              {/* Delete button */}
-              <button
-                type="button"
-                onClick={() => removePhoto(idx)}
-                className="absolute top-5 right-5 w-8 h-8 rounded-full bg-gray-900/80 hover:bg-red-600 text-white flex items-center justify-center transition-all z-10 cursor-pointer group/btn"
-                aria-label="Hapus foto"
+          {value.map((photo, idx) => {
+            const isDragging = draggedIndex === idx;
+            const isOver = dragOverIndex === idx && draggedIndex !== idx;
+
+            return (
+              <div
+                key={photo.key}
+                data-drag-index={idx}
+                draggable={!uploading}
+                onDragStart={(e) => handleDragStart(e, idx)}
+                onDragOver={(e) => handleDragOver(e, idx)}
+                onDragLeave={() => setDragOverIndex(null)}
+                onDrop={(e) => handleDrop(e, idx)}
+                onDragEnd={handleDragEnd}
+                className={`flex flex-col bg-white border rounded-xl overflow-hidden shadow-sm hover:shadow-md p-3 relative group transition-all duration-200 select-none ${
+                  isDragging
+                    ? "opacity-40 scale-95 border-gray-400 border-dashed"
+                    : isOver
+                    ? "border-blue-500 ring-2 ring-blue-100 bg-blue-50/10 scale-[1.02]"
+                    : "border-gray-200"
+                }`}
               >
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
+                {/* Drag Handle (Mobile touch source & Desktop indicator) */}
+                <div
+                  onTouchStart={() => handleTouchStart(idx)}
+                  onTouchMove={handleTouchMove}
+                  onTouchEnd={handleTouchEnd}
+                  className="absolute top-5 left-5 w-8 h-8 rounded-full bg-gray-900/80 hover:bg-gray-900 text-white flex items-center justify-center cursor-grab active:cursor-grabbing z-10 select-none touch-none transition-colors"
+                  title="Tarik untuk memindahkan"
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M4 8h16M4 16h16" />
+                  </svg>
+                </div>
 
-              <img
-                src={photo.src}
-                alt={`Uploaded ${idx + 1}`}
-                className="w-full h-40 object-cover rounded-lg mb-3"
-              />
+                {/* Delete button */}
+                <button
+                  type="button"
+                  onClick={() => removePhoto(idx)}
+                  className="absolute top-5 right-5 w-8 h-8 rounded-full bg-gray-900/80 hover:bg-red-600 text-white flex items-center justify-center transition-all z-10 cursor-pointer group/btn"
+                  aria-label="Hapus foto"
+                >
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
 
-              <input
-                type="text"
-                placeholder="Tambahkan caption foto..."
-                value={photo.caption || ""}
-                onChange={(e) => updateCaption(idx, e.target.value)}
-                maxLength={120}
-                className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 text-gray-900"
-              />
-            </div>
-          ))}
+                <img
+                  src={photo.src}
+                  alt={`Uploaded ${idx + 1}`}
+                  className="w-full h-40 object-cover rounded-lg mb-3"
+                  draggable={false}
+                />
+
+                {/* Order fallback navigation buttons */}
+                <div className="flex justify-between items-center mb-2 px-1">
+                  <span className="text-xs text-gray-500 font-semibold">Foto {idx + 1}</span>
+                  {value.length > 1 && (
+                    <div className="flex gap-1.5">
+                      <button
+                        type="button"
+                        disabled={idx === 0}
+                        onClick={() => moveItem(idx, "left")}
+                        className="p-1.5 rounded-lg bg-gray-50 hover:bg-gray-100 text-gray-600 border border-gray-200 disabled:opacity-40 disabled:hover:bg-gray-50 cursor-pointer disabled:cursor-not-allowed transition-colors"
+                        title="Pindahkan ke kiri"
+                      >
+                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+                        </svg>
+                      </button>
+                      <button
+                        type="button"
+                        disabled={idx === value.length - 1}
+                        onClick={() => moveItem(idx, "right")}
+                        className="p-1.5 rounded-lg bg-gray-50 hover:bg-gray-100 text-gray-600 border border-gray-200 disabled:opacity-40 disabled:hover:bg-gray-50 cursor-pointer disabled:cursor-not-allowed transition-colors"
+                        title="Pindahkan ke kanan"
+                      >
+                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                        </svg>
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                <input
+                  type="text"
+                  placeholder="Tambahkan caption foto..."
+                  value={photo.caption || ""}
+                  onChange={(e) => updateCaption(idx, e.target.value)}
+                  maxLength={120}
+                  className="w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 text-gray-900"
+                />
+              </div>
+            );
+          })}
         </div>
       )}
 
