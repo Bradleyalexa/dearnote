@@ -7,7 +7,7 @@ import TemplatePreview from "@/components/landing/TemplatePreview";
 type TemplateKey = "pooh" | "graduation" | "evasive" | "blooming" | "pinkbook";
 
 export default function Home() {
-  const [activeTemplate, setActiveTemplate] = useState<TemplateKey>("graduation");
+  const [activeTemplate, setActiveTemplate] = useState<TemplateKey>("evasive");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [activeModal, setActiveModal] = useState<"terms" | "refund" | "privacy" | null>(null);
 

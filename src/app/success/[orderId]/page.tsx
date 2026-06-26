@@ -1,7 +1,6 @@
 "use client";
 
 import { use, useEffect, useState } from "react";
-import Link from "next/link";
 import QrCodeCustomizer from "@/components/ui/QrCodeCustomizer";
 
 interface OrderStatusResponse {
@@ -220,14 +219,6 @@ export default function SuccessPage(props: { params: Promise<{ orderId: string }
                 <p className="text-sm text-red-800 font-medium">{error}</p>
               </div>
             )}
-            <div className="pt-4">
-              <Link href="/" className="text-sm text-gray-600 hover:text-gray-900 font-medium inline-flex items-center gap-2 cursor-pointer group">
-                <svg className="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                </svg>
-                Kembali ke Beranda
-              </Link>
-            </div>
           </>
         )}
 
