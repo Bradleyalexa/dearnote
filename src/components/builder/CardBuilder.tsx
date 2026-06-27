@@ -10,8 +10,20 @@ import VoiceNoteUploader from "./VoiceNoteUploader";
 import BackgroundMusicSelector from "./BackgroundMusicSelector";
 import LivePreview from "./LivePreview";
 import TemplatePicker from "./TemplatePicker";
+import { useI18nStore } from "@/lib/i18n/store";
+import { translations } from "@/lib/i18n/translations";
 
 export default function CardBuilder() {
+  const { lang } = useI18nStore();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const currentLang = mounted ? lang : "id";
+  const t = translations[currentLang];
+
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [showPaymentConfirm, setShowPaymentConfirm] = useState(false);
@@ -104,7 +116,7 @@ export default function CardBuilder() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           paymentGroup: "bank_card", // Force Rp8.000 pricing group
-          draft: validatedData,
+          draft: { ...validatedData, lang: currentLang },
         }),
       });
 
@@ -135,17 +147,17 @@ export default function CardBuilder() {
         {/* Header */}
         <div className="pb-6 border-b border-gray-100">
           <h2 className="font-serif text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
-            Buat Catatan Kenangan
+            {t.builderTitle}
           </h2>
           <p className="text-sm text-gray-600">
-            Dokumentasikan momen berharga, pasang foto & rekaman suara, lalu bagikan.
+            {t.builderSubtitle}
           </p>
         </div>
 
         {/* 1. Template Selector */}
         <div className="space-y-3">
           <label className="block text-sm font-semibold text-gray-900">
-            Pilih Desain & Tata Letak Catatan
+            {t.templateLabel}
           </label>
           <TemplatePicker
             value={formValues.template}
@@ -157,20 +169,20 @@ export default function CardBuilder() {
         {formValues.template === "herbarium_book" && (
           <div className="space-y-3 p-4 bg-zinc-50 border border-zinc-200 rounded-2xl">
             <label className="block text-sm font-semibold text-gray-900">
-              Pilih Warna Sampul Buku <span className="text-red-500">*</span>
+              {t.themeColorLabel} <span className="text-red-500">*</span>
             </label>
             <div className="flex flex-wrap gap-3">
               {[
-                { id: "green", label: "Forest Green", bg: "bg-[#2E5A44]", border: "border-[#173627]" },
-                { id: "navy", label: "Midnight Navy", bg: "bg-[#1A2F4C]", border: "border-[#0B182B]" },
-                { id: "burgundy", label: "Ruby Burgundy", bg: "bg-[#6B1D2F]", border: "border-[#3D0C17]" },
-                { id: "mocha", label: "Mocha Amber", bg: "bg-[#5C4033]", border: "border-[#2B1E17]" },
-                { id: "lavender", label: "Lavender Amethyst", bg: "bg-[#7E6088]", border: "border-[#4D3656]" },
-                { id: "pink", label: "Sakura Pink", bg: "bg-[#FF758F]", border: "border-[#FF5C8A]" },
-                { id: "pastel_pink", label: "Pastel Pink", bg: "bg-[#F9B2D7]", border: "border-[#EB6AA9]" },
-                { id: "pastel_blue", label: "Pastel Slate", bg: "bg-[#576A8F]", border: "border-[#3C4E70]" },
-                { id: "pastel_mint", label: "Pastel Mint", bg: "bg-[#BADFDB]", border: "border-[#93C9C4]" },
-                { id: "pastel_yellow", label: "Pastel Yellow", bg: "bg-[#FEE2AD]", border: "border-[#E3C288]" },
+                { id: "green", label: currentLang === "id" ? "Forest Green" : "Forest Green", bg: "bg-[#2E5A44]", border: "border-[#173627]" },
+                { id: "navy", label: currentLang === "id" ? "Midnight Navy" : "Midnight Navy", bg: "bg-[#1A2F4C]", border: "border-[#0B182B]" },
+                { id: "burgundy", label: currentLang === "id" ? "Ruby Burgundy" : "Ruby Burgundy", bg: "bg-[#6B1D2F]", border: "border-[#3D0C17]" },
+                { id: "mocha", label: currentLang === "id" ? "Mocha Amber" : "Mocha Amber", bg: "bg-[#5C4033]", border: "border-[#2B1E17]" },
+                { id: "lavender", label: currentLang === "id" ? "Lavender Amethyst" : "Lavender Amethyst", bg: "bg-[#7E6088]", border: "border-[#4D3656]" },
+                { id: "pink", label: currentLang === "id" ? "Sakura Pink" : "Sakura Pink", bg: "bg-[#FF758F]", border: "border-[#FF5C8A]" },
+                { id: "pastel_pink", label: currentLang === "id" ? "Pastel Pink" : "Pastel Pink", bg: "bg-[#F9B2D7]", border: "border-[#EB6AA9]" },
+                { id: "pastel_blue", label: currentLang === "id" ? "Pastel Slate" : "Pastel Slate", bg: "bg-[#576A8F]", border: "border-[#3C4E70]" },
+                { id: "pastel_mint", label: currentLang === "id" ? "Pastel Mint" : "Pastel Mint", bg: "bg-[#BADFDB]", border: "border-[#93C9C4]" },
+                { id: "pastel_yellow", label: currentLang === "id" ? "Pastel Yellow" : "Pastel Yellow", bg: "bg-[#FEE2AD]", border: "border-[#E3C288]" },
               ].map((color) => (
                 <button
                   key={color.id}
@@ -195,17 +207,17 @@ export default function CardBuilder() {
         {formValues.template === "evasive_confession" && (
           <div className="space-y-3 p-4 bg-rose-50/50 border border-rose-100 rounded-2xl">
             <label className="block text-sm font-semibold text-gray-900">
-              Pilih Game Pembuka Catatan <span className="text-red-500">*</span>
+              {currentLang === "id" ? "Pilih Game Pembuka Catatan" : "Choose Opening Game"} <span className="text-red-500">*</span>
             </label>
             <p className="text-xs text-gray-600">
-              Pilih game interaktif imut yang harus dimainkan penerima sebelum membuka pesan pengakuanmu.
+              {currentLang === "id" ? "Pilih game interaktif imut yang harus dimainkan penerima sebelum membuka pesan pengakuanmu." : "Choose a cute interactive game the recipient must play before opening your confession."}
             </p>
             <div className="grid grid-cols-2 gap-3 mt-2">
               {[
-                { id: "cat_paw", label: "Cakar Kucing 🐾", desc: "Towel cakar kucing imut" },
-                { id: "claw_machine", label: "Capit Boneka 🧸", desc: "Capit boneka cinta" },
-                { id: "tape_peeling", label: "Kupas Selotip 🎀", desc: "Kupas selotip washi tape" },
-                { id: "catch_hearts", label: "Tangkap Hati 🧺", desc: "Tangkap hati jatuh" },
+                { id: "cat_paw", label: currentLang === "id" ? "Cakar Kucing 🐾" : "Cat Paw 🐾", desc: currentLang === "id" ? "Towel cakar kucing imut" : "Poke cute cat paws" },
+                { id: "claw_machine", label: currentLang === "id" ? "Capit Boneka 🧸" : "Claw Machine 🧸", desc: currentLang === "id" ? "Capit boneka cinta" : "Catch love dolls" },
+                { id: "tape_peeling", label: currentLang === "id" ? "Kupas Selotip 🎀" : "Peel Tape 🎀", desc: currentLang === "id" ? "Kupas selotip washi tape" : "Peel off washi tape" },
+                { id: "catch_hearts", label: currentLang === "id" ? "Tangkap Hati 🧺" : "Catch Hearts 🧺", desc: currentLang === "id" ? "Tangkap hati jatuh" : "Catch falling hearts" },
               ].map((game) => (
                 <button
                   key={game.id}
@@ -230,11 +242,11 @@ export default function CardBuilder() {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
           <div className="space-y-2">
             <label className="block text-sm font-semibold text-gray-900">
-              Dari (Nama Anda) <span className="text-red-500">*</span>
+              {t.fromLabel} <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
-              placeholder="Contoh: Kevin"
+              placeholder={t.fromPlaceholder}
               {...register("fromName")}
               maxLength={50}
               className="w-full px-4 py-3 border border-zinc-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-zinc-400 text-sm font-medium text-zinc-700"
@@ -251,11 +263,11 @@ export default function CardBuilder() {
 
           <div className="space-y-2">
             <label className="block text-sm font-semibold text-gray-900">
-              Untuk (Nama Penerima) <span className="text-red-500">*</span>
+              {t.toLabel} <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
-              placeholder="Contoh: Jessica"
+              placeholder={t.toPlaceholder}
               {...register("toName")}
               maxLength={50}
               className="w-full px-4 py-3 border border-zinc-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-zinc-400 text-sm font-medium text-zinc-700"
@@ -278,15 +290,15 @@ export default function CardBuilder() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
             <label className="block text-sm font-semibold text-gray-900">
-              Kode Akses / Passkey (Opsional)
+              {t.secretCodeLabel}
             </label>
           </div>
           <p className="text-xs text-gray-700 leading-relaxed mb-3">
-            Jika diisi, pengunjung wajib memasukkan kode ini sebelum catatan terbuka. Jika dikosongkan, catatan langsung terbuka otomatis.
+            {t.secretCodeDesc}
           </p>
           <input
             type="text"
-            placeholder="Contoh: dearnote123"
+            placeholder={t.secretCodePlaceholder}
             {...register("secretCode")}
             maxLength={12}
             className="w-full px-4 py-3 border border-amber-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent text-sm font-mono text-gray-900 tracking-wider uppercase placeholder:normal-case placeholder:tracking-normal"
@@ -299,10 +311,10 @@ export default function CardBuilder() {
         {/* 4. Letter Contents */}
         <div className="space-y-4 sm:space-y-6">
           <div className="space-y-2">
-            <label className="block text-sm font-semibold text-gray-900">Judul Catatan (Opsional)</label>
+            <label className="block text-sm font-semibold text-gray-900">{t.letterTitleLabel}</label>
             <input
               type="text"
-              placeholder="Contoh: Kenangan Perjalanan Terbaik Kita"
+              placeholder={t.letterTitlePlaceholder}
               {...register("letterTitle")}
               maxLength={80}
               className="w-full px-4 py-3 border border-zinc-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-zinc-400 text-sm font-medium text-zinc-700"
@@ -315,14 +327,14 @@ export default function CardBuilder() {
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <label className="block text-sm font-semibold text-gray-900">
-                Isi Catatan / Jurnal <span className="text-red-500">*</span>
+                {t.letterBodyLabel} <span className="text-red-500">*</span>
               </label>
               <span className="text-xs text-gray-500 font-medium">
                 {formValues.letterBody?.length || 0}/3000
               </span>
             </div>
             <textarea
-              placeholder="Tuliskan cerita, ucapan, atau catatan harian Anda di sini..."
+              placeholder={t.letterBodyPlaceholder}
               {...register("letterBody")}
               maxLength={3000}
               rows={8}
@@ -372,17 +384,17 @@ export default function CardBuilder() {
 
         {/* 8. Final Message */}
         <div className="space-y-2">
-          <label className="block text-sm font-semibold text-gray-900">Pesan Penutup (Opsional)</label>
+          <label className="block text-sm font-semibold text-gray-900">{t.finalMessageLabel}</label>
           <input
             type="text"
-            placeholder="Contoh: Terima kasih atas segalanya."
+            placeholder={currentLang === "id" ? "Contoh: Terima kasih atas segalanya." : "e.g., Thank you for everything."}
             {...register("finalMessage")}
             maxLength={300}
             className="w-full px-4 py-3 border border-zinc-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-zinc-400 text-sm font-medium text-zinc-700"
           />
           {formValues.template === "graduation_memory_lane" && (
             <p className="text-xs text-amber-600 font-medium">
-              💡 Khusus template <strong>Graduation Memory Lane</strong>, isi bagian ini jika ingin memunculkan kartu <strong>P.S. (Postscript)</strong> pink di bagian paling bawah catatan.
+              {t.finalMessageDescGrad}
             </p>
           )}
           {errors.finalMessage && (
@@ -411,32 +423,34 @@ export default function CardBuilder() {
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
-              Memproses Pesanan...
+              {t.processingBtn}
             </>
           ) : (
             <>
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
               </svg>
-              Terbitkan Catatan
+              {t.publishBtn}
             </>
           )}
         </button>
 
         <p className="text-xs text-gray-500 text-center leading-relaxed">
-          Setelah pembayaran dikonfirmasi, catatan akan langsung terbit dan <strong>tidak dapat diedit kembali</strong>. Dengan menerbitkan catatan, Anda menyetujui{" "}
+          {currentLang === "id"
+            ? "Setelah pembayaran dikonfirmasi, catatan akan langsung terbit dan tidak dapat diedit kembali. Dengan menerbitkan catatan, Anda menyetujui "
+            : "After payment is confirmed, the note will be published instantly and cannot be edited again. By publishing, you agree to our "}
           <Link href="/terms" target="_blank" className="underline hover:text-gray-800 transition-colors">
-            Syarat & Ketentuan
+            {t.terms}
           </Link>
-          ,{" "}
+          {currentLang === "id" ? ", " : ", "}
           <Link href="/privacy" target="_blank" className="underline hover:text-gray-800 transition-colors">
-            Kebijakan Privasi
+            {t.privacy}
           </Link>
-          , serta{" "}
+          {currentLang === "id" ? ", serta " : ", and "}
           <Link href="/refund" target="_blank" className="underline hover:text-gray-800 transition-colors">
-            Kebijakan Refund
+            {t.refund}
           </Link>{" "}
-          kami.
+          {currentLang === "id" ? "kami." : "policies."}
         </p>
       </form>
 
@@ -469,19 +483,19 @@ export default function CardBuilder() {
 
             {/* Title */}
             <h3 className="font-serif text-2xl font-bold text-gray-900 mb-2">
-              Terbitkan Catatan
+              {t.confirmTitle}
             </h3>
             
             {/* Description */}
             <p className="text-sm text-gray-600 mb-6 leading-relaxed">
-              Catatan kenangan Anda siap diterbitkan secara online selama 90 hari tanpa iklan.
+              {t.confirmDesc}
             </p>
 
             {/* Price Card */}
             <div className="bg-gray-50 border border-gray-150 rounded-xl p-4 mb-6">
-              <span className="text-xs text-gray-500 uppercase font-semibold tracking-wider block mb-1">Total Pembayaran</span>
+              <span className="text-xs text-gray-500 uppercase font-semibold tracking-wider block mb-1">{t.priceCardTitle}</span>
               <span className="text-3xl font-serif font-bold text-gray-900">Rp8.000</span>
-              <span className="text-xs text-gray-500 block mt-1">Mendukung semua QRIS, E-wallet, & Transfer Bank</span>
+              <span className="text-xs text-gray-500 block mt-1">{t.priceCardDesc}</span>
             </div>
 
             {submitError && (
@@ -506,10 +520,10 @@ export default function CardBuilder() {
                       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                     </svg>
-                    Memproses Pembayaran...
+                    {t.processingBtn}
                   </>
                 ) : (
-                  "Lanjutkan Pembayaran"
+                  t.continuePayBtn
                 )}
               </button>
               
@@ -519,7 +533,7 @@ export default function CardBuilder() {
                 disabled={submitting}
                 className="w-full py-3 bg-white hover:bg-gray-50 text-gray-500 hover:text-gray-700 font-semibold rounded-xl border border-gray-200 transition-all cursor-pointer text-sm"
               >
-                Batal
+                {t.cancelBtn}
               </button>
             </div>
           </div>

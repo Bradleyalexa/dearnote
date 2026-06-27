@@ -5,6 +5,7 @@ import { generateConfig } from "@/lib/publisher/generate-config";
 import { generateIndexHtml } from "@/lib/publisher/generate-index-html";
 import { CardDraft } from "@/lib/schemas/card-draft";
 import { makeDummyDraft } from "./TemplatePicker";
+import { useI18nStore } from "@/lib/i18n/store";
 
 interface LivePreviewProps {
   draft: CardDraft;
@@ -14,6 +15,7 @@ interface LivePreviewProps {
 }
 
 export default function LivePreview({ draft, bgMusicPreviewUrl, onFlowersChange }: LivePreviewProps) {
+  const { lang } = useI18nStore();
   const [srcDoc, setSrcDoc] = useState<string>("");
   const [activeTab, setActiveTab] = useState<"cover" | "inside">("inside");
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -91,6 +93,7 @@ export default function LivePreview({ draft, bgMusicPreviewUrl, onFlowersChange 
 
   useEffect(() => {
     const config = generateConfig("preview_id", debouncedDraft);
+    config.lang = lang;
 
     config.photos = debouncedDraft.photos.map((p) => ({
       src: p.src,
@@ -196,7 +199,7 @@ export default function LivePreview({ draft, bgMusicPreviewUrl, onFlowersChange 
     }
 
     setSrcDoc(html);
-  }, [debouncedDraft, activeTab, bgMusicPreviewUrl, reloadKey]);
+  }, [debouncedDraft, activeTab, bgMusicPreviewUrl, reloadKey, lang]);
 
   useEffect(() => {
     if (!isAutoFit) return;

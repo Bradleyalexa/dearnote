@@ -1,12 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import TemplatePreview from "@/components/landing/TemplatePreview";
+import LanguageSelector from "@/components/LanguageSelector";
+import { useI18nStore } from "@/lib/i18n/store";
+import { translations } from "@/lib/i18n/translations";
 
 type TemplateKey = "pooh" | "graduation" | "evasive" | "blooming" | "pinkbook" | "cat";
 
 export default function Home() {
+  const { lang } = useI18nStore();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const currentLang = mounted ? lang : "id";
+  const t = translations[currentLang];
+
   const [activeTemplate, setActiveTemplate] = useState<TemplateKey>("cat");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [activeModal, setActiveModal] = useState<"terms" | "refund" | "privacy" | null>(null);
@@ -14,6 +27,42 @@ export default function Home() {
   const toggleFaq = (index: number) => {
     setOpenFaq(openFaq === index ? null : index);
   };
+
+  const faqItems = currentLang === "id" ? [
+    {
+      q: "Bagaimana cara penerima membuka catatan kenangan ini?",
+      a: "Penerima tidak perlu menginstal aplikasi apa pun. Mereka cukup membuka link unik yang Anda kirimkan, atau memindai QR Code custom yang Anda tempel di kado fisik melalui kamera ponsel mereka. Jurnal akan terbuka secara instan di browser mobile."
+    },
+    {
+      q: "Bagaimana cara menjaga kerahasiaan isi pesan?",
+      a: "Saat membuat jurnal di formulir, Anda dapat mencentang opsi 'Kunci Catatan'. Anda akan diminta membuat password sederhana. Ketika penerima membuka link jurnal tersebut, mereka harus memasukkan password tersebut terlebih dahulu sebelum isi surat, foto, dan pesan suara ditampilkan."
+    },
+    {
+      q: "Berapa lama catatan ini akan tetap aktif online?",
+      a: "Setiap catatan yang berhasil Anda terbitkan akan aktif online selama 90 hari (3 bulan). Kami akan menyimpan foto, pesan tertulis, dan pesan suara Anda dengan aman tanpa iklan selama periode tersebut. Akses akan otomatis kedaluwarsa setelahnya demi privasi data."
+    },
+    {
+      q: "Apakah saya bisa mengubah isi jurnal setelah diterbitkan?",
+      a: "Demi menjaga keaslian jurnal (seperti layaknya surat fisik yang sudah dikirim), jurnal yang sudah diterbitkan tidak dapat diubah kembali. Kami menyarankan Anda untuk meninjau pratinjau live secara teliti sebelum menekan tombol pembayaran."
+    }
+  ] : [
+    {
+      q: "How does the recipient open this memory note?",
+      a: "The recipient does not need to install any apps. They simply open the unique link you send them, or scan the custom QR Code you attach to a physical gift using their mobile phone's camera. The journal will open instantly in their mobile browser."
+    },
+    {
+      q: "How do I keep my message content private?",
+      a: "When creating a journal in the form, you can check the 'Lock Note' option. You will be prompted to create a simple password. When the recipient opens the journal link, they must enter the password before the letter contents, photos, and voice message are shown."
+    },
+    {
+      q: "How long will this note remain active online?",
+      a: "Each successfully published note will remain online for 90 days (3 months). We will safely store your photos, written messages, and voice notes without ads during that period. Access will automatically expire afterwards to ensure data privacy."
+    },
+    {
+      q: "Can I edit the journal content after it is published?",
+      a: "To preserve the authenticity of the journal (like a physical letter that has been sent), published journals cannot be edited. We highly recommend reviewing your live preview carefully before proceeding to payment."
+    }
+  ];
 
   return (
     <div className="min-h-screen bg-white text-gray-900 flex flex-col font-sans antialiased">
@@ -24,16 +73,20 @@ export default function Home() {
           <Link href="/" className="flex items-center group">
             <img
               src="/img/dearnote_logo.png"
-              alt="DearNote Logo"
+              alt={t.logoAlt}
               className="h-12 w-auto object-contain transition-transform group-hover:scale-105"
             />
           </Link>
-          <Link
-            href="/create"
-            className="px-6 py-2.5 bg-gray-900 hover:bg-gray-800 text-white font-medium text-sm rounded-full shadow-sm hover:shadow-md transition-all cursor-pointer"
-          >
-            Mulai Buat
-          </Link>
+          
+          <div className="flex items-center gap-4 sm:gap-6">
+            <LanguageSelector />
+            <Link
+              href="/create"
+              className="px-6 py-2.5 bg-gray-900 hover:bg-gray-800 text-white font-medium text-sm rounded-full shadow-sm hover:shadow-md transition-all cursor-pointer"
+            >
+              {t.startBuilder}
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -46,17 +99,17 @@ export default function Home() {
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-gray-50 border border-gray-200 text-gray-700 text-xs font-medium rounded-full mb-8">
             <span className="w-2 h-2 rounded-full bg-green-500" />
-            No Login • Tanpa Registrasi • Diterbitkan Instan
+            {t.badge}
           </div>
 
           {/* Hero Heading */}
           <h1 className="font-serif text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight max-w-4xl mx-auto mb-6">
-            Jurnal Kenangan Digital untuk Setiap <span className="text-gray-600">Momen Berharga</span>
+            {t.heroTitle}<span className="text-gray-600">{t.heroTitleHighlight}</span>
           </h1>
 
           {/* Hero Subtitle */}
           <p className="text-gray-600 text-lg sm:text-xl max-w-3xl mx-auto leading-relaxed mb-10">
-            Bukan sekadar pesan teks biasa. Rangkai ucapan digital beranimasi indah lengkap dengan kompilasi foto kenangan terindah dan rekaman suara hangat Anda.
+            {t.heroSubtitle}
           </p>
 
           {/* CTA Button */}
@@ -65,13 +118,13 @@ export default function Home() {
               href="/create"
               className="inline-flex items-center gap-2 px-8 py-4 bg-gray-900 hover:bg-gray-800 text-white font-semibold text-base rounded-full shadow-lg hover:shadow-xl transition-all cursor-pointer group"
             >
-              Buat Catatan Kenangan Sekarang
+              {t.heroCta}
               <svg className="w-5 h-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
             </Link>
             <p className="text-xs text-gray-500 font-medium mt-4">
-              Hanya Rp8.000 per catatan • Selesai dalam 5 menit
+              {t.heroPrice}
             </p>
           </div>
         </section>
@@ -80,9 +133,9 @@ export default function Home() {
         <section className="bg-gray-50 py-20">
           <div className="max-w-6xl mx-auto px-6">
             <div className="text-center mb-12">
-              <h2 className="font-serif text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Pratinjau Jurnal Interaktif</h2>
+              <h2 className="font-serif text-3xl sm:text-4xl font-bold text-gray-900 mb-4">{t.previewTitle}</h2>
               <p className="text-gray-600 max-w-2xl mx-auto">
-                Klik tab di bawah untuk melihat simulasi tampilan template di layar handphone penerima.
+                {t.previewSubtitle}
               </p>
             </div>
 
@@ -91,12 +144,12 @@ export default function Home() {
               {/* Tabs */}
               <div className="flex flex-row lg:flex-col gap-3 w-full lg:w-72 overflow-x-auto lg:overflow-visible pb-4 lg:pb-0">
                 {[
-                  { id: "cat", label: "Playful Cozy Cat 🐾", desc: "Main dengan kucing jahe interaktif! Kejar laser merah, suapi kue ikan, dan manjakan si manis sampai ia membukakan surat spesial." },
-                  { id: "pooh", label: "Playful Pooh", desc: "Beruang Pooh yang lucu tidur nyenyak dengan pot madu, nuansa hangat kuning keemasan." },
-                  { id: "graduation", label: "Graduation Note", desc: "Diploma elegan dengan wax seal emas, kanvas krem premium, font serif mewah." },
-                  { id: "evasive", label: "Evasive Confession", desc: "Dialog pengakuan cinta retro ala Windows 95 pink dengan mini-game seru yang interaktif." },
-                  { id: "blooming", label: "Blooming Flower", desc: "Amplop dengan wax seal yang mekar menjadi taman bunga indah." },
-                  { id: "pinkbook", label: "Pink Book Folds", desc: "Buku scrapbook 3D dengan halaman yang bisa dibalik, polaroid yang bisa di-drag." }
+                  { id: "cat", label: "Playful Cozy Cat 🐾", desc: currentLang === "id" ? "Main dengan kucing jahe interaktif! Kejar laser merah, suapi kue ikan, dan manjakan si manis sampai ia membukakan surat spesial." : "Play with an interactive ginger cat! Chase the red laser, feed it fish cakes, and pamper the kitty until it opens the special letter." },
+                  { id: "pooh", label: "Playful Pooh", desc: currentLang === "id" ? "Beruang Pooh yang lucu tidur nyenyak dengan pot madu, nuansa hangat kuning keemasan." : "Cute Pooh bear sleeping soundly with a honey pot, warm golden-yellow vibes." },
+                  { id: "graduation", label: "Graduation Note", desc: currentLang === "id" ? "Diploma elegan dengan wax seal emas, kanvas krem premium, font serif mewah." : "Elegant diploma with a golden wax seal, premium cream canvas, luxurious serif font." },
+                  { id: "evasive", label: "Evasive Confession", desc: currentLang === "id" ? "Dialog pengakuan cinta retro ala Windows 95 pink dengan mini-game seru yang interaktif." : "Retro Windows 95 pink love confession dialog with a fun, interactive mini-game." },
+                  { id: "blooming", label: "Blooming Flower", desc: currentLang === "id" ? "Amplop dengan wax seal yang mekar menjadi taman bunga indah." : "An envelope with a wax seal that blooms into a beautiful flower garden." },
+                  { id: "pinkbook", label: "Pink Book Folds", desc: currentLang === "id" ? "Buku scrapbook 3D dengan halaman yang bisa dibalik, polaroid yang bisa di-drag." : "3D scrapbook book with flippable pages and draggable polaroids." }
                 ].map((tab) => (
                   <button
                     key={tab.id}
@@ -128,18 +181,18 @@ export default function Home() {
         <section className="py-20">
           <div className="max-w-6xl mx-auto px-6">
             <div className="text-center mb-12">
-              <h2 className="font-serif text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Satu Link untuk Berbagai Cerita</h2>
+              <h2 className="font-serif text-3xl sm:text-4xl font-bold text-gray-900 mb-4">{t.occasionsTitle}</h2>
               <p className="text-gray-600 max-w-2xl mx-auto">
-                DearNote didesain netral dan elegan untuk merayakan segala jenis hubungan dan momen berharga Anda.
+                {t.occasionsSubtitle}
               </p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {[
-                { icon: "🎓", title: "Hadiah Kelulusan", desc: "Ucapkan selamat wisuda untuk sahabat dengan kompilasi foto perjuangan kuliah." },
-                { icon: "🎂", title: "Ulang Tahun", desc: "Kejutan manis berisi tumpukan foto kenangan konyol masa lalu." },
-                { icon: "💌", title: "Hari Jadi", desc: "Kirim surat rahasia berpenampilan mewah lengkap dengan digital wax seal." },
-                { icon: "✉️", title: "Pesan Rahasia", desc: "Amankan pesan emosional menggunakan fitur kunci sandi passcode unik." }
+                { icon: "🎓", title: t.occGradTitle, desc: t.occGradDesc },
+                { icon: "🎂", title: t.occBdayTitle, desc: t.occBdayDesc },
+                { icon: "💌", title: t.occAnnivTitle, desc: t.occAnnivDesc },
+                { icon: "✉️", title: t.occSecretTitle, desc: t.occSecretDesc }
               ].map((item, idx) => (
                 <div key={idx} className="bg-white border border-gray-200 hover:border-gray-300 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all cursor-pointer group">
                   <div className="text-3xl mb-3">{item.icon}</div>
@@ -155,17 +208,17 @@ export default function Home() {
         <section className="bg-gray-50 py-20">
           <div className="max-w-6xl mx-auto px-6">
             <div className="text-center mb-12">
-              <h2 className="font-serif text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Cara Kerja Sederhana</h2>
+              <h2 className="font-serif text-3xl sm:text-4xl font-bold text-gray-900 mb-4">{t.howItWorksTitle}</h2>
               <p className="text-gray-600 max-w-2xl mx-auto">
-                Tidak membutuhkan pendaftaran akun yang rumit. Proses instan selesai dalam 3 langkah.
+                {t.howItWorksSubtitle}
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[
-                { num: "1", title: "Tulis Cerita Anda", desc: "Pilih layout tema, tuliskan isi pesan Anda dengan leluasa. Pasang pengaman password opsional." },
-                { num: "2", title: "Sematkan Foto & Suara", desc: "Unggah hingga 5 foto memori beresolusi tinggi, lalu rekam pesan suara hangat maksimal 60 detik." },
-                { num: "3", title: "Terbitkan & Bagikan", desc: "Selesaikan pembayaran Rp8.000. Dapatkan link unik serta unduh QR Code berbentuk hati." }
+                { num: "1", title: t.step1Title, desc: t.step1Desc },
+                { num: "2", title: t.step2Title, desc: t.step2Desc },
+                { num: "3", title: t.step3Title, desc: t.step3Desc }
               ].map((step, idx) => (
                 <div key={idx} className="bg-white border border-gray-200 p-8 rounded-2xl">
                   <div className="w-12 h-12 rounded-full bg-gray-900 text-white text-lg flex items-center justify-center font-bold mb-4">
@@ -183,28 +236,28 @@ export default function Home() {
         <section className="py-20">
           <div className="max-w-3xl mx-auto px-6">
             <div className="text-center mb-12">
-              <h2 className="font-serif text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Tarif Transparan, Sekali Bayar</h2>
+              <h2 className="font-serif text-3xl sm:text-4xl font-bold text-gray-900 mb-4">{t.pricingTitle}</h2>
               <p className="text-gray-600 max-w-2xl mx-auto">
-                Tidak ada tagihan bulanan atau sistem langganan. Anda hanya membayar ketika ingin menerbitkan kenangan.
+                {t.pricingSubtitle}
               </p>
             </div>
 
             <div className="bg-white border-2 border-gray-900 rounded-3xl p-8 shadow-xl">
               <div className="flex items-center justify-between mb-6">
                 <div>
-                  <span className="text-xs bg-gray-900 text-white px-3 py-1 font-semibold rounded-full uppercase">Akses Penuh</span>
-                  <h4 className="font-serif text-2xl font-bold text-gray-900 mt-3">QRIS / E-Wallet</h4>
-                  <p className="text-sm text-gray-600 mt-1">Mendukung Gopay, OVO, ShopeePay, Dana, LinkAja, serta semua QRIS BCA/Mandiri/BRI.</p>
+                  <span className="text-xs bg-gray-900 text-white px-3 py-1 font-semibold rounded-full uppercase">{t.priceCardBadge}</span>
+                  <h4 className="font-serif text-2xl font-bold text-gray-900 mt-3">{t.priceCardHeader}</h4>
+                  <p className="text-sm text-gray-600 mt-1">{t.priceCardSubheader}</p>
                 </div>
               </div>
 
               <ul className="space-y-3 mb-8 border-t border-gray-100 pt-6">
                 {[
-                  "Aktif online selama 90 hari",
-                  "Bebas iklan & spam pihak ketiga",
-                  "Unggah hingga 5 foto berkualitas tinggi",
-                  "Rekam pesan suara personal",
-                  "Modifikasi QR Code bentuk Hati"
+                  t.priceLimit90,
+                  t.priceNoAds,
+                  t.priceUpTo5Photos,
+                  t.priceRecordVoice,
+                  t.priceHeartQr
                 ].map((feature, idx) => (
                   <li key={idx} className="flex items-center gap-3 text-sm text-gray-700">
                     <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -217,14 +270,14 @@ export default function Home() {
 
               <div className="flex items-center justify-between border-t border-gray-100 pt-6">
                 <div>
-                  <span className="text-4xl font-bold text-gray-900 font-serif">Rp8.000</span>
-                  <span className="text-xs text-gray-500 block mt-1">Sekali Terbit</span>
+                  <span className="text-4xl font-bold text-gray-900 font-serif">{t.priceAmount}</span>
+                  <span className="text-xs text-gray-500 block mt-1">{t.priceOnceText}</span>
                 </div>
                 <Link
                   href="/create"
                   className="px-6 py-3 bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-full shadow-md hover:shadow-lg transition-all cursor-pointer"
                 >
-                  Buat Sekarang
+                  {t.startBuilder}
                 </Link>
               </div>
             </div>
@@ -235,31 +288,14 @@ export default function Home() {
         <section className="bg-gray-50 py-20">
           <div className="max-w-3xl mx-auto px-6">
             <div className="text-center mb-12">
-              <h2 className="font-serif text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Tanya & Jawab</h2>
+              <h2 className="font-serif text-3xl sm:text-4xl font-bold text-gray-900 mb-4">{t.faqTitle}</h2>
               <p className="text-gray-600">
-                Beberapa pertanyaan yang sering ditanyakan mengenai DearNote.
+                {t.faqSubtitle}
               </p>
             </div>
 
             <div className="space-y-4">
-              {[
-                {
-                  q: "Bagaimana cara penerima membuka catatan kenangan ini?",
-                  a: "Penerima tidak perlu menginstal aplikasi apa pun. Mereka cukup membuka link unik yang Anda kirimkan, atau memindai QR Code custom yang Anda tempel di kado fisik melalui kamera ponsel mereka. Jurnal akan terbuka secara instan di browser mobile."
-                },
-                {
-                  q: "Bagaimana cara menjaga kerahasiaan isi pesan?",
-                  a: "Saat membuat jurnal di formulir, Anda dapat mencentang opsi 'Kunci Catatan'. Anda akan diminta membuat password sederhana. Ketika penerima membuka link jurnal tersebut, mereka harus memasukkan password tersebut terlebih dahulu sebelum isi surat, foto, dan pesan suara ditampilkan."
-                },
-                {
-                  q: "Berapa lama catatan ini akan tetap aktif online?",
-                  a: "Setiap catatan yang berhasil Anda terbitkan akan aktif online selama 90 hari (3 bulan). Kami akan menyimpan foto, pesan tertulis, dan pesan suara Anda dengan aman tanpa iklan selama periode tersebut. Akses akan otomatis kedaluwarsa setelahnya demi privasi data."
-                },
-                {
-                  q: "Apakah saya bisa mengubah isi jurnal setelah diterbitkan?",
-                  a: "Demi menjaga keaslian jurnal (seperti layaknya surat fisik yang sudah dikirim), jurnal yang sudah diterbitkan tidak dapat diubah kembali. Kami menyarankan Anda untuk meninjau pratinjau live secara teliti sebelum menekan tombol pembayaran."
-                }
-              ].map((faq, idx) => {
+              {faqItems.map((faq, idx) => {
                 const isOpen = openFaq === idx;
                 return (
                   <div
@@ -296,34 +332,34 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="border-t border-gray-100 py-8 text-center text-sm text-gray-500">
-        <p>© {new Date().getFullYear()} DearNote. Semua hak cipta dilindungi.</p>
+        <p>{t.footerCopyright.replace("{year}", new Date().getFullYear().toString())}</p>
         <div className="flex justify-center gap-4 mt-3 text-xs text-gray-500">
           <button
             onClick={() => setActiveModal("terms")}
             className="hover:text-gray-900 transition-colors cursor-pointer underline decoration-dotted"
           >
-            Syarat & Ketentuan
+            {t.terms}
           </button>
           <span>•</span>
           <button
             onClick={() => setActiveModal("refund")}
             className="hover:text-gray-900 transition-colors cursor-pointer underline decoration-dotted"
           >
-            Kebijakan Refund
+            {t.refund}
           </button>
           <span>•</span>
           <button
             onClick={() => setActiveModal("privacy")}
             className="hover:text-gray-900 transition-colors cursor-pointer underline decoration-dotted"
           >
-            Kebijakan Privasi
+            {t.privacy}
           </button>
         </div>
         <div className="mt-4 text-xs text-gray-400 space-y-1">
-          <p>Jakarta Barat, Indonesia</p>
-          <p>Kontak: <a href="mailto:hidearnote@gmail.com" className="hover:text-gray-600 underline">hidearnote@gmail.com</a></p>
+          <p>{t.jakartaIndonesia}</p>
+          <p>{t.contactText}: <a href="mailto:hidearnote@gmail.com" className="hover:text-gray-600 underline">hidearnote@gmail.com</a></p>
         </div>
-        <p className="text-xs text-gray-400 mt-4">Dibuat dengan cinta untuk mengabadikan momen berharga Anda secara digital.</p>
+        <p className="text-xs text-gray-400 mt-4">{t.madeWithLove}</p>
       </footer>
 
       {/* Modal Container */}
@@ -340,7 +376,7 @@ export default function Home() {
             {/* Header */}
             <div className="p-6 border-b border-gray-100 flex items-center justify-between">
               <h3 className="font-serif text-xl sm:text-2xl font-bold text-gray-900">
-                {activeModal === "terms" ? "Syarat & Ketentuan" : activeModal === "refund" ? "Kebijakan Pengembalian Dana" : "Kebijakan Privasi"}
+                {activeModal === "terms" ? t.terms : activeModal === "refund" ? (currentLang === "id" ? "Kebijakan Pengembalian Dana" : "Refund Policy") : t.privacy}
               </h3>
               <button
                 onClick={() => setActiveModal(null)}
@@ -747,9 +783,7 @@ export default function Home() {
                     DearNote dapat menggunakan layanan pihak ketiga untuk mendukung operasional layanan, termasuk tetapi tidak terbatas pada:
                   </p>
                   <ol className="list-decimal pl-5 space-y-1">
-    
                     <li>Penyedia penyimpanan cloud;</li>
-                   
                   </ol>
                   <p>
                     Data hanya dibagikan sejauh diperlukan untuk menjalankan layanan DearNote, memproses pembayaran, menjaga keamanan, atau memenuhi kewajiban hukum.
@@ -816,7 +850,7 @@ export default function Home() {
                 onClick={() => setActiveModal(null)}
                 className="px-6 py-2 bg-gray-900 hover:bg-gray-800 text-white font-medium text-xs rounded-full transition-all cursor-pointer shadow-sm hover:shadow-md"
               >
-                Saya Mengerti
+                {currentLang === "id" ? "Saya Mengerti" : "I Understand"}
               </button>
             </div>
           </div>

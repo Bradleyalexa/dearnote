@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { generateConfig } from "@/lib/publisher/generate-config";
 import { generateIndexHtml } from "@/lib/publisher/generate-index-html";
 import { TemplateType } from "@/lib/schemas/card-draft";
+import { useI18nStore } from "@/lib/i18n/store";
 
 export const TEMPLATE_REGISTRY: {
   id: TemplateType;
@@ -306,6 +307,7 @@ interface TemplatePickerProps {
 }
 
 export default function TemplatePicker({ value, onChange }: TemplatePickerProps) {
+  const { lang } = useI18nStore();
   const [isOpen, setIsOpen] = useState(false);
   const [filter, setFilter] = useState<FilterType>("semua");
   const [highlighted, setHighlighted] = useState<TemplateType>(value);
@@ -313,6 +315,56 @@ export default function TemplatePicker({ value, onChange }: TemplatePickerProps)
   const [previewLoading, setPreviewLoading] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [mounted, setMounted] = useState(false);
+
+  const getTmplName = (tmpl: any) => {
+    if (lang === "en") {
+      if (tmpl.id === "playful_cat") return "Playful Cozy Cat";
+      if (tmpl.id === "cute_apology") return "Cute Couple Apology";
+      if (tmpl.id === "farewell_keepsake") return "Sincere Farewell";
+      if (tmpl.id === "evasive_confession") return "Evasive Confession";
+    }
+    return tmpl.name;
+  };
+
+  const getTmplDesc = (tmpl: any) => {
+    if (lang === "en") {
+      if (tmpl.id === "playful_cat") return "Open a mysterious box, play with red laser, feed fish treats, and pamper the kitty to unlock your letter.";
+      if (tmpl.id === "cute_apology") return "Send a cute apology. Peel off the pink Band-Aid, collect forgiveness points with boba/chocolate treats, and crack open a fortune cookie.";
+      if (tmpl.id === "farewell_keepsake") return "Clean, elegant, and solemn design for farewells. Fully focuses on sincere letter text, neat photo frames, and a warm voice note.";
+      if (tmpl.id === "evasive_confession") return "Super cute retro pink Windows 95 layout with 4 opening mini-games. The 'No' button runs away, forcing them to click 'Yes'!";
+    }
+    return tmpl.description;
+  };
+
+  const getFilterLabel = (f: FilterType) => {
+    const labels: Record<string, Record<FilterType, string>> = {
+      en: {
+        semua: "All",
+        minimal: "Minimal",
+        romantic: "Romantic",
+        playful: "Playful",
+        interaktif: "Interactive",
+        hari_raya: "Holiday",
+        couple: "For Couple",
+        friend: "For Friend",
+        family: "For Family",
+        general: "General",
+      },
+      id: {
+        semua: "Semua",
+        minimal: "Minimal",
+        romantic: "Romantis",
+        playful: "Ceria",
+        interaktif: "Interaktif",
+        hari_raya: "Hari Raya",
+        couple: "Pasangan",
+        friend: "Teman",
+        family: "Keluarga",
+        general: "Umum",
+      }
+    };
+    return labels[lang === "en" ? "en" : "id"][f];
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -404,10 +456,10 @@ export default function TemplatePicker({ value, onChange }: TemplatePickerProps)
           />
           <div className="text-left min-w-0 flex-1">
             <p className="text-sm font-bold text-gray-900 truncate">
-              {currentTemplate?.name ?? "Select Design"}
+              {currentTemplate ? getTmplName(currentTemplate) : (lang === "en" ? "Select Design" : "Pilih Desain")}
             </p>
             <p className="text-xs text-gray-500 truncate mt-0.5">
-              {currentTemplate?.description.slice(0, 60)}...
+              {currentTemplate ? getTmplDesc(currentTemplate).slice(0, 60) : ""}...
             </p>
           </div>
         </div>
@@ -430,8 +482,12 @@ export default function TemplatePicker({ value, onChange }: TemplatePickerProps)
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
               <div>
-                <h2 className="text-xl font-bold text-gray-900 font-serif">Choose Note Design</h2>
-                <p className="text-xs text-gray-500 mt-0.5">Click a design for a live preview</p>
+                <h2 className="text-xl font-bold text-gray-900 font-serif">
+                  {lang === "en" ? "Choose Note Design" : "Pilih Desain Catatan"}
+                </h2>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  {lang === "en" ? "Click a design for a live preview" : "Ketuk desain untuk melihat pratinjau langsung"}
+                </p>
               </div>
               <button
                 type="button"
@@ -458,7 +514,7 @@ export default function TemplatePicker({ value, onChange }: TemplatePickerProps)
                         : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                     }`}
                   >
-                    {FILTER_LABELS[f]}
+                    {getFilterLabel(f)}
                   </button>
                 ))}
               </div>
@@ -488,10 +544,10 @@ export default function TemplatePicker({ value, onChange }: TemplatePickerProps)
                       />
                       <div className="flex-1 min-w-0">
                         <p className={`text-sm font-bold truncate ${isSelected ? "text-white" : "text-gray-900"}`}>
-                          {tmpl.name}
+                          {getTmplName(tmpl)}
                         </p>
                         <p className={`text-xs line-clamp-2 mt-1 ${isSelected ? "text-gray-300" : "text-gray-500"}`}>
-                          {tmpl.description}
+                          {getTmplDesc(tmpl)}
                         </p>
                         {tmpl.tags.length > 0 && (
                           <div className="flex gap-1 mt-2 flex-wrap">
@@ -549,20 +605,20 @@ export default function TemplatePicker({ value, onChange }: TemplatePickerProps)
                           <>
                             <div className="mb-4">
                               <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                                Design Details
+                                {lang === "en" ? "Design Details" : "Detail Desain"}
                               </span>
                               <h3 className="text-lg font-bold text-gray-900 mt-2 font-serif">
-                                {tmpl.name}
+                                {getTmplName(tmpl)}
                               </h3>
                             </div>
                             <div className="w-12 h-1 bg-gray-900 rounded-full mb-4" />
                             <p className="text-sm text-gray-600 leading-relaxed mb-4">
-                              {tmpl.description}
+                              {getTmplDesc(tmpl)}
                             </p>
                             <div className="flex items-center gap-2 pt-4 border-t border-gray-100">
                               <div className="w-4 h-4 rounded-full shadow-sm" style={{ background: tmpl.accent }} />
                               <span className="text-xs text-gray-500 font-medium">
-                                Color Theme
+                                {lang === "en" ? "Color Theme" : "Tema Warna"}
                               </span>
                             </div>
                           </>
@@ -578,7 +634,9 @@ export default function TemplatePicker({ value, onChange }: TemplatePickerProps)
             {/* Footer */}
             <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200 bg-gray-50">
               <p className="text-sm text-gray-600 hidden sm:block">
-                {highlighted !== value ? `Will use: ${TEMPLATE_REGISTRY.find((t) => t.id === highlighted)?.name}` : "This design is currently selected"}
+                {highlighted !== value 
+                  ? (lang === "en" ? `Will use: ${getTmplName(TEMPLATE_REGISTRY.find((t) => t.id === highlighted))}` : `Akan menggunakan: ${getTmplName(TEMPLATE_REGISTRY.find((t) => t.id === highlighted))}`) 
+                  : (lang === "en" ? "This design is currently selected" : "Desain ini sedang digunakan")}
               </p>
               <div className="flex gap-3 ml-auto w-full sm:w-auto">
                 <button
@@ -586,14 +644,14 @@ export default function TemplatePicker({ value, onChange }: TemplatePickerProps)
                   onClick={handleClose}
                   className="flex-1 sm:flex-none px-5 py-2.5 text-sm font-semibold text-gray-700 bg-white hover:bg-gray-100 border border-gray-300 rounded-lg transition-all cursor-pointer"
                 >
-                  Cancel
+                  {lang === "en" ? "Cancel" : "Batal"}
                 </button>
                 <button
                   type="button"
                   onClick={handleConfirm}
                   className="flex-1 sm:flex-none px-6 py-2.5 text-sm font-semibold text-white bg-gray-900 hover:bg-gray-800 rounded-lg transition-all shadow-sm cursor-pointer"
                 >
-                  Select This Design
+                  {lang === "en" ? "Select This Design" : "Pilih Desain Ini"}
                 </button>
               </div>
             </div>

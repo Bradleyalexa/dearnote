@@ -80,6 +80,7 @@ export const CardDraftSchema = z.object({
   themeColor: z.string().max(30).optional(),
   flowers: z.array(FlowerItemSchema).optional(),
   openingGame: z.string().optional(),
+  lang: z.string().optional(),
 });
 
 export type CardDraft = z.infer<typeof CardDraftSchema>;
@@ -118,6 +119,7 @@ export const PublishedConfigSchema = z.object({
   themeColor: z.string().max(30).optional(),
   flowers: z.array(FlowerItemSchema).optional(),
   openingGame: z.string().optional(),
+  lang: z.string().optional(),
   publishedAt: z.string().datetime(),
   expiresAt: z.string().datetime(),
 });
