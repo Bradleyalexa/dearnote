@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Compositing Test – 3 Layers</title>
+<style>
+body { margin: 0; background: #1a1a2e; display: flex; justify-content: center; padding: 40px; gap: 40px; flex-wrap: wrap; align-items: flex-start; }
+
+/* ── Scrapbook container ── */
+.scrapbook-layout {
+  position: relative;
+  width: 620px;
+  aspect-ratio: 5 / 4;
+  background: transparent;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  flex-shrink: 0;
+}
+
+/* Layer 0: full background */
+.scrapbook-bg-base {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Layer 10: frame overlay (photo areas transparent) */
+.scrapbook-bg-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* Layer 5: user photos (between base and overlay) */
+.user-photo {
+  position: absolute;
+  overflow: hidden;
+  z-index: 5;
+  border-radius: 2px;
+  cursor: pointer;
+}
+.user-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  pointer-events: none;
+}
+.user-photo:hover { z-index: 8; }
+
+/* Slot positions */
+.slot-left   { left:8.13%;  top:37.67%; width:28.90%; height:34.11%; transform:rotate(-6.53deg); transform-origin:center; }
+.slot-stamp  { left:45.93%; top:27.38%; width:47.20%; height:26.72%; transform:rotate(0deg);     transform-origin:center; }
+.slot-bottom { left:30.98%; top:62.17%; width:20.08%; height:32.89%; transform:rotate(14.49deg); transform-origin:center; }
+</style>
+</head>
+<body>
+
+<div class="scrapbook-layout">
+  <!-- Layer 0 base -->
+  <img class="scrapbook-bg-base" src="/img/anniversary_bg.png" draggable="false">
+
+  <!-- Layer 5: user photos (use a portrait image to test cover+crop) -->
+  <div class="user-photo slot-left">
+    <img src="https://picsum.photos/seed/couple1/400/600" alt="portrait test">
+  </div>
+  <div class="user-photo slot-stamp">
+    <img src="https://picsum.photos/seed/wine1/800/400" alt="landscape test">
+  </div>
+  <div class="user-photo slot-bottom">
+    <img src="https://picsum.photos/seed/photo3/300/500" alt="portrait test 2">
+  </div>
+
+  <!-- Layer 10: frame overlay (borders on top) -->
+  <img class="scrapbook-bg-overlay" src="/img/anniversary_bg_overlay.png" draggable="false">
+</div>
+
+</body>
+</html>

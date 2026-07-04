@@ -30,6 +30,9 @@ export const TEMPLATES = [
   "farewell_keepsake",
   "evasive_confession",
   "playful_cat",
+  "anniversary_scrapbook",
+  "boyfriend_permit",
+  "date_invitation",
 ] as const;
 
 export const TemplateSchema = z.enum(TEMPLATES);
@@ -77,6 +80,7 @@ export const CardDraftSchema = z.object({
   voiceNote: DraftVoiceNoteSchema.optional(),
   bgMusic: DraftBgMusicSchema.optional(),
   finalMessage: z.string().max(300, { message: "Pesan penutup maksimal 300 karakter" }).optional(),
+  favoriteMoments: z.array(z.string()).optional(),
   themeColor: z.string().max(30).optional(),
   flowers: z.array(FlowerItemSchema).optional(),
   openingGame: z.string().optional(),
@@ -116,6 +120,7 @@ export const PublishedConfigSchema = z.object({
   voiceNote: PublishedVoiceNoteSchema.optional(),
   bgMusic: PublishedBgMusicSchema.optional(),
   finalMessage: z.string().max(300).optional(),
+  favoriteMoments: z.array(z.string()).optional(),
   themeColor: z.string().max(30).optional(),
   flowers: z.array(FlowerItemSchema).optional(),
   openingGame: z.string().optional(),

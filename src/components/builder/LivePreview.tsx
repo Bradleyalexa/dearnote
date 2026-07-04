@@ -62,6 +62,7 @@ export default function LivePreview({ draft, bgMusicPreviewUrl, onFlowersChange 
       draft.themeColor !== debouncedDraft.themeColor ||
       draft.openingGame !== debouncedDraft.openingGame ||
       JSON.stringify(draft.photos) !== JSON.stringify(debouncedDraft.photos) ||
+      JSON.stringify(draft.favoriteMoments) !== JSON.stringify(debouncedDraft.favoriteMoments) ||
       draft.voiceNote?.src !== debouncedDraft.voiceNote?.src ||
       draft.bgMusic?.src !== debouncedDraft.bgMusic?.src;
 

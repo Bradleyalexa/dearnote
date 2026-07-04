@@ -26,6 +26,9 @@ import { generateCuteApologyHtml } from "./templates/cute-apology";
 import { generateFarewellKeepsakeHtml } from "./templates/farewell-keepsake";
 import { generateEvasiveConfessionHtml } from "./templates/evasive-confession";
 import { generatePlayfulCatHtml } from "./templates/playful-cat";
+import { generateAnniversaryScrapbookHtml } from "./templates/anniversary-scrapbook";
+import { generateBoyfriendPermitHtml } from "./templates/boyfriend-permit";
+import { generateDateInvitationHtml } from "./templates/date-invitation";
 
 /**
  * Main coordinator that returns the HTML page content based on the selected template.
@@ -85,6 +88,15 @@ export function generateIndexHtml(config: PublishedConfig): string {
       break;
     case "eternal_love":
       html = generateEternalLoveHtml(config);
+      break;
+    case "anniversary_scrapbook":
+      html = generateAnniversaryScrapbookHtml(config);
+      break;
+    case "boyfriend_permit":
+      html = generateBoyfriendPermitHtml(config);
+      break;
+    case "date_invitation":
+      html = generateDateInvitationHtml(config);
       break;
     case "birthday_magic":
       html = generateBirthdayMagicHtml(config);

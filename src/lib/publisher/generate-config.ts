@@ -40,6 +40,7 @@ export function generateConfig(cardId: string, draft: CardDraft): PublishedConfi
     themeColor: draft.themeColor || undefined,
     flowers: draft.flowers || undefined,
     openingGame: draft.openingGame || undefined,
+    favoriteMoments: draft.favoriteMoments || undefined,
     lang: draft.lang || undefined,
     publishedAt: publishedAt.toISOString(),
     expiresAt: expiresAt.toISOString(),

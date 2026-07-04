@@ -51,6 +51,7 @@ export default function CardBuilder() {
       voiceNote: undefined,
       bgMusic: undefined,
       finalMessage: "",
+      favoriteMoments: ["", "", "", ""],
       themeColor: "green",
       flowers: [],
       openingGame: "cat_paw",
@@ -311,10 +312,22 @@ export default function CardBuilder() {
         {/* 4. Letter Contents */}
         <div className="space-y-4 sm:space-y-6">
           <div className="space-y-2">
-            <label className="block text-sm font-semibold text-gray-900">{t.letterTitleLabel}</label>
+            <label className="block text-sm font-semibold text-gray-900">
+              {formValues.template === "boyfriend_permit"
+                ? (currentLang === "id" ? "Perihal Izin" : "Permission Subject")
+                : formValues.template === "date_invitation"
+                ? (currentLang === "id" ? "Judul / Tema Undangan 🌹" : "Date Invite Title 🌹")
+                : t.letterTitleLabel}
+            </label>
             <input
               type="text"
-              placeholder={t.letterTitlePlaceholder}
+              placeholder={
+                formValues.template === "boyfriend_permit"
+                  ? (currentLang === "id" ? "Contoh: Minta Izin Beli PS5" : "e.g., Request to buy PS5")
+                  : formValues.template === "date_invitation"
+                  ? (currentLang === "id" ? "Contoh: Malem Mingguan Kita~ 🌙" : "e.g., Our Special Date Night~ 🌙")
+                  : t.letterTitlePlaceholder
+              }
               {...register("letterTitle")}
               maxLength={80}
               className="w-full px-4 py-3 border border-zinc-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-zinc-400 text-sm font-medium text-zinc-700"
@@ -350,6 +363,166 @@ export default function CardBuilder() {
             )}
           </div>
         </div>
+
+        {/* Template-specific: Favorite Moments (only for Anniversary Scrapbook) */}
+        {formValues.template === "anniversary_scrapbook" && (
+          <div className="space-y-4 p-5 bg-amber-50/60 border border-amber-100 rounded-2xl">
+            <label className="block text-sm font-semibold text-gray-900">
+              {currentLang === "id" ? "Kenangan Terindah (Favorite Moments)" : "Favorite Moments"}
+            </label>
+            <p className="text-xs text-gray-600 leading-relaxed">
+              {currentLang === "id" 
+                ? "Tuliskan hingga 3 kenangan indah kalian untuk ditampilkan pada kartu kertas bergaris di kanan bawah halaman scrapbook." 
+                : "Write up to 3 beautiful memories to be displayed on the lined card at the bottom-right of the scrapbook."}
+            </p>
+            <div className="space-y-3">
+              {[0, 1, 2].map((idx) => (
+                <div key={idx} className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-gray-500 w-5">#{idx + 1}</span>
+                  <input
+                    type="text"
+                    placeholder={
+                      idx === 0 
+                        ? (currentLang === "id" ? 'Contoh: First "I love you"' : 'e.g., First "I love you"')
+                        : idx === 1
+                        ? (currentLang === "id" ? "Contoh: Liburan ke Bali bersama" : "e.g., Road trip memories")
+                        : (currentLang === "id" ? "Contoh: Ketawa bareng sampai menangis" : "e.g., Laughing until we cry")
+                    }
+                    {...register(`favoriteMoments.${idx}` as any)}
+                    maxLength={36}
+                    className="flex-1 px-3 py-2 border border-zinc-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-zinc-400 text-sm text-zinc-700 bg-white"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Template-specific: Upeti/Bribery Vouchers (only for Boyfriend's Permission Slip) */}
+        {formValues.template === "boyfriend_permit" && (
+          <div className="space-y-4 p-5 bg-blue-50/60 border border-blue-100 rounded-2xl">
+            <label className="block text-sm font-semibold text-gray-900">
+              {currentLang === "id" ? "Daftar Upeti / Sogokan Pacar 🎁" : "Bribery Vouchers List 🎁"}
+            </label>
+            <p className="text-xs text-gray-600 leading-relaxed">
+              {currentLang === "id" 
+                ? "Sesuaikan judul upeti dan keterangan upeti yang kamu tawarkan untuk meluluhkan hati pacarmu agar permohonan ini disetujui." 
+                : "Customize the title and subtext of the bribery vouchers you offer to melt your partner's heart."}
+            </p>
+            <div className="space-y-3">
+              {[0, 1, 2, 3].map((idx) => {
+                const rawVal = formValues.favoriteMoments?.[idx] || "";
+                const [titleVal, descVal] = rawVal.split("|");
+                
+                return (
+                  <div key={idx} className="space-y-2 p-3 bg-white rounded-xl border border-zinc-150 shadow-xs">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-semibold text-gray-500 w-5">#{idx + 1}</span>
+                      <input
+                        type="text"
+                        value={titleVal || ""}
+                        placeholder={
+                          idx === 0 
+                            ? (currentLang === "id" ? "Judul Upeti (Contoh: Ditraktir Seblak & Boba)" : "Upeti Title (e.g., Treat to Seblak & Boba)")
+                            : idx === 1
+                            ? (currentLang === "id" ? "Judul Upeti (Contoh: Voucher Pijat Pegal)" : "Upeti Title (e.g., Massage Voucher)")
+                            : idx === 2
+                            ? (currentLang === "id" ? "Judul Upeti (Contoh: Bebas Cuci Piring)" : "Upeti Title (e.g., Chore Waiver)")
+                            : (currentLang === "id" ? "Judul Upeti (Contoh: Menemani Shopping)" : "Upeti Title (e.g., Shopping Companion)")
+                        }
+                        onChange={(e) => {
+                          const newTitle = e.target.value;
+                          const currentDesc = descVal || "";
+                          setValue(`favoriteMoments.${idx}` as any, `${newTitle}|${currentDesc}`);
+                        }}
+                        maxLength={40}
+                        className="flex-1 px-3 py-1.5 border border-zinc-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-zinc-400 text-sm text-zinc-700 bg-white font-medium"
+                      />
+                    </div>
+                    <div className="flex items-center gap-2 pl-7">
+                      <input
+                        type="text"
+                        value={descVal || ""}
+                        placeholder={
+                          idx === 0 
+                            ? (currentLang === "id" ? "Keterangan/Subtext (Contoh: Seblak spesial level 5 + es teh manis)" : "Subtext (e.g., Spicy seblak level 5 + sweet iced tea)")
+                            : idx === 1
+                            ? (currentLang === "id" ? "Keterangan/Subtext (Contoh: Pijat pundak/kaki mandiri siap sedia kapan pun)" : "Subtext (e.g., Full shoulder massage whenever you want)")
+                            : idx === 2
+                            ? (currentLang === "id" ? "Keterangan/Subtext (Contoh: Bebas cuci piring & beres-beres selama 3 hari)" : "Subtext (e.g., Free from washing dishes and cleaning for 3 days)")
+                            : (currentLang === "id" ? "Keterangan/Subtext (Contoh: Janji tidak cemberut/mengeluh saat nemenin belanja)" : "Subtext (e.g., Promise not to complain while waiting outside)")
+                        }
+                        onChange={(e) => {
+                          const newDesc = e.target.value;
+                          const currentTitle = titleVal || "";
+                          setValue(`favoriteMoments.${idx}` as any, `${currentTitle}|${newDesc}`);
+                        }}
+                        maxLength={80}
+                        className="w-full px-3 py-1.5 border border-zinc-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-zinc-400 text-[11px] text-zinc-500 bg-white"
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Template-specific: Date Options (only for Date Invitation) */}
+        {formValues.template === "date_invitation" && (
+          <div className="space-y-4 p-5 bg-rose-50/60 border border-rose-100 rounded-2xl">
+            <label className="block text-sm font-semibold text-gray-900">
+              {currentLang === "id" ? "Pilihan Tanggal Kencan 📅" : "Date Options 📅"}
+            </label>
+            <p className="text-xs text-gray-600 leading-relaxed">
+              {currentLang === "id"
+                ? "Berikan 3 opsi tanggal kencan buat dia pilih. Contoh: \"Sabtu, 12 Juli 2025\". Penerima nanti yang milih mana yang cocok~ 🥰"
+                : "Offer 3 date options for them to choose from. e.g. 'Saturday, July 12th 2025'. They pick what works best~"}
+            </p>
+            <div className="space-y-2">
+              {[0, 1, 2].map((idx) => (
+                <div key={idx} className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-gray-500 w-5">#{idx + 1}</span>
+                  <input
+                    type="text"
+                    placeholder={
+                      idx === 0
+                        ? (currentLang === "id" ? "Contoh: Sabtu, 12 Juli 2025" : "e.g., Saturday, July 12th 2025")
+                        : idx === 1
+                        ? (currentLang === "id" ? "Contoh: Minggu, 13 Juli 2025" : "e.g., Sunday, July 13th 2025")
+                        : (currentLang === "id" ? "Contoh: Sabtu, 19 Juli 2025" : "e.g., Saturday, July 19th 2025")
+                    }
+                    {...register(`favoriteMoments.${idx}` as any)}
+                    maxLength={40}
+                    className="flex-1 px-3 py-2 border border-zinc-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-300 text-sm text-zinc-700 bg-white"
+                  />
+                </div>
+              ))}
+            </div>
+            <div className="border-t border-rose-100 pt-3 mt-2">
+              <label className="block text-xs font-semibold text-gray-600 mb-2">
+                {currentLang === "id" ? "Kegiatan Kustom Tambahan (opsional) ✨" : "Extra Custom Activities (optional) ✨"}
+              </label>
+              <p className="text-[11px] text-gray-500 mb-2">
+                {currentLang === "id"
+                  ? "Selain preset kegiatan (makan, nonton, dll), kamu bisa tambah kegiatan sendiri. Format: emoji + spasi + nama (cth: 🏊 Renang Bareng)"
+                  : "Alongside the preset activities, add up to 2 custom ones. Format: emoji + space + name (e.g. 🏊 Swimming Together)"}
+              </p>
+              {[3, 4].map((idx) => (
+                <div key={idx} className="flex items-center gap-2 mb-2">
+                  <span className="text-xs font-semibold text-gray-500 w-5">#{idx - 2}</span>
+                  <input
+                    type="text"
+                    placeholder={currentLang === "id" ? "Contoh: 🏊 Renang Bareng" : "e.g., 🏊 Swimming Together"}
+                    {...register(`favoriteMoments.${idx}` as any)}
+                    maxLength={40}
+                    className="flex-1 px-3 py-2 border border-zinc-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-300 text-sm text-zinc-700 bg-white"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* 5. Photo Uploader */}
         <Controller

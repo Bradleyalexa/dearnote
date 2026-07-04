@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+body { margin: 0; background: #222; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+.container {
+  position: relative;
+  width: 560px;
+  height: 448px; /* 560 * 756/945 = 448 exact */
+  background: url('/img/anniversary_bg.png') no-repeat center center;
+  background-size: 100% 100%;
+}
+
+/* These divs use rgba overlay to visually show slot positions */
+.slot {
+  position: absolute;
+  border: 3px solid;
+  pointer-events: none;
+}
+
+/* We put these over the exact photo areas seen in the PNG */
+/* All values are % of the container */
+
+/* LEFT POLAROID - hands/ring photo visible area (inside white border) */
+.slot1 {
+  background: rgba(255,0,0,0.25);
+  border-color: red;
+}
+
+/* TOP-RIGHT STAMP - wine/rose/candle photo (inside scalloped border) */
+.slot2 {
+  background: rgba(0,255,0,0.25);
+  border-color: lime;
+}
+
+/* BOTTOM CENTER POLAROID - woman with camera (inside white border) */
+.slot3 {
+  background: rgba(0,0,255,0.25);
+  border-color: cyan;
+}
+
+.controls { color: white; margin-top: 20px; font-family: monospace; font-size: 12px; }
+input[type=range] { width: 120px; }
+label { display: inline-block; width: 80px; }
+.sliders { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; max-width: 700px; color: white; font-family: monospace; font-size: 11px; }
+.group { background: rgba(255,255,255,0.1); padding: 10px; border-radius: 8px; }
+.group h3 { margin: 0 0 8px; }
+.row { display: flex; align-items: center; gap: 5px; margin: 3px 0; }
+#vals { color: lime; margin-top: 10px; font-family: monospace; white-space: pre; }
+</style>
+</head>
+<body>
+<div class="container" id="bg">
+  <div class="slot slot1" id="s1"></div>
+  <div class="slot slot2" id="s2"></div>
+  <div class="slot slot3" id="s3"></div>
+</div>
+
+<div class="sliders">
+  <div class="group" id="g1">
+    <h3 style="color:red">SLOT 1 (Left Polaroid)</h3>
+    <div class="row"><label>top%</label><input type="range" min="0" max="100" step="0.5" id="s1top" value="33"><span id="s1topV">33</span></div>
+    <div class="row"><label>left%</label><input type="range" min="0" max="100" step="0.5" id="s1left" value="8"><span id="s1leftV">8</span></div>
+    <div class="row"><label>width%</label><input type="range" min="1" max="60" step="0.5" id="s1w" value="19"><span id="s1wV">19</span></div>
+    <div class="row"><label>height%</label><input type="range" min="1" max="60" step="0.5" id="s1h" value="21"><span id="s1hV">21</span></div>
+    <div class="row"><label>rotate</label><input type="range" min="-20" max="20" step="0.5" id="s1rot" value="-7.5"><span id="s1rotV">-7.5</span></div>
+  </div>
+  <div class="group" id="g2">
+    <h3 style="color:lime">SLOT 2 (Stamp Top-Right)</h3>
+    <div class="row"><label>top%</label><input type="range" min="0" max="100" step="0.5" id="s2top" value="30"><span id="s2topV">30</span></div>
+    <div class="row"><label>left%</label><input type="range" min="0" max="100" step="0.5" id="s2left" value="51"><span id="s2leftV">51</span></div>
+    <div class="row"><label>width%</label><input type="range" min="1" max="80" step="0.5" id="s2w" value="40"><span id="s2wV">40</span></div>
+    <div class="row"><label>height%</label><input type="range" min="1" max="60" step="0.5" id="s2h" value="21"><span id="s2hV">21</span></div>
+    <div class="row"><label>rotate</label><input type="range" min="-20" max="20" step="0.5" id="s2rot" value="1.8"><span id="s2rotV">1.8</span></div>
+  </div>
+  <div class="group" id="g3">
+    <h3 style="color:cyan">SLOT 3 (Bottom Polaroid)</h3>
+    <div class="row"><label>top%</label><input type="range" min="0" max="100" step="0.5" id="s3top" value="60"><span id="s3topV">60</span></div>
+    <div class="row"><label>left%</label><input type="range" min="0" max="100" step="0.5" id="s3left" value="31"><span id="s3leftV">31</span></div>
+    <div class="row"><label>width%</label><input type="range" min="1" max="60" step="0.5" id="s3w" value="23"><span id="s3wV">23</span></div>
+    <div class="row"><label>height%</label><input type="range" min="1" max="60" step="0.5" id="s3h" value="27"><span id="s3hV">27</span></div>
+    <div class="row"><label>rotate</label><input type="range" min="-20" max="20" step="0.5" id="s3rot" value="5.5"><span id="s3rotV">5.5</span></div>
+  </div>
+</div>
+<pre id="vals">CSS values will show here</pre>
+
+<script>
+const s1 = document.getElementById('s1');
+const s2 = document.getElementById('s2');
+const s3 = document.getElementById('s3');
+
+function update() {
+  const vals = {};
+  ['s1','s2','s3'].forEach(pfx => {
+    vals[pfx] = {
+      top: parseFloat(document.getElementById(pfx+'top').value),
+      left: parseFloat(document.getElementById(pfx+'left').value),
+      w: parseFloat(document.getElementById(pfx+'w').value),
+      h: parseFloat(document.getElementById(pfx+'h').value),
+      rot: parseFloat(document.getElementById(pfx+'rot').value)
+    };
+    // Update displayed values
+    document.getElementById(pfx+'topV').textContent = vals[pfx].top;
+    document.getElementById(pfx+'leftV').textContent = vals[pfx].left;
+    document.getElementById(pfx+'wV').textContent = vals[pfx].w;
+    document.getElementById(pfx+'hV').textContent = vals[pfx].h;
+    document.getElementById(pfx+'rotV').textContent = vals[pfx].rot;
+  });
+  
+  // Apply to slots
+  s1.style.cssText = `top:${vals.s1.top}%;left:${vals.s1.left}%;width:${vals.s1.w}%;height:${vals.s1.h}%;transform:rotate(${vals.s1.rot}deg)`;
+  s2.style.cssText = `top:${vals.s2.top}%;left:${vals.s2.left}%;width:${vals.s2.w}%;height:${vals.s2.h}%;transform:rotate(${vals.s2.rot}deg)`;
+  s3.style.cssText = `top:${vals.s3.top}%;left:${vals.s3.left}%;width:${vals.s3.w}%;height:${vals.s3.h}%;transform:rotate(${vals.s3.rot}deg)`;
+  
+  document.getElementById('vals').textContent = 
+    `/* Copy these into the template */\n`+
+    `.slot-left   { top:${vals.s1.top}%; left:${vals.s1.left}%; width:${vals.s1.w}%; height:${vals.s1.h}%; /* AR=${(vals.s1.w/vals.s1.h).toFixed(2)} */ }\n`+
+    `.slot-stamp  { top:${vals.s2.top}%; left:${vals.s2.left}%; width:${vals.s2.w}%; height:${vals.s2.h}%; /* AR=${(vals.s2.w/vals.s2.h).toFixed(2)} */ }\n`+
+    `.slot-bottom { top:${vals.s3.top}%; left:${vals.s3.left}%; width:${vals.s3.w}%; height:${vals.s3.h}%; /* AR=${(vals.s3.w/vals.s3.h).toFixed(2)} */ }`;
+}
+
+document.querySelectorAll('input[type=range]').forEach(el => el.addEventListener('input', update));
+update();
+</script>
+</body>
+</html>

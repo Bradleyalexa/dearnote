@@ -170,6 +170,15 @@ export const TEMPLATE_REGISTRY: {
     tags: ["Couple", "Anniversary", "Flagship"],
   },
   {
+    id: "anniversary_scrapbook",
+    name: "Anniversary Scrapbook",
+    description: "Premium anniversary template with interactive glowing particles, rose gold accents, typewriter love letter, and a gorgeous collaged vintage scrapbook memories gallery.",
+    category: "romantic",
+    audience: ["couple"],
+    accent: "linear-gradient(135deg, #5A1827, #FEE6EA)",
+    tags: ["Couple", "Anniversary", "Scrapbook", "Gallery"],
+  },
+  {
     id: "tender_welcome",
     name: "Tender Welcome Nursery",
     description: "Elegant minimalist newborn congratulations template for parents. Warm sand-beige linen theme, hand-pressed leaf wax seal, gentle morning sunbeam glow, and olive branch motifs.",
@@ -259,6 +268,24 @@ export const TEMPLATE_REGISTRY: {
     accent: "linear-gradient(135deg, #FF6B8B, #FF8E9E, #FFCCD5)",
     tags: ["Confession", "Retro", "Interactive", "Flagship"],
   },
+  {
+    id: "boyfriend_permit",
+    name: "Boyfriend's Permission Slip",
+    description: "Template lucu dan playful buat cowok yang mau minta izin (mabar, nongkrong, beli barang). Dilengkapi sesi penyuapan (bribery) interaktif, tombol 'Gak' yang kabur, dan Surat Izin Resmi yang bisa dibagikan!",
+    category: "interaktif",
+    audience: ["couple"],
+    accent: "linear-gradient(135deg, #EEF2FF, #BFDBFE, #3B82F6)",
+    tags: ["Interactive", "Playful", "Boyfriend", "Permission", "Flagship"],
+  },
+  {
+    id: "date_invitation",
+    name: "Date / Kencan 🌹",
+    description: "Undang pasanganmu kencan dengan cara paling imut dan romantis! Pilih tanggal bareng, tentuin kegiatannya, tunggu countdown-nya, dan cetak DearNote Date Ticket yang bisa dishare~",
+    category: "interaktif",
+    audience: ["couple"],
+    accent: "linear-gradient(135deg, #fff1f5, #fda4af, #f43f5e)",
+    tags: ["Couple", "Date", "Romantic", "Interactive", "Flagship"],
+  },
 ];
 
 type FilterType =
@@ -322,6 +349,8 @@ export default function TemplatePicker({ value, onChange }: TemplatePickerProps)
       if (tmpl.id === "cute_apology") return "Cute Couple Apology";
       if (tmpl.id === "farewell_keepsake") return "Sincere Farewell";
       if (tmpl.id === "evasive_confession") return "Evasive Confession";
+      if (tmpl.id === "boyfriend_permit") return "Boyfriend's Permission Slip";
+      if (tmpl.id === "date_invitation") return "Date Invitation 🌹";
     }
     return tmpl.name;
   };
@@ -332,6 +361,8 @@ export default function TemplatePicker({ value, onChange }: TemplatePickerProps)
       if (tmpl.id === "cute_apology") return "Send a cute apology. Peel off the pink Band-Aid, collect forgiveness points with boba/chocolate treats, and crack open a fortune cookie.";
       if (tmpl.id === "farewell_keepsake") return "Clean, elegant, and solemn design for farewells. Fully focuses on sincere letter text, neat photo frames, and a warm voice note.";
       if (tmpl.id === "evasive_confession") return "Super cute retro pink Windows 95 layout with 4 opening mini-games. The 'No' button runs away, forcing them to click 'Yes'!";
+      if (tmpl.id === "boyfriend_permit") return "A cute and playful template for boys/husbands asking for permission (buying stuff, gaming, going out). Features interactive bribery vouchers, a runaway 'No' button, and a shareable Approved Slip!";
+      if (tmpl.id === "date_invitation") return "Invite your partner on a date in the cutest way! Pick a date together, choose activities, watch the countdown, and print a shareable DearNote Date Ticket~";
     }
     return tmpl.description;
   };
