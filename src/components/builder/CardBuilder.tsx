@@ -29,6 +29,8 @@ export default function CardBuilder() {
   const [showPaymentConfirm, setShowPaymentConfirm] = useState(false);
   const [validatedData, setValidatedData] = useState<CardDraft | null>(null);
   // Blob URL of custom BGM for CORS-free preview in LivePreview
+  const [visibleDates, setVisibleDates] = useState(2);
+  const [visibleActivities, setVisibleActivities] = useState(2);
   const [bgMusicBlobUrl, setBgMusicBlobUrl] = useState<string | null>(null);
 
   const {
@@ -51,7 +53,7 @@ export default function CardBuilder() {
       voiceNote: undefined,
       bgMusic: undefined,
       finalMessage: "",
-      favoriteMoments: ["", "", "", ""],
+      favoriteMoments: Array(10).fill(""),
       themeColor: "green",
       flowers: [],
       openingGame: "cat_paw",
@@ -72,6 +74,26 @@ export default function CardBuilder() {
               setValue(key as any, val);
             }
           });
+          
+          if (parsed.favoriteMoments && Array.isArray(parsed.favoriteMoments)) {
+            // date options are 0..4
+            let dateCount = 2;
+            for (let i = 2; i < 5; i++) {
+              if (parsed.favoriteMoments[i]) {
+                dateCount = i + 1;
+              }
+            }
+            setVisibleDates(dateCount);
+
+            // custom activities are 5..9
+            let actCount = 2;
+            for (let i = 2; i < 5; i++) {
+              if (parsed.favoriteMoments[5 + i]) {
+                actCount = i + 1;
+              }
+            }
+            setVisibleActivities(actCount);
+          }
         } catch (e) {
           console.error("Failed to parse saved draft", e);
         }
@@ -471,16 +493,19 @@ export default function CardBuilder() {
         {/* Template-specific: Date Options (only for Date Invitation) */}
         {formValues.template === "date_invitation" && (
           <div className="space-y-4 p-5 bg-rose-50/60 border border-rose-100 rounded-2xl">
-            <label className="block text-sm font-semibold text-gray-900">
-              {currentLang === "id" ? "Pilihan Tanggal Kencan 📅" : "Date Options 📅"}
-            </label>
-            <p className="text-xs text-gray-600 leading-relaxed">
-              {currentLang === "id"
-                ? "Berikan 3 opsi tanggal kencan buat dia pilih. Contoh: \"Sabtu, 12 Juli 2025\". Penerima nanti yang milih mana yang cocok~ 🥰"
-                : "Offer 3 date options for them to choose from. e.g. 'Saturday, July 12th 2025'. They pick what works best~"}
-            </p>
+            <div>
+              <label className="block text-sm font-semibold text-gray-900">
+                {currentLang === "id" ? "Pilihan Tanggal Kencan 📅" : "Date Options 📅"}
+              </label>
+              <p className="text-xs text-gray-600 mt-1 leading-relaxed">
+                {currentLang === "id"
+                  ? "Berikan beberapa opsi tanggal kencan buat dia pilih (awal 2 opsi, max 5). Penerima nanti yang milih mana yang cocok~ 🥰"
+                  : "Offer date options for them to choose from (starts with 2, max 5)."}
+              </p>
+            </div>
+            
             <div className="space-y-2">
-              {[0, 1, 2].map((idx) => (
+              {Array.from({ length: visibleDates }).map((_, idx) => (
                 <div key={idx} className="flex items-center gap-2">
                   <span className="text-xs font-semibold text-gray-500 w-5">#{idx + 1}</span>
                   <input
@@ -490,36 +515,84 @@ export default function CardBuilder() {
                         ? (currentLang === "id" ? "Contoh: Sabtu, 12 Juli 2025" : "e.g., Saturday, July 12th 2025")
                         : idx === 1
                         ? (currentLang === "id" ? "Contoh: Minggu, 13 Juli 2025" : "e.g., Sunday, July 13th 2025")
-                        : (currentLang === "id" ? "Contoh: Sabtu, 19 Juli 2025" : "e.g., Saturday, July 19th 2025")
+                        : (currentLang === "id" ? `Opsi Tanggal #${idx + 1}` : `Date Option #${idx + 1}`)
                     }
                     {...register(`favoriteMoments.${idx}` as any)}
                     maxLength={40}
                     className="flex-1 px-3 py-2 border border-zinc-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-300 text-sm text-zinc-700 bg-white"
                   />
+                  {idx === visibleDates - 1 && visibleDates > 2 && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setValue(`favoriteMoments.${idx}` as any, "");
+                        setVisibleDates(prev => Math.max(2, prev - 1));
+                      }}
+                      className="text-xs text-red-500 hover:text-red-700 font-semibold px-2 py-1"
+                    >
+                      Hapus
+                    </button>
+                  )}
                 </div>
               ))}
             </div>
+
+            {visibleDates < 5 && (
+              <button
+                type="button"
+                onClick={() => setVisibleDates(prev => Math.min(5, prev + 1))}
+                className="mt-1 w-full py-1.5 border border-dashed border-rose-300 rounded-lg text-xs font-semibold text-rose-600 hover:bg-rose-100/50 transition-colors"
+              >
+                + {currentLang === "id" ? "Tambah Opsi Tanggal baru" : "Add New Date Option"}
+              </button>
+            )}
+
             <div className="border-t border-rose-100 pt-3 mt-2">
-              <label className="block text-xs font-semibold text-gray-600 mb-2">
+              <label className="block text-xs font-semibold text-gray-600 mb-1">
                 {currentLang === "id" ? "Kegiatan Kustom Tambahan (opsional) ✨" : "Extra Custom Activities (optional) ✨"}
               </label>
-              <p className="text-[11px] text-gray-500 mb-2">
+              <p className="text-[11px] text-gray-500 mb-3 leading-normal">
                 {currentLang === "id"
-                  ? "Selain preset kegiatan (makan, nonton, dll), kamu bisa tambah kegiatan sendiri. Format: emoji + spasi + nama (cth: 🏊 Renang Bareng)"
-                  : "Alongside the preset activities, add up to 2 custom ones. Format: emoji + space + name (e.g. 🏊 Swimming Together)"}
+                  ? "Selain preset kegiatan (makan, nonton, dll), kamu bisa tambah kegiatan sendiri (awal 2 opsi, max 5). Format: emoji + spasi + nama (cth: 🏊 Renang Bareng)"
+                  : "Alongside the preset activities, add custom ones (starts with 2, max 5). Format: emoji + space + name (e.g. 🏊 Swimming Together)"}
               </p>
-              {[3, 4].map((idx) => (
-                <div key={idx} className="flex items-center gap-2 mb-2">
-                  <span className="text-xs font-semibold text-gray-500 w-5">#{idx - 2}</span>
-                  <input
-                    type="text"
-                    placeholder={currentLang === "id" ? "Contoh: 🏊 Renang Bareng" : "e.g., 🏊 Swimming Together"}
-                    {...register(`favoriteMoments.${idx}` as any)}
-                    maxLength={40}
-                    className="flex-1 px-3 py-2 border border-zinc-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-300 text-sm text-zinc-700 bg-white"
-                  />
-                </div>
-              ))}
+              
+              <div className="space-y-2">
+                {Array.from({ length: visibleActivities }).map((_, idx) => (
+                  <div key={idx} className="flex items-center gap-2">
+                    <span className="text-xs font-semibold text-gray-500 w-5">#{idx + 1}</span>
+                    <input
+                      type="text"
+                      placeholder={currentLang === "id" ? "Contoh: 🏊 Renang Bareng" : "e.g., 🏊 Swimming Together"}
+                      {...register(`favoriteMoments.${5 + idx}` as any)}
+                      maxLength={40}
+                      className="flex-1 px-3 py-2 border border-zinc-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-300 text-sm text-zinc-700 bg-white"
+                    />
+                    {idx === visibleActivities - 1 && visibleActivities > 2 && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setValue(`favoriteMoments.${5 + idx}` as any, "");
+                          setVisibleActivities(prev => Math.max(2, prev - 1));
+                        }}
+                        className="text-xs text-red-500 hover:text-red-700 font-semibold px-2 py-1"
+                      >
+                        Hapus
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {visibleActivities < 5 && (
+                <button
+                  type="button"
+                  onClick={() => setVisibleActivities(prev => Math.min(5, prev + 1))}
+                  className="mt-2 w-full py-1.5 border border-dashed border-rose-300 rounded-lg text-xs font-semibold text-rose-600 hover:bg-rose-100/50 transition-colors"
+                >
+                  + {currentLang === "id" ? "Tambah Opsi Kegiatan baru" : "Add New Activity Option"}
+                </button>
+              )}
             </div>
           </div>
         )}

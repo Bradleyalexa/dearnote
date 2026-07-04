@@ -7,17 +7,21 @@ export function generateDateInvitationHtml(config: PublishedConfig): string {
   const closingMessage = config.finalMessage || "Ga sabar nunggu hari itu bareng kamu! 💕";
   const photosJson = JSON.stringify(config.photos || []);
 
-  // Parse date options from favoriteMoments[0..2]
+  // Parse favoriteMoments:
+  // Dates: indices 0..4 (max 5)
+  // Custom activities: indices 5..9 (max 5)
   const fm = config.favoriteMoments || [];
-  const dateOpt1 = fm[0] || "Sabtu, 12 Juli 2025";
-  const dateOpt2 = fm[1] || "Minggu, 13 Juli 2025";
-  const dateOpt3 = fm[2] || "Sabtu, 19 Juli 2025";
+  
+  // Date options
+  const dateOptions = [fm[0], fm[1], fm[2], fm[3], fm[4]].filter(Boolean);
+  if (dateOptions.length === 0) {
+    dateOptions.push("Sabtu, 12 Juli 2025", "Minggu, 13 Juli 2025");
+  }
+  const dateOptionsJson = JSON.stringify(dateOptions);
 
-  // Parse custom activity slots from favoriteMoments[3..4]
-  const customActivity1 = fm[3] || "";
-  const customActivity2 = fm[4] || "";
-
-  const customActivitiesJson = JSON.stringify([customActivity1, customActivity2].filter(Boolean));
+  // Custom activities from creator
+  const creatorCustomActivities = [fm[5], fm[6], fm[7], fm[8], fm[9]].filter(Boolean);
+  const creatorCustomActivitiesJson = JSON.stringify(creatorCustomActivities);
 
   const ticketNumber = Math.floor(100000 + Math.random() * 900000).toString();
   const hasBgMusic = !!config.bgMusic;
@@ -193,25 +197,6 @@ export function generateDateInvitationHtml(config: PublishedConfig): string {
     .date-option.selected .check-ring {
       background: #f43f5e;
       border-color: #f43f5e;
-    }
-
-    /* Time chips */
-    .time-chip {
-      padding: 0.5rem 1rem;
-      border-radius: 9999px;
-      border: 1.5px solid #fce7f3;
-      cursor: pointer;
-      font-size: 0.8rem;
-      font-weight: 600;
-      transition: all 0.2s;
-      background: white;
-      color: #9f1239;
-    }
-    .time-chip.selected {
-      background: #f43f5e;
-      color: white;
-      border-color: #f43f5e;
-      box-shadow: 0 2px 8px rgba(244,63,94,0.3);
     }
 
     /* Activity cards */
@@ -443,42 +428,21 @@ export function generateDateInvitationHtml(config: PublishedConfig): string {
         <div class="text-3xl mb-1.5">📅</div>
         <p class="text-[10px] font-semibold text-rose-400 uppercase tracking-widest">Langkah 1 dari 3</p>
         <h2 class="font-serif text-lg font-bold text-rose-800 mt-0.5">Kita janjian kapan nih? 🥺</h2>
-        <p class="text-[11px] text-rose-400 mt-0.5">Pilih satu tanggal yang cocok buat kita~</p>
+        <p class="text-[11px] text-rose-400 mt-0.5">Pilih salah satu opsi tanggal di bawah~</p>
       </div>
 
       <!-- Date options -->
       <div class="space-y-2.5 mb-5" id="date-options">
-        <div class="date-option flex items-center gap-3" data-date="${dateOpt1}">
-          <div class="check-ring"><svg class="hidden w-3 h-3 text-white" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          <div>
-            <p class="text-sm font-bold text-rose-800">${dateOpt1}</p>
-            <p class="text-[10px] text-rose-400">Pilihan ${config.fromName} #1 💕</p>
-          </div>
-        </div>
-        <div class="date-option flex items-center gap-3" data-date="${dateOpt2}">
-          <div class="check-ring"><svg class="hidden w-3 h-3 text-white" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          <div>
-            <p class="text-sm font-bold text-rose-800">${dateOpt2}</p>
-            <p class="text-[10px] text-rose-400">Pilihan ${config.fromName} #2 💕</p>
-          </div>
-        </div>
-        <div class="date-option flex items-center gap-3" data-date="${dateOpt3}">
-          <div class="check-ring"><svg class="hidden w-3 h-3 text-white" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-          <div>
-            <p class="text-sm font-bold text-rose-800">${dateOpt3}</p>
-            <p class="text-[10px] text-rose-400">Pilihan ${config.fromName} #3 💕</p>
-          </div>
-        </div>
+        <!-- Populated by JS dynamically -->
       </div>
 
-      <!-- Time picker -->
-      <div class="mb-5">
-        <p class="text-xs font-semibold text-rose-500 mb-2">Mulai dari jam berapa? ⏰</p>
-        <div class="flex gap-2" id="time-chips">
-          <button class="time-chip flex-1" data-time="Siang (12:00)">☀️ Siang</button>
-          <button class="time-chip flex-1" data-time="Sore (16:00)">🌤️ Sore</button>
-          <button class="time-chip flex-1" data-time="Malam (19:00)">🌙 Malam</button>
+      <!-- Flexible Time Picker -->
+      <div class="mb-5 bg-rose-50/50 border border-rose-100 rounded-xl p-3 flex items-center justify-between">
+        <div>
+          <p class="text-xs font-semibold text-rose-800">Jam Pertemuan ⏰</p>
+          <p class="text-[9px] text-rose-400">Bebas tentukan waktu dari 00:00 - 23:59</p>
         </div>
+        <input type="time" id="time-input" value="19:00" class="px-3 py-1.5 border border-pink-200 rounded-lg text-sm font-semibold text-rose-700 bg-white focus:outline-none focus:ring-2 focus:ring-rose-300">
       </div>
 
       <button id="date-next-btn" class="btn-rose w-full text-sm opacity-50 cursor-not-allowed" disabled>
@@ -496,11 +460,11 @@ export function generateDateInvitationHtml(config: PublishedConfig): string {
         <div class="text-3xl mb-1.5">🎯</div>
         <p class="text-[10px] font-semibold text-rose-400 uppercase tracking-widest">Langkah 2 dari 3</p>
         <h2 class="font-serif text-lg font-bold text-rose-800 mt-0.5">Mau ngapain aja kita? 💖</h2>
-        <p class="text-[11px] text-rose-400 mt-0.5">Bisa pilih lebih dari satu lho~</p>
+        <p class="text-[11px] text-rose-400 mt-0.5">Bisa pilih beberapa & tambah kegiatan sendiri!</p>
       </div>
 
-      <!-- Activity grid -->
-      <div class="grid grid-cols-3 gap-2 mb-5" id="activity-grid">
+      <!-- Activity grid (preset + custom) -->
+      <div class="grid grid-cols-3 gap-2 mb-4 overflow-y-auto max-h-[280px]" id="activity-grid">
         <!-- Built by JS -->
       </div>
 
@@ -527,7 +491,7 @@ export function generateDateInvitationHtml(config: PublishedConfig): string {
         maxlength="100"
         class="w-full px-4 py-3 border-2 border-pink-100 rounded-xl focus:outline-none focus:border-rose-300 text-sm resize-none mb-4 font-sans"
         rows="3"></textarea>
-      <p class="text-[10px] text-rose-300 text-right mb-4"><span id="reply-count">0</span>/100 kata</p>
+      <p class="text-[10px] text-rose-300 text-right mb-4"><span id="reply-count">0</span>/100 karakter</p>
       <div class="flex gap-3">
         <button id="reply-skip-btn" class="btn-ghost flex-1 text-sm">Ga usah deh~</button>
         <button id="reply-next-btn" class="btn-rose flex-1 text-sm">Kirim yuk! 💌</button>
@@ -629,7 +593,7 @@ export function generateDateInvitationHtml(config: PublishedConfig): string {
 
         <!-- Reply message -->
         <div id="ticket-reply-box" class="bg-pink-50 border border-pink-100 rounded-xl p-2.5 mb-3 hidden">
-          <p class="text-[9px] font-semibold text-rose-400 uppercase tracking-wide mb-0.5">Pesan Balas</p>
+          <p class="text-[9px] font-semibold text-rose-400 uppercase tracking-wide mb-0.5">Note</p>
           <p class="font-hand text-sm text-rose-700" id="ticket-reply-text"></p>
         </div>
 
@@ -657,26 +621,48 @@ export function generateDateInvitationHtml(config: PublishedConfig): string {
     </div>
   </div>
 
+  <!-- Custom Modal for adding activity -->
+  <div id="activity-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4 z-[300] opacity-0 pointer-events-none transition-opacity duration-300">
+    <div class="bg-white rounded-3xl p-6 max-w-xs w-full shadow-2xl border border-pink-100 transform scale-95 transition-transform duration-300" id="activity-modal-content">
+      <h3 class="font-serif text-base font-bold text-rose-800 mb-1">Tambah Kegiatan 💖</h3>
+      <p class="text-[10px] text-rose-400 mb-4">Kamu mau ngajak ngapain? Ketik emoji dan nama kegiatannya ya~</p>
+      
+      <div class="space-y-3 mb-5 text-left">
+        <div>
+          <label class="block text-[9px] font-bold text-rose-500 uppercase tracking-wide mb-1">Emoji (cth: 🏊 atau 🍔)</label>
+          <input type="text" id="modal-act-emoji" value="💖" class="w-full px-3 py-2 border-2 border-pink-100 rounded-xl text-center text-xl focus:outline-none focus:border-rose-300 bg-white">
+        </div>
+        <div>
+          <label class="block text-[9px] font-bold text-rose-500 uppercase tracking-wide mb-1">Nama Kegiatan</label>
+          <input type="text" id="modal-act-label" placeholder="Renang bareng / Ngeboba" class="w-full px-3 py-2 border-2 border-pink-100 rounded-xl text-sm focus:outline-none focus:border-rose-300 bg-white" maxlength="25">
+        </div>
+      </div>
+      
+      <div class="flex gap-2">
+        <button id="modal-act-cancel" class="btn-ghost flex-1 text-xs py-2 px-3">Batal</button>
+        <button id="modal-act-save" class="btn-rose flex-1 text-xs py-2 px-3">Simpan</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Nav dots -->
   <div id="nav-dots"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <script>
-    const HAS_CODE     = ${hasSecretCode};
-    const SECRET_CODE  = ${JSON.stringify(config.secretCode || "")};
-    const PHOTOS       = ${photosJson};
-    const CUSTOM_ACTS  = ${customActivitiesJson};
-    const DATE_OPT1    = ${JSON.stringify(dateOpt1)};
-    const DATE_OPT2    = ${JSON.stringify(dateOpt2)};
-    const DATE_OPT3    = ${JSON.stringify(dateOpt3)};
+    const HAS_CODE         = ${hasSecretCode};
+    const SECRET_CODE      = ${JSON.stringify(config.secretCode || "")};
+    const PHOTOS           = ${photosJson};
+    const DATE_OPTIONS     = ${dateOptionsJson};
+    const CREATOR_CUSTOMS  = ${creatorCustomActivitiesJson};
 
     // ── State ──
     let selectedDate = "";
-    let selectedTime = "";
+    let selectedTime = "19:00";
     let selectedActivities = [];
     let replyMessage = "";
 
-    // ── Default activities ──
+    // ── Default preset activities ──
     const DEFAULT_ACTIVITIES = [
       { emoji: "🍽️", label: "Makan Bareng" },
       { emoji: "🎬", label: "Nonton Film" },
@@ -685,12 +671,17 @@ export function generateDateInvitationHtml(config: PublishedConfig): string {
       { emoji: "🎤", label: "Karaoke" },
       { emoji: "🧺", label: "Piknik" },
     ];
+
+    // Combine preset + creator customs
     const ALL_ACTIVITIES = [...DEFAULT_ACTIVITIES];
-    CUSTOM_ACTS.forEach(raw => {
+    CREATOR_CUSTOMS.forEach(raw => {
       const m = raw.match(/^(\\S+)\\s+(.+)$/);
       if (m) ALL_ACTIVITIES.push({ emoji: m[1], label: m[2] });
       else if (raw) ALL_ACTIVITIES.push({ emoji: "✨", label: raw });
     });
+
+    // Tracking recipient's added custom activities (max 5 customs in total)
+    let totalCustomCount = CREATOR_CUSTOMS.length;
 
     // ── Pages ──
     const CHAPTERS = [];
@@ -794,36 +785,45 @@ export function generateDateInvitationHtml(config: PublishedConfig): string {
       goTo(CHAPTERS.indexOf('ch-date'));
     });
 
-    // ── Date picker ──
-    const dateOptions = document.querySelectorAll('.date-option');
-    const dateNextBtn = document.getElementById('date-next-btn');
-
-    dateOptions.forEach(opt => {
+    // ── Render Date Options Dynamically ──
+    const dateOptionsWrap = document.getElementById('date-options');
+    DATE_OPTIONS.forEach((dateText, index) => {
+      const opt = document.createElement('div');
+      opt.className = 'date-option flex items-center gap-3';
+      opt.setAttribute('data-date', dateText);
+      opt.innerHTML = \`
+        <div class="check-ring"><svg class="hidden w-3 h-3 text-white" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div>
+          <p class="text-sm font-bold text-rose-800">\${dateText}</p>
+          <p class="text-[10px] text-rose-400">Pilihan \${index === 0 ? "${config.fromName}" : "Alternatif"} #\${index + 1} 💕</p>
+        </div>
+      \`;
+      
       opt.addEventListener('click', () => {
-        dateOptions.forEach(o => {
+        document.querySelectorAll('.date-option').forEach(o => {
           o.classList.remove('selected');
           o.querySelector('svg').classList.add('hidden');
         });
         opt.classList.add('selected');
         opt.querySelector('svg').classList.remove('hidden');
-        selectedDate = opt.getAttribute('data-date');
+        selectedDate = dateText;
         checkDateReady();
         playChime();
         spawnHearts(opt);
       });
+      
+      dateOptionsWrap.appendChild(opt);
     });
 
-    const timeChips = document.querySelectorAll('.time-chip');
-    timeChips.forEach(chip => {
-      chip.addEventListener('click', () => {
-        timeChips.forEach(c => c.classList.remove('selected'));
-        chip.classList.add('selected');
-        selectedTime = chip.getAttribute('data-time');
-        checkDateReady();
-        playChime();
-      });
+    // ── Flexible Time Picker Handler ──
+    const timeInputEl = document.getElementById('time-input');
+    selectedTime = timeInputEl.value; // initial value
+    timeInputEl.addEventListener('input', () => {
+      selectedTime = timeInputEl.value;
+      checkDateReady();
     });
 
+    const dateNextBtn = document.getElementById('date-next-btn');
     function checkDateReady() {
       const ready = selectedDate && selectedTime;
       dateNextBtn.disabled = !ready;
@@ -840,9 +840,10 @@ export function generateDateInvitationHtml(config: PublishedConfig): string {
       if (!dateNextBtn.disabled) goTo(CHAPTERS.indexOf('ch-activity'));
     });
 
-    // ── Build activity grid ──
+    // ── Activity Grid Setup ──
     const activityGrid = document.getElementById('activity-grid');
-    ALL_ACTIVITIES.forEach((act, i) => {
+
+    function createActivityCard(act) {
       const card = document.createElement('div');
       card.className = 'activity-card';
       card.innerHTML = \`
@@ -855,7 +856,7 @@ export function generateDateInvitationHtml(config: PublishedConfig): string {
         if (isSelected) {
           card.classList.remove('selected');
           selectedActivities = selectedActivities.filter(a => a !== act.label);
-        } else if (selectedActivities.length < 4) {
+        } else if (selectedActivities.length < 6) {
           card.classList.add('selected');
           selectedActivities.push(act.label);
           playChime();
@@ -863,8 +864,87 @@ export function generateDateInvitationHtml(config: PublishedConfig): string {
         }
         checkActivityReady();
       });
-      activityGrid.appendChild(card);
+      return card;
+    }
+
+    // Render presets & creator customs
+    ALL_ACTIVITIES.forEach(act => {
+      activityGrid.appendChild(createActivityCard(act));
     });
+
+    // Modal setup
+    const modal = document.getElementById('activity-modal');
+    const modalContent = document.getElementById('activity-modal-content');
+    const modalEmoji = document.getElementById('modal-act-emoji');
+    const modalLabel = document.getElementById('modal-act-label');
+    const modalCancel = document.getElementById('modal-act-cancel');
+    const modalSave = document.getElementById('modal-act-save');
+
+    function showModal() {
+      modal.classList.remove('opacity-0', 'pointer-events-none');
+      modal.classList.add('opacity-100', 'pointer-events-auto');
+      modalContent.classList.remove('scale-95');
+      modalContent.classList.add('scale-100');
+      modalEmoji.value = "💖";
+      modalLabel.value = "";
+      modalLabel.focus();
+    }
+
+    function hideModal() {
+      modal.classList.add('opacity-0', 'pointer-events-none');
+      modal.classList.remove('opacity-100', 'pointer-events-auto');
+      modalContent.classList.add('scale-95');
+      modalContent.classList.remove('scale-100');
+    }
+
+    modalCancel.addEventListener('click', hideModal);
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) hideModal();
+    });
+
+    modalSave.addEventListener('click', () => {
+      const emojiVal = (modalEmoji.value || '').trim() || "💖";
+      const labelVal = (modalLabel.value || '').trim();
+      
+      if (labelVal) {
+        const newAct = { emoji: emojiVal, label: labelVal };
+        ALL_ACTIVITIES.push(newAct);
+        
+        // Insert the new activity card before the Add button
+        const newCard = createActivityCard(newAct);
+        activityGrid.insertBefore(newCard, recipientAddCard);
+        
+        // Automatically select it!
+        newCard.click();
+
+        totalCustomCount++;
+        hideModal();
+        renderRecipientCustomButton(); // Re-render or hide if limit reached
+      } else {
+        modalLabel.style.borderColor = '#f43f5e';
+        setTimeout(() => { modalLabel.style.borderColor = ''; }, 1000);
+      }
+    });
+
+    // Add dynamic Recipient Custom Activity card if total custom count < 5
+    let recipientAddCard = null;
+    function renderRecipientCustomButton() {
+      if (recipientAddCard) recipientAddCard.remove();
+      if (totalCustomCount >= 5) return;
+
+      recipientAddCard = document.createElement('div');
+      recipientAddCard.className = 'activity-card border-dashed bg-rose-50/30 flex flex-col items-center justify-center p-2 min-h-[75px]';
+      recipientAddCard.innerHTML = \`
+        <div class="text-xl mb-0.5">➕</div>
+        <p class="text-[9px] font-bold text-rose-400">Tambah Sendiri</p>
+      \`;
+      
+      recipientAddCard.addEventListener('click', showModal);
+
+      activityGrid.appendChild(recipientAddCard);
+    }
+
+    renderRecipientCustomButton();
 
     const activityNextBtn = document.getElementById('activity-next-btn');
     function checkActivityReady() {
@@ -904,7 +984,7 @@ export function generateDateInvitationHtml(config: PublishedConfig): string {
       // Try to parse date from selected string like "Sabtu, 12 Juli 2025"
       const months = { januari:0, februari:1, maret:2, april:3, mei:4, juni:5, juli:6, agustus:7, september:8, oktober:9, november:10, desember:11 };
       const parts = selectedDate.toLowerCase().replace(/,/g,'').split(' ');
-      // parts e.g. ["sabtu", "12", "juli", "2025"]
+      
       let day = null, month = null, year = null;
       parts.forEach(p => {
         const n = parseInt(p);
@@ -912,25 +992,31 @@ export function generateDateInvitationHtml(config: PublishedConfig): string {
         else if (!isNaN(n) && n <= 31 && n > 0) day = n;
         else if (months[p] !== undefined) month = months[p];
       });
+
+      let h = 19, m = 0;
+      const timeParts = selectedTime.split(':');
+      if (timeParts.length === 2) {
+        h = parseInt(timeParts[0]) || 0;
+        m = parseInt(timeParts[1]) || 0;
+      }
+
       if (day && month !== null) {
         const y = year || new Date().getFullYear();
-        // Use time from selectedTime to parse hour
-        let h = 19;
-        if (selectedTime.includes('12')) h = 12;
-        else if (selectedTime.includes('16')) h = 16;
-        const d = new Date(y, month, day, h, 0, 0);
+        const d = new Date(y, month, day, h, m, 0);
         if (d < new Date()) d.setFullYear(d.getFullYear() + 1);
         return d;
       }
+      
       // fallback: 7 days from now
       const fallback = new Date();
       fallback.setDate(fallback.getDate() + 7);
+      fallback.setHours(h, m, 0, 0);
       return fallback;
     }
 
     function startCountdown() {
       const target = parseSelectedDate();
-      document.getElementById('countdown-date-label').textContent = selectedDate + ' · ' + selectedTime;
+      document.getElementById('countdown-date-label').textContent = selectedDate + ' · Jam ' + selectedTime;
 
       if (countdownInterval) clearInterval(countdownInterval);
 
@@ -976,7 +1062,7 @@ export function generateDateInvitationHtml(config: PublishedConfig): string {
     // ── Populate ticket ──
     function populateTicket() {
       document.getElementById('ticket-date').textContent = selectedDate;
-      document.getElementById('ticket-time').textContent = selectedTime;
+      document.getElementById('ticket-time').textContent = 'Jam ' + selectedTime;
 
       const actContainer = document.getElementById('ticket-activities');
       actContainer.innerHTML = '';
@@ -984,7 +1070,7 @@ export function generateDateInvitationHtml(config: PublishedConfig): string {
         const act = ALL_ACTIVITIES.find(a => a.label === label);
         const pill = document.createElement('span');
         pill.className = 'inline-flex items-center gap-1 px-2 py-1 bg-rose-100 text-rose-700 rounded-full text-[10px] font-semibold';
-        pill.textContent = (act ? act.emoji + ' ' : '') + label;
+        pill.textContent = (act ? act.emoji + ' ' : '💖 ') + label;
         actContainer.appendChild(pill);
       });
 
@@ -998,7 +1084,7 @@ export function generateDateInvitationHtml(config: PublishedConfig): string {
     document.getElementById('share-ticket-btn').addEventListener('click', async () => {
       const shareData = {
         title: 'DearNote Date Ticket 🌹',
-        text: \`\${selectedDate} kita kencan ya!! 💕 Cek tiketnya di sini!\`,
+        text: \`\${selectedDate} jam \${selectedTime} kita kencan ya!! 💕 Cek tiketnya di sini!\`,
         url: window.location.href
       };
       try {
