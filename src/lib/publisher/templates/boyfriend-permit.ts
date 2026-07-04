@@ -303,11 +303,11 @@ export function generateBoyfriendPermitHtml(config: PublishedConfig): string {
       <!-- Sender Info -->
       <div class="space-y-3">
         <div class="grid grid-cols-3 gap-2 border-b border-slate-100 pb-2.5 items-center text-xs">
-          <span class="font-semibold text-slate-400">Pemohon (Cowo)</span>
+          <span class="font-semibold text-slate-400">Pemohon</span>
           <span class="col-span-2 font-bold text-slate-700">${config.fromName}</span>
         </div>
         <div class="grid grid-cols-3 gap-2 border-b border-slate-100 pb-2.5 items-center text-xs">
-          <span class="font-semibold text-slate-400">Pemberi Izin (Cewek)</span>
+          <span class="font-semibold text-slate-400">Pemberi Izin</span>
           <span class="col-span-2 font-bold text-slate-700">${config.toName}</span>
         </div>
         <div class="grid grid-cols-3 gap-2 border-b border-slate-100 pb-2.5 items-center text-xs">
