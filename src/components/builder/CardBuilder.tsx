@@ -620,7 +620,13 @@ export default function CardBuilder() {
             <PhotoUploader 
               value={field.value} 
               onChange={field.onChange} 
-              max={formValues.template === "date_ticket" ? 2 : 5} 
+              max={
+                formValues.template === "date_invitation"
+                  ? 1
+                  : formValues.template === "date_ticket"
+                  ? 2
+                  : 5
+              } 
             />
           )}
         />

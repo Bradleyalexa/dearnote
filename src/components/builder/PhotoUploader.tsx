@@ -195,7 +195,13 @@ export default function PhotoUploader({ value, onChange, max = 5 }: PhotoUploade
           <label className="block text-sm font-semibold text-gray-900">
             {lang === "en" ? `Memory Photos (Max ${max})` : `Foto Kenangan (Maksimal ${max})`}
           </label>
-          {max === 2 ? (
+          {max === 1 ? (
+            <p className="text-xs text-rose-500 font-medium leading-normal mt-0.5">
+              {lang === "en" 
+                ? "💡 Circular avatar photo for the landing/intro page." 
+                : "💡 Foto avatar bulat untuk halaman pembuka (intro)."}
+            </p>
+          ) : max === 2 ? (
             <p className="text-xs text-rose-500 font-medium leading-normal mt-0.5">
               {lang === "en" 
                 ? "💡 Photo 1 is for landing page, Photo 2 is for inside the concert ticket." 

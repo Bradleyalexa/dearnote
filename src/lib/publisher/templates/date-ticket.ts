@@ -1,10 +1,11 @@
 import { PublishedConfig } from "../../schemas/card-draft";
 
 export function generateDateTicketHtml(config: PublishedConfig): string {
+  const isEn = config.lang === "en";
   const hasSecretCode = !!config.secretCode;
   const inviteTitle = config.letterTitle || "TIE THE KNOT TOUR 🎫";
-  const openingMessage = config.letterBody || "Gue mau ngajak lo ke tur konser paling seru dan eksklusif. Baca kelengkapannya dulu yuk! 💕";
-  const closingMessage = config.finalMessage || "Siap-siap dandan yang rapi ya! 🎸";
+  const openingMessage = config.letterBody || (isEn ? "I want to invite you to our exclusive date tour. Read the details first! 💕" : "Gue mau ngajak lo ke tur konser paling seru dan eksklusif. Baca kelengkapannya dulu yuk! 💕");
+  const closingMessage = config.finalMessage || (isEn ? "Get ready and dress up nice! 🎸" : "Siap-siap dandan yang rapi ya! 🎸");
   const photosJson = JSON.stringify(config.photos || []);
 
   // Parse favoriteMoments:
@@ -15,7 +16,10 @@ export function generateDateTicketHtml(config: PublishedConfig): string {
   // Date options
   const dateOptions = [fm[0], fm[1], fm[2], fm[3], fm[4]].filter(Boolean);
   if (dateOptions.length === 0) {
-    dateOptions.push("Sabtu, 12 Juli 2025", "Minggu, 13 Juli 2025");
+    dateOptions.push(
+      isEn ? "Saturday, July 12 2025" : "Sabtu, 12 Juli 2025",
+      isEn ? "Sunday, July 13 2025" : "Minggu, 13 Juli 2025"
+    );
   }
   const dateOptionsJson = JSON.stringify(dateOptions);
 
@@ -445,7 +449,7 @@ export function generateDateTicketHtml(config: PublishedConfig): string {
   <audio id="chime-sound" src="https://assets.mixkit.co/active_storage/sfx/2012/2012-84.wav" preload="auto"></audio>
   <audio id="fanfare-sound" src="https://assets.mixkit.co/active_storage/sfx/1996/1996-84.wav" preload="auto"></audio>
 
-  <button id="bgm-btn" title="Toggle Musik">🎵</button>
+  <button id="bgm-btn" title="${isEn ? "Toggle Music" : "Toggle Musik"}">🎵</button>
 
   <!-- ──────────────────────────── -->
   <!-- PAGE 0: Secret Code Gate    -->
@@ -454,12 +458,12 @@ export function generateDateTicketHtml(config: PublishedConfig): string {
   <div id="ch-gate" class="chapter active">
     <div class="card p-7 text-center">
       <div class="text-4xl mb-3">🎫</div>
-      <h2 class="font-fredoka text-xl font-bold text-slate-800 mb-1">Tiket Konser Terkunci</h2>
-      <p class="text-xs text-slate-500 mb-5">Dokumen kencan VIP ini dilindungi sandi. Masukkan kode aksesnya ya~ 🔑</p>
-      <input type="password" id="code-input" placeholder="Sandi khusus"
+      <h2 class="font-fredoka text-xl font-bold text-slate-800 mb-1">${isEn ? "Locked Concert Ticket" : "Tiket Konser Terkunci"}</h2>
+      <p class="text-xs text-slate-500 mb-5">${isEn ? "This VIP date document is password protected. Enter access code~ 🔑" : "Dokumen kencan VIP ini dilindungi sandi. Masukkan kode aksesnya ya~ 🔑"}</p>
+      <input type="password" id="code-input" placeholder="${isEn ? "Special password" : "Sandi khusus"}"
         class="w-full px-4 py-2.5 rounded-xl border-2 border-slate-200 focus:outline-none focus:border-slate-800 text-center mb-3 font-sans text-sm">
       <p id="code-err" class="text-red-500 text-xs mb-3 font-semibold"></p>
-      <button id="code-submit" class="btn-action w-full text-sm">Buka Tiket! 🎟️</button>
+      <button id="code-submit" class="btn-action w-full text-sm">${isEn ? "Open Ticket! 🎟️" : "Buka Tiket! 🎟️"}</button>
     </div>
   </div>
   ` : ""}
@@ -484,7 +488,7 @@ export function generateDateTicketHtml(config: PublishedConfig): string {
 
         <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">OFFICIAL INVITATION FROM</p>
         <p class="font-fredoka text-lg font-bold text-slate-800">${config.fromName} 🎤</p>
-        <p class="text-xs text-rose-500 font-semibold mb-4">khusus untuk: <strong>${config.toName}</strong></p>
+        <p class="text-xs text-rose-500 font-semibold mb-4">${isEn ? "especially for:" : "khusus untuk:"} <strong>${config.toName}</strong></p>
 
         <!-- Message body -->
         <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 mb-5 text-left">
@@ -493,7 +497,7 @@ export function generateDateTicketHtml(config: PublishedConfig): string {
 
         <!-- CTA -->
         <button id="intro-next-btn" class="btn-action w-full flex items-center justify-center gap-2 text-sm">
-          Pesan Tiket Kencan Sekarang! 🎟️
+          ${isEn ? "Book Date Ticket Now! 🎟️" : "Pesan Tiket Kencan Sekarang! 🎟️"}
         </button>
       </div>
     </div>
@@ -506,9 +510,9 @@ export function generateDateTicketHtml(config: PublishedConfig): string {
     <div class="card p-5">
       <div class="text-center mb-5">
         <div class="text-3xl mb-1.5">📅</div>
-        <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Tahap 1: Pilih Tanggal</p>
-        <h2 class="font-fredoka text-lg font-bold text-slate-800 mt-0.5">Pilih Tanggal Pertunjukan 🎤</h2>
-        <p class="text-[11px] text-slate-500 mt-0.5">Kapan kamu siap jalan kencan bareng aku? Pilih salah satu ya~</p>
+        <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">${isEn ? "Step 1: Choose Date" : "Tahap 1: Pilih Tanggal"}</p>
+        <h2 class="font-fredoka text-lg font-bold text-slate-800 mt-0.5">${isEn ? "Choose Show Date 🎤" : "Pilih Tanggal Pertunjukan 🎤"}</h2>
+        <p class="text-[11px] text-slate-500 mt-0.5">${isEn ? "When are you ready for our show date? Select one~" : "Kapan kamu siap jalan kencan bareng aku? Pilih salah satu ya~"}</p>
       </div>
 
       <!-- Date options -->
@@ -519,14 +523,14 @@ export function generateDateTicketHtml(config: PublishedConfig): string {
       <!-- Flexible Time Picker -->
       <div class="mb-5 bg-slate-50 border border-slate-200 rounded-xl p-3 flex items-center justify-between">
         <div>
-          <p class="text-xs font-semibold text-slate-800">Jam Pertemuan (Flexible) ⏰</p>
-          <p class="text-[9px] text-slate-400">Bebas pilih dari jam 00:00 - 23:59</p>
+          <p class="text-xs font-semibold text-slate-800">${isEn ? "Meeting Time (Flexible) ⏰" : "Jam Pertemuan (Flexible) ⏰"}</p>
+          <p class="text-[9px] text-slate-400">${isEn ? "Set any time from 00:00 - 23:59" : "Bebas pilih dari jam 00:00 - 23:59"}</p>
         </div>
         <input type="time" id="time-input" value="19:00" class="px-3 py-1.5 border border-slate-300 rounded-lg text-sm font-semibold text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-slate-500">
       </div>
 
       <button id="date-next-btn" class="btn-action w-full text-sm opacity-50 cursor-not-allowed" disabled>
-        Pilih Tanggal Terlebih Dahulu 🥺
+        ${isEn ? "Select Date First 🥺" : "Pilih Tanggal Terlebih Dahulu 🥺"}
       </button>
     </div>
   </div>
@@ -538,9 +542,9 @@ export function generateDateTicketHtml(config: PublishedConfig): string {
     <div class="card p-5">
       <div class="text-center mb-4">
         <div class="text-3xl mb-1.5">🎸</div>
-        <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Tahap 2: Tentukan Setlist</p>
-        <h2 class="font-fredoka text-lg font-bold text-slate-800 mt-0.5">Pilih Agenda Kegiatan Kita 🎯</h2>
-        <p class="text-[11px] text-slate-500 mt-0.5">Kegiatan seru apa aja yang pengen kamu lakukan bareng? (Maksimal 6)</p>
+        <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">${isEn ? "Step 2: Define Setlist" : "Tahap 2: Tentukan Setlist"}</p>
+        <h2 class="font-fredoka text-lg font-bold text-slate-800 mt-0.5">${isEn ? "Choose Our Activities Agenda 🎯" : "Pilih Agenda Kegiatan Kita 🎯"}</h2>
+        <p class="text-[11px] text-slate-500 mt-0.5">${isEn ? "What fun activities do you want to do together? (Max 6)" : "Kegiatan seru apa aja yang pengen kamu lakukan bareng? (Maksimal 6)"}</p>
       </div>
 
       <!-- Activity grid -->
@@ -549,7 +553,7 @@ export function generateDateTicketHtml(config: PublishedConfig): string {
       </div>
 
       <button id="activity-next-btn" class="btn-action w-full text-sm opacity-50 cursor-not-allowed" disabled>
-        Pilih Minimal 1 Kegiatan 🎸
+        ${isEn ? "Select at least 1 Activity 🎸" : "Pilih Minimal 1 Kegiatan 🎸"}
       </button>
     </div>
   </div>
@@ -561,20 +565,20 @@ export function generateDateTicketHtml(config: PublishedConfig): string {
     <div class="card p-6">
       <div class="text-center mb-5">
         <div class="text-3xl mb-1.5">✍️</div>
-        <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">Tahap 3: Catatan Pengunjung</p>
-        <h2 class="font-fredoka text-lg font-bold text-slate-800 mt-0.5">Ada Permintaan Khusus? 💬</h2>
-        <p class="text-[11px] text-slate-500 mt-0.5">Tulis catatan tambahan kamu (opsional)~</p>
+        <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-widest">${isEn ? "Step 3: Guest Request" : "Tahap 3: Catatan Pengunjung"}</p>
+        <h2 class="font-fredoka text-lg font-bold text-slate-800 mt-0.5">${isEn ? "Any Special Requests? 💬" : "Ada Permintaan Khusus? 💬"}</h2>
+        <p class="text-[11px] text-slate-500 mt-0.5">${isEn ? "Write down any additional requests (optional)~" : "Tulis catatan tambahan kamu (opsional)~"}</p>
       </div>
       <textarea
         id="reply-msg"
-        placeholder="Mau makan ice cream rasa matcha ya nanti... 🍦"
+        placeholder="${isEn ? "Let's grab matcha ice cream later... 🍦" : "Mau makan ice cream rasa matcha ya nanti... 🍦"}"
         maxlength="100"
         class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:outline-none focus:border-slate-800 text-sm resize-none mb-4 font-sans"
         rows="3"></textarea>
-      <p class="text-[10px] text-slate-400 text-right mb-4"><span id="reply-count">0</span>/100 karakter</p>
+      <p class="text-[10px] text-slate-400 text-right mb-4"><span id="reply-count">0</span>/${isEn ? "100 characters" : "100 karakter"}</p>
       <div class="flex gap-3">
-        <button id="reply-skip-btn" class="btn-ghost flex-1 text-sm">Lewati</button>
-        <button id="reply-next-btn" class="btn-action flex-1 text-sm">Cetak Tiket! 🎟️</button>
+        <button id="reply-skip-btn" class="btn-ghost flex-1 text-sm">${isEn ? "Skip" : "Lewati"}</button>
+        <button id="reply-next-btn" class="btn-action flex-1 text-sm">${isEn ? "Print Ticket! 🎟️" : "Cetak Tiket! 🎟️"}</button>
       </div>
     </div>
   </div>
@@ -593,25 +597,25 @@ export function generateDateTicketHtml(config: PublishedConfig): string {
       <div class="flex justify-center gap-2 my-5" id="countdown-wrap">
         <div class="countdown-box">
           <div class="countdown-num" id="cd-days">--</div>
-          <p class="text-[9px] text-slate-400 font-bold uppercase mt-1">Hari</p>
+          <p class="text-[9px] text-slate-400 font-bold uppercase mt-1">${isEn ? "Days" : "Hari"}</p>
         </div>
         <div class="countdown-box">
           <div class="countdown-num" id="cd-hours">--</div>
-          <p class="text-[9px] text-slate-400 font-bold uppercase mt-1">Jam</p>
+          <p class="text-[9px] text-slate-400 font-bold uppercase mt-1">${isEn ? "Hours" : "Jam"}</p>
         </div>
         <div class="countdown-box">
           <div class="countdown-num" id="cd-mins">--</div>
-          <p class="text-[9px] text-slate-400 font-bold uppercase mt-1">Menit</p>
+          <p class="text-[9px] text-slate-400 font-bold uppercase mt-1">${isEn ? "Mins" : "Menit"}</p>
         </div>
         <div class="countdown-box">
           <div class="countdown-num" id="cd-secs">--</div>
-          <p class="text-[9px] text-slate-400 font-bold uppercase mt-1">Detik</p>
+          <p class="text-[9px] text-slate-400 font-bold uppercase mt-1">${isEn ? "Secs" : "Detik"}</p>
         </div>
       </div>
 
-      <p class="text-sm text-rose-500 font-hand mb-6" id="countdown-msg">Hitung mundur show... 🎸</p>
+      <p class="text-sm text-rose-500 font-hand mb-6" id="countdown-msg">${isEn ? "Counting down to show... 🎸" : "Hitung mundur show... 🎸"}</p>
       <button id="countdown-next-btn" class="btn-action w-full text-sm">
-        Tampilkan Tiket Kencan VIP! 🎫
+        ${isEn ? "Show VIP Date Ticket! 🎫" : "Tampilkan Tiket Kencan VIP! 🎫"}
       </button>
     </div>
   </div>
@@ -708,10 +712,10 @@ export function generateDateTicketHtml(config: PublishedConfig): string {
     <!-- Actions -->
     <div class="mt-5 w-full max-w-[380px] flex flex-col gap-2">
       <button id="share-ticket-btn" class="btn-action w-full text-sm flex items-center justify-center gap-2">
-        📤 Bagikan Tiket Kencan VIP
+        ${isEn ? "📤 Share VIP Date Ticket" : "📤 Bagikan Tiket Kencan VIP"}
       </button>
       <button id="back-home-btn" class="btn-ghost w-full text-xs py-2">
-        Kembali ke Home
+        ${isEn ? "Back to Home" : "Kembali ke Home"}
       </button>
     </div>
   </div>
@@ -719,23 +723,23 @@ export function generateDateTicketHtml(config: PublishedConfig): string {
   <!-- Custom Modal for adding activity -->
   <div id="activity-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4 z-[300] opacity-0 pointer-events-none transition-opacity duration-300">
     <div class="bg-white rounded-3xl p-6 max-w-xs w-full shadow-2xl border border-slate-200 transform scale-95 transition-transform duration-300" id="activity-modal-content">
-      <h3 class="font-fredoka text-base font-bold text-slate-800 mb-1">Tambah Kegiatan 🎸</h3>
-      <p class="text-[10px] text-slate-500 mb-4">Kamu mau ngajak ngapain lagi? Ketik emoji dan nama kegiatannya ya~</p>
+      <h3 class="font-fredoka text-base font-bold text-slate-800 mb-1">${isEn ? "Add Activity 🎸" : "Tambah Kegiatan 🎸"}</h3>
+      <p class="text-[10px] text-slate-500 mb-4">${isEn ? "What else do you suggest? Enter emoji and activity name~" : "Kamu mau ngajak ngapain lagi? Ketik emoji dan nama kegiatannya ya~"}</p>
       
       <div class="space-y-3 mb-5 text-left">
         <div>
-          <label class="block text-[9px] font-bold text-slate-500 uppercase tracking-wide mb-1">Emoji (cth: 🏊 atau 🍔)</label>
+          <label class="block text-[9px] font-bold text-slate-500 uppercase tracking-wide mb-1">${isEn ? "Emoji (e.g. 🏊 or 🍔)" : "Emoji (cth: 🏊 atau 🍔)"}</label>
           <input type="text" id="modal-act-emoji" value="💖" class="w-full px-3 py-2 border-2 border-slate-200 rounded-xl text-center text-xl focus:outline-none focus:border-slate-800 bg-white">
         </div>
         <div>
-          <label class="block text-[9px] font-bold text-slate-500 uppercase tracking-wide mb-1">Nama Kegiatan</label>
-          <input type="text" id="modal-act-label" placeholder="Main Bowling / Makan Sushi" class="w-full px-3 py-2 border-2 border-slate-200 rounded-xl text-sm focus:outline-none focus:border-slate-800 bg-white" maxlength="25">
+          <label class="block text-[9px] font-bold text-slate-500 uppercase tracking-wide mb-1">${isEn ? "Activity Name" : "Nama Kegiatan"}</label>
+          <input type="text" id="modal-act-label" placeholder="${isEn ? "Bowling / Sushi Dinner" : "Main Bowling / Makan Sushi"}" class="w-full px-3 py-2 border-2 border-slate-200 rounded-xl text-sm focus:outline-none focus:border-slate-800 bg-white" maxlength="25">
         </div>
       </div>
       
       <div class="flex gap-2">
-        <button id="modal-act-cancel" class="btn-ghost flex-1 text-xs py-2 px-3">Batal</button>
-        <button id="modal-act-save" class="btn-action flex-1 text-xs py-2 px-3">Simpan</button>
+        <button id="modal-act-cancel" class="btn-ghost flex-1 text-xs py-2 px-3">${isEn ? "Cancel" : "Batal"}</button>
+        <button id="modal-act-save" class="btn-action flex-1 text-xs py-2 px-3">${isEn ? "Save" : "Simpan"}</button>
       </div>
     </div>
   </div>
@@ -750,6 +754,7 @@ export function generateDateTicketHtml(config: PublishedConfig): string {
     const PHOTOS           = ${photosJson};
     const DATE_OPTIONS     = ${dateOptionsJson};
     const CREATOR_CUSTOMS  = ${creatorCustomActivitiesJson};
+    const isEn             = ${isEn};
 
     // ── State ──
     let selectedDate = "";
@@ -758,7 +763,14 @@ export function generateDateTicketHtml(config: PublishedConfig): string {
     let replyMessage = "";
 
     // ── Default preset activities ──
-    const DEFAULT_ACTIVITIES = [
+    const DEFAULT_ACTIVITIES = isEn ? [
+      { emoji: "🍽️", label: "Dinner Date" },
+      { emoji: "🎬", label: "Watch Movie" },
+      { emoji: "🌅", label: "Cozy Walk" },
+      { emoji: "🍳", label: "Cook Together" },
+      { emoji: "🎤", label: "Karaoke" },
+      { emoji: "🧺", label: "Picnic" },
+    ] : [
       { emoji: "🍽️", label: "Makan Bareng" },
       { emoji: "🎬", label: "Nonton Film" },
       { emoji: "🌅", label: "Jalan Santai" },
@@ -940,10 +952,10 @@ export function generateDateTicketHtml(config: PublishedConfig): string {
       dateNextBtn.disabled = !ready;
       if (ready) {
         dateNextBtn.className = 'btn-action w-full text-sm';
-        dateNextBtn.textContent = 'Konfirmasi Tanggal Kunjungan 👍';
+        dateNextBtn.textContent = isEn ? 'Confirm Visit Date 👍' : 'Konfirmasi Tanggal Kunjungan 👍';
       } else {
         dateNextBtn.className = 'btn-action w-full text-sm opacity-50 cursor-not-allowed';
-        dateNextBtn.textContent = 'Pilih Tanggal Terlebih Dahulu 🥺';
+        dateNextBtn.textContent = isEn ? 'Select Date First 🥺' : 'Pilih Tanggal Terlebih Dahulu 🥺';
       }
     }
 
@@ -1041,7 +1053,7 @@ export function generateDateTicketHtml(config: PublishedConfig): string {
       recipientAddCard.className = 'activity-card border-dashed bg-slate-50 flex flex-col items-center justify-center p-2 min-h-[75px]';
       recipientAddCard.innerHTML = \`
         <div class="text-xl mb-0.5">➕</div>
-        <p class="text-[9px] font-bold text-slate-400">Tambah Sendiri</p>
+        <p class="text-[9px] font-bold text-slate-400">\${isEn ? "Add Custom" : "Tambah Sendiri"}</p>
       \`;
       recipientAddCard.addEventListener('click', showModal);
       activityGrid.appendChild(recipientAddCard);
@@ -1055,10 +1067,12 @@ export function generateDateTicketHtml(config: PublishedConfig): string {
       activityNextBtn.disabled = !ready;
       if (ready) {
         activityNextBtn.className = 'btn-action w-full text-sm';
-        activityNextBtn.textContent = \`Lanjut dengan \${selectedActivities.length} setlist kegiatan! 🎸\`;
+        activityNextBtn.textContent = isEn 
+          ? \`Proceed with \${selectedActivities.length} activities! 🎸\`
+          : \`Lanjut dengan \${selectedActivities.length} setlist kegiatan! 🎸\`;
       } else {
         activityNextBtn.className = 'btn-action w-full text-sm opacity-50 cursor-not-allowed';
-        activityNextBtn.textContent = 'Pilih Minimal 1 Kegiatan 🎸';
+        activityNextBtn.textContent = isEn ? 'Select at least 1 Activity 🎸' : 'Pilih Minimal 1 Kegiatan 🎸';
       }
     }
     activityNextBtn.addEventListener('click', () => {
@@ -1158,7 +1172,7 @@ export function generateDateTicketHtml(config: PublishedConfig): string {
 
     function startCountdown() {
       const target = parseSelectedDate();
-      document.getElementById('countdown-date-label').textContent = selectedDate + ' · Jam ' + selectedTime;
+      document.getElementById('countdown-date-label').textContent = selectedDate + (isEn ? ' · Time ' : ' · Jam ') + selectedTime;
 
       if (countdownInterval) clearInterval(countdownInterval);
 
@@ -1170,7 +1184,7 @@ export function generateDateTicketHtml(config: PublishedConfig): string {
           document.getElementById('cd-hours').textContent = '00';
           document.getElementById('cd-mins').textContent = '00';
           document.getElementById('cd-secs').textContent = '00';
-          document.getElementById('countdown-msg').textContent = 'SAATNYA SHOW!! 🎤🎸🎉';
+          document.getElementById('countdown-msg').textContent = isEn ? 'SHOW TIME!! 🎤🎸🎉' : 'SAATNYA SHOW!! 🎤🎸🎉';
           clearInterval(countdownInterval);
           return;
         }
@@ -1185,11 +1199,11 @@ export function generateDateTicketHtml(config: PublishedConfig): string {
         document.getElementById('cd-secs').textContent  = String(secs).padStart(2,'0');
 
         if (days === 0 && hours < 24) {
-          document.getElementById('countdown-msg').textContent = 'Bentar lagi konser dimulai! Udah siap? 🎸';
+          document.getElementById('countdown-msg').textContent = isEn ? 'Concert starts soon! Ready? 🎸' : 'Bentar lagi konser dimulai! Udah siap? 🎸';
         } else if (days <= 3) {
-          document.getElementById('countdown-msg').textContent = 'Show date sudah dekat! Hype-nya dapet banget! 💥';
+          document.getElementById('countdown-msg').textContent = isEn ? 'Show date is near! So hyped! 💥' : 'Show date sudah dekat! Hype-nya dapet banget! 💥';
         } else {
-          document.getElementById('countdown-msg').textContent = 'Hitung mundur terus... jangan lupa dandan rapi! 💕';
+          document.getElementById('countdown-msg').textContent = isEn ? 'Counting down... dress up nice! 💕' : 'Hitung mundur terus... jangan lupa dandan rapi! 💕';
         }
       }
 
@@ -1210,7 +1224,7 @@ export function generateDateTicketHtml(config: PublishedConfig): string {
       document.getElementById('ticket-section').textContent = stub.year;
 
       // 2. Time & Agenda info
-      document.getElementById('ticket-time').textContent = 'JAM ' + selectedTime;
+      document.getElementById('ticket-time').textContent = (isEn ? 'TIME ' : 'JAM ') + selectedTime;
       document.getElementById('ticket-agenda').textContent = selectedActivities.join(', ');
 
       // 3. User Note / Reply
@@ -1233,19 +1247,21 @@ export function generateDateTicketHtml(config: PublishedConfig): string {
     // ── Share ──
     document.getElementById('share-ticket-btn').addEventListener('click', async () => {
       const shareData = {
-        title: 'Tiket Kencan VIP 🎫',
-        text: \`Tiket konser kencan VIP kita sudah terbit! Tanggal: \${selectedDate} jam \${selectedTime} 💕 Cek di sini!\`,
+        title: isEn ? 'VIP Date Ticket 🎫' : 'Tiket Kencan VIP 🎫',
+        text: isEn 
+          ? \`Our VIP concert date ticket is ready! Date: \${selectedDate} at \${selectedTime} 💕 Check here!\`
+          : \`Tiket konser kencan VIP kita sudah terbit! Tanggal: \${selectedDate} jam \${selectedTime} 💕 Cek di sini!\`,
         url: window.location.href
       };
       try {
         if (navigator.share) await navigator.share(shareData);
         else {
           await navigator.clipboard.writeText(window.location.href);
-          alert('Link tiket berhasil disalin! Kirim ke dia ya 🎫');
+          alert(isEn ? 'Ticket link copied! Send it to them 🎫' : 'Link tiket berhasil disalin! Kirim ke dia ya 🎫');
         }
       } catch {
         await navigator.clipboard.writeText(window.location.href);
-        alert('Link tiket berhasil disalin! 🎫');
+        alert(isEn ? 'Ticket link copied! 🎫' : 'Link tiket berhasil disalin! 🎫');
       }
     });
 
