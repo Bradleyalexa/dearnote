@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import imageCompression from "browser-image-compression";
+import { useI18nStore } from "@/lib/i18n/store";
 
 interface PhotoItem {
   key: string;
@@ -12,9 +13,11 @@ interface PhotoItem {
 interface PhotoUploaderProps {
   value: PhotoItem[];
   onChange: (photos: PhotoItem[]) => void;
+  max?: number;
 }
 
-export default function PhotoUploader({ value, onChange }: PhotoUploaderProps) {
+export default function PhotoUploader({ value, onChange, max = 5 }: PhotoUploaderProps) {
+  const { lang } = useI18nStore();
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
@@ -98,8 +101,12 @@ export default function PhotoUploader({ value, onChange }: PhotoUploaderProps) {
     const files = Array.from(e.target.files || []);
     if (files.length === 0) return;
 
-    if (value.length + files.length > 5) {
-      setError("Maksimal hanya boleh mengunggah 5 foto.");
+    if (value.length + files.length > max) {
+      setError(
+        lang === "en"
+          ? `You can only upload up to ${max} photos.`
+          : `Maksimal hanya boleh mengunggah ${max} foto.`
+      );
       return;
     }
 
@@ -186,13 +193,25 @@ export default function PhotoUploader({ value, onChange }: PhotoUploaderProps) {
       <div className="flex items-center justify-between">
         <div>
           <label className="block text-sm font-semibold text-gray-900">
-            Foto Kenangan (Maksimal 5)
+            {lang === "en" ? `Memory Photos (Max ${max})` : `Foto Kenangan (Maksimal ${max})`}
           </label>
-          {value.length > 1 && (
-            <p className="text-xs text-gray-500 font-medium">Tarik handle ☰ atau gunakan tombol panah untuk menyusun urutan</p>
+          {max === 2 ? (
+            <p className="text-xs text-rose-500 font-medium leading-normal mt-0.5">
+              {lang === "en" 
+                ? "💡 Photo 1 is for landing page, Photo 2 is for inside the concert ticket." 
+                : "💡 Foto #1 untuk poster depan, Foto #2 untuk di dalam tiket kencan."}
+            </p>
+          ) : (
+            value.length > 1 && (
+              <p className="text-xs text-gray-500 font-medium">
+                {lang === "en" 
+                  ? "Drag handle ☰ or use arrow buttons to reorder" 
+                  : "Tarik handle ☰ atau gunakan tombol panah untuk menyusun urutan"}
+              </p>
+            )
           )}
         </div>
-        <span className="text-xs text-gray-500 font-medium">{value.length}/5 Foto</span>
+        <span className="text-xs text-gray-500 font-medium">{value.length}/{max} {lang === "en" ? "Photos" : "Foto"}</span>
       </div>
 
       {/* Photo Grid Previews */}

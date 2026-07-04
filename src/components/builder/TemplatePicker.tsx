@@ -286,6 +286,15 @@ export const TEMPLATE_REGISTRY: {
     accent: "linear-gradient(135deg, #fff1f5, #fda4af, #f43f5e)",
     tags: ["Couple", "Date", "Romantic", "Interactive", "Flagship"],
   },
+  {
+    id: "date_ticket",
+    name: "Tiket Kencan Konser 🎫",
+    description: "Undang kencan ala tiket konser atau boarding pass! Desain eksklusif lengkap dengan cetakan foto, barcode, dan detail tanggal kencan bergaya nomor kursi kustom.",
+    category: "interaktif",
+    audience: ["couple"],
+    accent: "linear-gradient(135deg, #1e293b, #ef4444, #f8fafc)",
+    tags: ["Couple", "Date", "Concert Ticket", "Playful", "Interactive"],
+  },
 ];
 
 type FilterType =
@@ -351,6 +360,7 @@ export default function TemplatePicker({ value, onChange }: TemplatePickerProps)
       if (tmpl.id === "evasive_confession") return "Evasive Confession";
       if (tmpl.id === "boyfriend_permit") return "Boyfriend's Permission Slip";
       if (tmpl.id === "date_invitation") return "Date Invitation 🌹";
+      if (tmpl.id === "date_ticket") return "Concert Date Ticket 🎫";
     }
     return tmpl.name;
   };
@@ -363,6 +373,7 @@ export default function TemplatePicker({ value, onChange }: TemplatePickerProps)
       if (tmpl.id === "evasive_confession") return "Super cute retro pink Windows 95 layout with 4 opening mini-games. The 'No' button runs away, forcing them to click 'Yes'!";
       if (tmpl.id === "boyfriend_permit") return "A cute and playful template for boys/husbands asking for permission (buying stuff, gaming, going out). Features interactive bribery vouchers, a runaway 'No' button, and a shareable Approved Slip!";
       if (tmpl.id === "date_invitation") return "Invite your partner on a date in the cutest way! Pick a date together, choose activities, watch the countdown, and print a shareable DearNote Date Ticket~";
+      if (tmpl.id === "date_ticket") return "Invite your partner with a retro concert gig theme! Complete with barcode, customized seat/row/section date stubs, and elegant typography.";
     }
     return tmpl.description;
   };

@@ -29,6 +29,7 @@ import { generatePlayfulCatHtml } from "./templates/playful-cat";
 import { generateAnniversaryScrapbookHtml } from "./templates/anniversary-scrapbook";
 import { generateBoyfriendPermitHtml } from "./templates/boyfriend-permit";
 import { generateDateInvitationHtml } from "./templates/date-invitation";
+import { generateDateTicketHtml } from "./templates/date-ticket";
 
 /**
  * Main coordinator that returns the HTML page content based on the selected template.
@@ -97,6 +98,9 @@ export function generateIndexHtml(config: PublishedConfig): string {
       break;
     case "date_invitation":
       html = generateDateInvitationHtml(config);
+      break;
+    case "date_ticket":
+      html = generateDateTicketHtml(config);
       break;
     case "birthday_magic":
       html = generateBirthdayMagicHtml(config);

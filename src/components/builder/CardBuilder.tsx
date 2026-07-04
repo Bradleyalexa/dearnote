@@ -337,8 +337,8 @@ export default function CardBuilder() {
             <label className="block text-sm font-semibold text-gray-900">
               {formValues.template === "boyfriend_permit"
                 ? (currentLang === "id" ? "Perihal Izin" : "Permission Subject")
-                : formValues.template === "date_invitation"
-                ? (currentLang === "id" ? "Judul / Tema Undangan 🌹" : "Date Invite Title 🌹")
+                : (formValues.template === "date_invitation" || formValues.template === "date_ticket")
+                ? (currentLang === "id" ? "Nama Tur / Agenda Utama 🌹" : "Tour Name / Main Subject 🌹")
                 : t.letterTitleLabel}
             </label>
             <input
@@ -346,8 +346,8 @@ export default function CardBuilder() {
               placeholder={
                 formValues.template === "boyfriend_permit"
                   ? (currentLang === "id" ? "Contoh: Minta Izin Beli PS5" : "e.g., Request to buy PS5")
-                  : formValues.template === "date_invitation"
-                  ? (currentLang === "id" ? "Contoh: Malem Mingguan Kita~ 🌙" : "e.g., Our Special Date Night~ 🌙")
+                  : (formValues.template === "date_invitation" || formValues.template === "date_ticket")
+                  ? (currentLang === "id" ? "Contoh: TIE THE KNOT TOUR 🎸" : "e.g., TIE THE KNOT TOUR 🎸")
                   : t.letterTitlePlaceholder
               }
               {...register("letterTitle")}
@@ -490,8 +490,8 @@ export default function CardBuilder() {
           </div>
         )}
 
-        {/* Template-specific: Date Options (only for Date Invitation) */}
-        {formValues.template === "date_invitation" && (
+        {/* Template-specific: Date Options (only for Date Invitation or Date Ticket) */}
+        {(formValues.template === "date_invitation" || formValues.template === "date_ticket") && (
           <div className="space-y-4 p-5 bg-rose-50/60 border border-rose-100 rounded-2xl">
             <div>
               <label className="block text-sm font-semibold text-gray-900">
@@ -594,6 +594,21 @@ export default function CardBuilder() {
                 </button>
               )}
             </div>
+
+            {formValues.template === "date_ticket" && (
+              <div className="border-t border-rose-100 pt-3 mt-1">
+                <label className="block text-xs font-semibold text-gray-600 mb-1">
+                  {currentLang === "id" ? "Lokasi / Tempat Pertemuan 📍" : "Venue / Location 📍"}
+                </label>
+                <input
+                  type="text"
+                  placeholder={currentLang === "id" ? "Contoh: Paris, France" : "e.g., Paris, France"}
+                  {...register("favoriteMoments.9" as any)}
+                  maxLength={40}
+                  className="w-full px-3 py-2 border border-zinc-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-300 text-sm text-zinc-700 bg-white"
+                />
+              </div>
+            )}
           </div>
         )}
 
@@ -602,7 +617,11 @@ export default function CardBuilder() {
           control={control}
           name="photos"
           render={({ field }) => (
-            <PhotoUploader value={field.value} onChange={field.onChange} />
+            <PhotoUploader 
+              value={field.value} 
+              onChange={field.onChange} 
+              max={formValues.template === "date_ticket" ? 2 : 5} 
+            />
           )}
         />
 
