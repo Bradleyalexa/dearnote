@@ -478,7 +478,7 @@ export function generateBoyfriendPermitHtml(config: PublishedConfig): string {
           <!-- Dynamic Jaminan Upeti list -->
           <div id="approved-bribes-box" class="pt-1.5 border-t border-slate-200/50 mt-1">
             <span class="text-[9px] uppercase font-bold text-slate-400 block">Jaminan Upeti yang Diterima:</span>
-            <ul id="approved-bribes-list" class="list-disc list-inside text-xs font-bold text-slate-700 mt-1 space-y-1">
+            <ul id="approved-bribes-list" class="text-xs font-bold text-slate-700 mt-1 space-y-1.5">
               <!-- JS-populated list -->
             </ul>
           </div>
@@ -501,13 +501,13 @@ export function generateBoyfriendPermitHtml(config: PublishedConfig): string {
         <!-- Signatures mock -->
         <div class="grid grid-cols-2 gap-4 pt-3 border-t border-slate-100 text-center text-xs">
           <div>
-            <div class="h-8 flex items-end justify-center font-handwriting text-base text-slate-500 font-bold">
+            <div class="h-8 flex items-end justify-center font-handwriting text-base text-slate-500 font-bold pb-2">
               ${config.fromName}
             </div>
             <div class="border-t border-slate-300 pt-1 text-[9px] text-slate-400 uppercase font-semibold">Pemohon</div>
           </div>
           <div>
-            <div class="h-8 flex items-end justify-center font-handwriting text-base text-emerald-600 font-bold">
+            <div class="h-8 flex items-end justify-center font-handwriting text-base text-emerald-600 font-bold pb-2">
               ${config.toName} ✓
             </div>
             <div class="border-t border-slate-300 pt-1 text-[9px] text-slate-400 uppercase font-semibold">Pemberi Izin (Boss)</div>
@@ -615,18 +615,28 @@ export function generateBoyfriendPermitHtml(config: PublishedConfig): string {
         upetiList.forEach((selected, idx) => {
           if (selected) {
             const li = document.createElement('li');
-            li.className = 'text-left mb-1';
+            li.className = 'flex items-start gap-1.5 text-left mb-1';
+            
+            const dot = document.createElement('span');
+            dot.className = 'text-emerald-500 font-bold text-xs select-none';
+            dot.textContent = '✓';
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'flex-1';
             
             const titleSpan = document.createElement('span');
-            titleSpan.className = 'block font-bold text-slate-800';
+            titleSpan.className = 'block font-bold text-slate-800 text-xs';
             titleSpan.textContent = UPETI_TITLES[idx];
             
             const descSpan = document.createElement('span');
             descSpan.className = 'block text-[10px] text-slate-500 font-normal leading-normal';
             descSpan.textContent = UPETI_DESCS[idx];
             
-            li.appendChild(titleSpan);
-            li.appendChild(descSpan);
+            contentDiv.appendChild(titleSpan);
+            contentDiv.appendChild(descSpan);
+            
+            li.appendChild(dot);
+            li.appendChild(contentDiv);
             listEl.appendChild(li);
             count++;
           }
@@ -634,7 +644,7 @@ export function generateBoyfriendPermitHtml(config: PublishedConfig): string {
         
         if (count === 0) {
           const li = document.createElement('li');
-          li.className = 'text-slate-500 font-normal';
+          li.className = 'text-slate-500 font-normal text-xs';
           li.textContent = 'Tanpa upeti (Lolos murni)';
           listEl.appendChild(li);
         }
@@ -806,6 +816,13 @@ export function generateBoyfriendPermitHtml(config: PublishedConfig): string {
     document.getElementById('share-permit-btn').addEventListener('click', async () => {
       const shareUrl = new URL(window.location.href);
       shareUrl.searchParams.set('result', 'approved');
+      
+      const selectedIndices = [];
+      upetiList.forEach((val, i) => {
+        if (val) selectedIndices.push(i);
+      });
+      shareUrl.searchParams.set('u', selectedIndices.join(','));
+
       const shareData = {
         title: 'Surat Izin Resmi - DearNote',
         text: 'Surat izin resmi dari ${config.toName} untuk ${config.fromName} telah disetujui! 📜🎉',
@@ -978,6 +995,16 @@ export function generateBoyfriendPermitHtml(config: PublishedConfig): string {
       const urlParams = new URLSearchParams(window.location.search);
       const resultParam = urlParams.get('result');
       if (resultParam === 'approved') {
+        const uParam = urlParams.get('u');
+        if (uParam) {
+          uParam.split(',').forEach(idxStr => {
+            const idx = parseInt(idxStr, 10);
+            if (idx >= 0 && idx < upetiList.length) {
+              upetiList[idx] = true;
+            }
+          });
+        }
+
         CHAPTERS.forEach(ch => {
           const el = document.getElementById(ch);
           if (el) {
@@ -998,6 +1025,7 @@ export function generateBoyfriendPermitHtml(config: PublishedConfig): string {
         const cg = document.getElementById('code-gate');
         if (cg) cg.classList.add('hidden');
         updateNav();
+        onEnter('ch-approved');
         setTimeout(triggerConfettiRain, 800);
       }
     });
