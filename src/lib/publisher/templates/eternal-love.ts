@@ -737,8 +737,23 @@ export function generateEternalLoveHtml(config: PublishedConfig): string {
       cursor.className = 'cursor-blink';
       el.appendChild(cursor);
       const speed = text.length > 800 ? 12 : text.length > 400 ? 20 : 28;
+      const limit = text.length > 1000 ? 500 : text.length;
       const tick = setInterval(() => {
-        if (i >= text.length) { clearInterval(tick); setTimeout(() => cursor.remove(), 2200); return; }
+        const limit = text.length > 1000 ? 500 : text.length;
+        if (i >= limit) {
+          clearInterval(tick);
+          if (text.length > 1000) {
+            const remaining = text.substring(i);
+            const span = document.createElement('span');
+            span.style.opacity = '0';
+            span.style.transition = 'opacity 1.0s ease-in-out';
+            span.innerHTML = remaining;
+            el.insertBefore(span, cursor);
+            setTimeout(() => { span.style.opacity = '1'; }, 50);
+          }
+          setTimeout(() => cursor.remove(), 2200);
+          return;
+        }
         el.insertBefore(document.createTextNode(text[i]), cursor);
         i++;
         const wrap = el.closest('.parchment-body');

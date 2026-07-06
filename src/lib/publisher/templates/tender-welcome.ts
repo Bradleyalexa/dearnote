@@ -750,10 +750,26 @@ export function generateTenderWelcomeHtml(config: PublishedConfig): string {
       const text = CONFIG.letterBody;
       const speed = 25;
       
-      if (typewriterIndex < text.length) {
+      const limit = text.length > 1000 ? 500 : text.length;
+      if (typewriterIndex < limit) {
         target.innerHTML += text.charAt(typewriterIndex);
         typewriterIndex++;
         setTimeout(startTypewriter, speed);
+      } else if (text.length > 1000) {
+        const remaining = text.substring(typewriterIndex);
+        const span = document.createElement('span');
+        span.style.opacity = '0';
+        span.style.transition = 'opacity 1.0s ease-in-out';
+        span.innerHTML = remaining;
+        target.appendChild(span);
+        setTimeout(() => { span.style.opacity = '1'; }, 50);
+        if (typeof revealExtraSections === 'function') {
+          revealExtraSections();
+        }
+      } else {
+        if (typeof revealExtraSections === 'function') {
+          revealExtraSections();
+        }
       }
     }
 

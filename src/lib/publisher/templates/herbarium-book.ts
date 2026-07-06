@@ -964,7 +964,8 @@ export function generateHerbariumBookHtml(config: PublishedConfig): string {
       const speed = 25;
       
       function type() {
-        if (typewriterIndex < text.length) {
+        const limit = text.length > 1000 ? 500 : text.length;
+        if (typewriterIndex < limit) {
           target.innerHTML += text.charAt(typewriterIndex);
           typewriterIndex++;
           setTimeout(type, speed);

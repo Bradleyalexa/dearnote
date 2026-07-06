@@ -491,8 +491,8 @@ export function generateDateTicketHtml(config: PublishedConfig): string {
         <p class="text-xs text-rose-500 font-semibold mb-4">${isEn ? "especially for:" : "khusus untuk:"} <strong>${config.toName}</strong></p>
 
         <!-- Message body -->
-        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 mb-5 text-left">
-          <p class="font-hand text-base text-slate-700 leading-relaxed">${openingMessage}</p>
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 mb-5 text-left max-h-[105px] overflow-y-auto">
+          <p class="font-hand text-base text-slate-700 leading-relaxed whitespace-pre-wrap">${openingMessage}</p>
         </div>
 
         <!-- CTA -->

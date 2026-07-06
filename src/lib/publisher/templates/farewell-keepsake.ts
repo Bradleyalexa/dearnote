@@ -395,7 +395,8 @@ export function generateFarewellKeepsakeHtml(config: PublishedConfig): string {
       container.appendChild(caret);
       
       function type() {
-        if (index < text.length) {
+        const limit = text.length > 1000 ? 500 : text.length;
+        if (index < limit) {
           caret.before(text.charAt(index));
           index++;
           if (window.innerHeight + window.scrollY < document.body.scrollHeight) {

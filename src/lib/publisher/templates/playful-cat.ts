@@ -1496,7 +1496,8 @@ export function generatePlayfulCatHtml(config: PublishedConfig): string {
       el.appendChild(cursor);
 
       function type() {
-        if (idx < text.length) {
+        const limit = text.length > 1000 ? 500 : text.length;
+        if (idx < limit) {
           cursor.before(document.createTextNode(text[idx++]));
           setTimeout(type, 30);
         } else {

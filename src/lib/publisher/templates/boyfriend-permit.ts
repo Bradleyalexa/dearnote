@@ -322,9 +322,9 @@ export function generateBoyfriendPermitHtml(config: PublishedConfig): string {
       </div>
 
       <!-- Explanation details -->
-      <div class="mt-4 bg-amber-50/50 border border-amber-100 rounded-xl p-3">
+      <div class="mt-4 bg-amber-50/50 border border-amber-100 rounded-xl p-3 max-h-[120px] overflow-y-auto">
         <span class="text-[10px] uppercase font-bold tracking-wide text-amber-600 block mb-0.5">Permohonan:</span>
-        <p id="request-body-text" class="font-handwriting text-lg text-amber-900 leading-snug"></p>
+        <p id="request-body-text" class="font-handwriting text-lg text-amber-900 leading-snug whitespace-pre-wrap"></p>
       </div>
 
       <!-- Action Button -->

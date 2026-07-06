@@ -967,9 +967,19 @@ export function generatePlayfulDogHtml(config: PublishedConfig): string {
       el.appendChild(cursor);
 
       function tick() {
-        if (i < text.length) {
+        const limit = text.length > 1000 ? 500 : text.length;
+        if (i < limit) {
           cursor.before(document.createTextNode(text[i++]));
           setTimeout(tick, 25);
+        } else if (text.length > 1000) {
+          const remaining = text.substring(i);
+          const span = document.createElement('span');
+          span.style.opacity = '0';
+          span.style.transition = 'opacity 1.0s ease-in-out';
+          span.innerHTML = remaining;
+          cursor.before(span);
+          setTimeout(() => { span.style.opacity = '1'; }, 50);
+          cursor.remove();
         } else {
           cursor.remove();
         }

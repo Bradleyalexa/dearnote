@@ -411,8 +411,8 @@ export function generateDateInvitationHtml(config: PublishedConfig): string {
         </div>
 
         <!-- Message body -->
-        <div class="bg-rose-50 border border-rose-100 rounded-2xl p-4 mb-5">
-          <p class="font-hand text-base text-rose-800 leading-relaxed">${openingMessage}</p>
+        <div class="bg-rose-50 border border-rose-100 rounded-2xl p-4 mb-5 max-h-[105px] overflow-y-auto">
+          <p class="font-hand text-base text-rose-800 leading-relaxed whitespace-pre-wrap">${openingMessage}</p>
         </div>
 
         <!-- CTA -->

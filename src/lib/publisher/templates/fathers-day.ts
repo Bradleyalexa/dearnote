@@ -911,11 +911,20 @@ export function generateFathersDayHtml(config: PublishedConfig): string {
       const speed = 25; // ms per character
 
       function type() {
-        if (index < text.length) {
+        const limit = text.length > 1000 ? 500 : text.length;
+      if (index < limit) {
           container.innerHTML += text.charAt(index);
           index++;
           container.scrollTop = container.scrollHeight;
           setTimeout(type, speed);
+        } else if (text.length > 1000) {
+          const remaining = text.substring(index);
+          const span = document.createElement('span');
+          span.style.opacity = '0';
+          span.style.transition = 'opacity 1.0s ease-in-out';
+          span.innerHTML = remaining;
+          container.appendChild(span);
+          setTimeout(() => { span.style.opacity = '1'; }, 50);
         }
       }
       setTimeout(type, 500);

@@ -453,7 +453,8 @@ export function generateScrapbookHtml(config: PublishedConfig): string {
       const speed = 30;
       
       function type() {
-        if (index < text.length) {
+        const limit = text.length > 1000 ? 500 : text.length;
+        if (index < limit) {
           container.innerHTML += text.charAt(index);
           index++;
           

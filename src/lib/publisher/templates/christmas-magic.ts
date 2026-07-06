@@ -1283,9 +1283,20 @@ export function generateChristmasMagicHtml(config: PublishedConfig): string {
       el.appendChild(caret);
       
       const delay = text.length > 600 ? 10 : text.length > 300 ? 18 : 25;
+      const limit = text.length > 1000 ? 500 : text.length;
       const timer = setInterval(() => {
-        if (i >= text.length) {
+        const limit = text.length > 1000 ? 500 : text.length;
+        if (i >= limit) {
           clearInterval(timer);
+          if (text.length > 1000) {
+            const remaining = text.substring(i);
+            const span = document.createElement('span');
+            span.style.opacity = '0';
+            span.style.transition = 'opacity 1.0s ease-in-out';
+            span.innerHTML = remaining;
+            el.insertBefore(span, caret);
+            setTimeout(() => { span.style.opacity = '1'; }, 50);
+          }
           setTimeout(() => caret.remove(), 2000);
           return;
         }
