@@ -5,7 +5,7 @@ export function generateBoyfriendPermitHtml(config: PublishedConfig): string {
   const letterTitle = config.letterTitle || "Minta Izin Khusus 🥺";
   const escapedLetterBody = JSON.stringify(config.letterBody);
   const photosJson = JSON.stringify(config.photos);
-  const hasVoiceNote = !!config.voiceNote;
+  const hasVoiceNote = !!config.voiceNote && !!config.voiceNote.src;
   const voiceNoteSrc = config.voiceNote?.src || "";
   const hasBgMusic = !!config.bgMusic;
   const bgMusicSrc = config.bgMusic?.src || "https://assets.mixkit.co/music/preview/mixkit-funny-story-2877.mp3";

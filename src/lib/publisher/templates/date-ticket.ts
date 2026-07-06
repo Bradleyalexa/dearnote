@@ -2,7 +2,7 @@ import { PublishedConfig } from "../../schemas/card-draft";
 
 export function generateDateTicketHtml(config: PublishedConfig): string {
   const isEn = config.lang === "en";
-  const hasVoiceNote = !!config.voiceNote;
+  const hasVoiceNote = !!config.voiceNote && !!config.voiceNote.src;
   const voiceNoteSrc = config.voiceNote?.src || "";
   const hasSecretCode = !!config.secretCode;
   const inviteTitle = config.letterTitle || "TIE THE KNOT TOUR 🎫";
@@ -493,12 +493,12 @@ export function generateDateTicketHtml(config: PublishedConfig): string {
         <p class="text-xs text-rose-500 font-semibold mb-4">${isEn ? "especially for:" : "khusus untuk:"} <strong>${config.toName}</strong></p>
 
         <!-- Message body -->
-        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3 mb-2.5 text-left \${hasVoiceNote ? 'max-h-[50px]' : 'max-h-[105px]'} overflow-y-auto">
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3 mb-2.5 text-left ${hasVoiceNote ? 'max-h-[50px]' : 'max-h-[105px]'} overflow-y-auto">
           <p class="font-hand text-base text-slate-700 leading-relaxed whitespace-pre-wrap">${openingMessage}</p>
         </div>
 
         <!-- Voice Note Player (if hasVoiceNote) -->
-        \${hasVoiceNote ? \`
+        ${hasVoiceNote ? `
         <div class="p-2.5 bg-slate-50 border border-slate-200 rounded-2xl flex items-center gap-2.5 mb-2.5 text-left">
           <button id="play-btn" onclick="toggleAudio()" class="w-8 h-8 rounded-full bg-slate-800 text-white flex items-center justify-center shadow transition-all focus:outline-none flex-shrink-0">
             <span id="play-icon" class="text-xs ml-0.5">▶</span>
@@ -510,9 +510,9 @@ export function generateDateTicketHtml(config: PublishedConfig): string {
             </div>
           </div>
           <span id="audio-time" class="text-[9px] font-semibold text-slate-500 font-sans flex-shrink-0">0:00</span>
-          <audio id="audio-el" src="\${voiceNoteSrc}" ontimeupdate="updateAudioProgress()" onloadedmetadata="initAudioMetadata()"></audio>
+          <audio id="audio-el" src="${voiceNoteSrc}" ontimeupdate="updateAudioProgress()" onloadedmetadata="initAudioMetadata()"></audio>
         </div>
-        \` : ""}
+        ` : ""}
 
         <!-- CTA -->
         <button id="intro-next-btn" class="btn-action w-full flex items-center justify-center gap-2 text-sm">
