@@ -396,6 +396,23 @@ export function generateBoyfriendPermitHtml(config: PublishedConfig): string {
         </div>
       </div>
 
+      <!-- Voice Note Player (if hasVoiceNote) -->
+      \${hasVoiceNote ? \`
+      <div class="mt-4 p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center gap-3">
+        <button id="play-btn" onclick="toggleAudio()" class="w-8 h-8 rounded-full bg-slate-800 text-white flex items-center justify-center shadow transition-all focus:outline-none flex-shrink-0">
+          <span id="play-icon" class="text-[10px] ml-0.5">▶</span>
+        </button>
+        <div class="flex-1 min-w-0">
+          <p class="text-[9px] uppercase font-bold tracking-widest text-slate-550 font-sans mb-1 text-left">🎙️ Pesan Suara Pemohon</p>
+          <div id="mini-timeline" onclick="seekAudio(event)" class="w-full h-1 bg-slate-200 rounded-full cursor-pointer relative">
+            <div id="audio-progress" class="absolute left-0 top-0 bottom-0 w-0 bg-slate-850 rounded-full transition-all duration-100 ease-linear"></div>
+          </div>
+        </div>
+        <span id="audio-time" class="text-[10px] font-semibold text-slate-500 font-sans flex-shrink-0">0:00</span>
+        <audio id="audio-el" src="\${voiceNoteSrc}" ontimeupdate="updateAudioProgress()" onloadedmetadata="initAudioMetadata()"></audio>
+      </div>
+      \` : ""}
+
       <!-- Action Button -->
       <div class="mt-5">
         <button id="bribery-next-btn" class="w-full btn-action opacity-50 cursor-not-allowed text-sm" disabled>
@@ -829,6 +846,96 @@ export function generateBoyfriendPermitHtml(config: PublishedConfig): string {
         }
       }());
     }
+
+    // Custom Audio Player for Voice Note
+    let voiceAudio = null;
+    let isVoicePlaying = false;
+
+    function getVoiceAudio() {
+      if (!voiceAudio) voiceAudio = document.getElementById('audio-el');
+      return voiceAudio;
+    }
+
+    function initAudioMetadata() {
+      const player = getVoiceAudio();
+      const durationEl = document.getElementById('audio-time');
+      if (durationEl && player && player.duration) {
+        durationEl.innerText = formatTime(player.duration);
+      }
+    }
+
+    function toggleAudio() {
+      const player = getVoiceAudio();
+      const playIcon = document.getElementById('play-icon');
+      const bgmAudio = document.getElementById('bg-music');
+      const bgmBtn = document.getElementById('bgm-btn');
+      if (!player) return;
+
+      if (isVoicePlaying) {
+        player.pause();
+        if (playIcon) playIcon.innerText = '▶';
+        isVoicePlaying = false;
+        // Resume BGM if it was playing
+        if (bgmAudio && bgmBtn && bgmBtn.textContent === '🔊') {
+          bgmAudio.play().catch(() => {});
+        }
+      } else {
+        // Pause BGM
+        if (bgmAudio) bgmAudio.pause();
+        player.play().catch(e => console.error(e));
+        if (playIcon) playIcon.innerText = '⏸';
+        isVoicePlaying = true;
+      }
+    }
+
+    function updateAudioProgress() {
+      const player = getVoiceAudio();
+      const bar = document.getElementById('audio-progress');
+      const timeEl = document.getElementById('audio-time');
+      const bgmAudio = document.getElementById('bg-music');
+      const bgmBtn = document.getElementById('bgm-btn');
+      if (!player) return;
+      
+      if (player.duration) {
+        const percent = (player.currentTime / player.duration) * 100;
+        if (bar) bar.style.width = percent + '%';
+        if (timeEl) timeEl.innerText = formatTime(player.currentTime);
+      }
+      
+      if (player.ended) {
+        const playIcon = document.getElementById('play-icon');
+        if (playIcon) playIcon.innerText = '▶';
+        if (bar) bar.style.width = '0%';
+        isVoicePlaying = false;
+        // Resume BGM
+        if (bgmAudio && bgmBtn && bgmBtn.textContent === '🔊') {
+          bgmAudio.play().catch(() => {});
+        }
+      }
+    }
+
+    function seekAudio(event) {
+      const player = getVoiceAudio();
+      const track = document.getElementById('mini-timeline');
+      if (!player || !track) return;
+      const rect = track.getBoundingClientRect();
+      const clickPos = (event.clientX - rect.left) / rect.width;
+      
+      if (player.duration) {
+        player.currentTime = clickPos * player.duration;
+      }
+    }
+
+    function formatTime(secs) {
+      if (isNaN(secs)) return '0:00';
+      const m = Math.floor(secs / 60);
+      const s = Math.floor(secs % 60);
+      return m + ':' + (s < 10 ? '0' : '') + s;
+    }
+
+    window.addEventListener('load', () => {
+      setTimeout(initAudioMetadata, 1000);
+    });
 
     updateNav();
   </script>
