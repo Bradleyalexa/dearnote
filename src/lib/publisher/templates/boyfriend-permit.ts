@@ -397,7 +397,7 @@ export function generateBoyfriendPermitHtml(config: PublishedConfig): string {
       </div>
 
       <!-- Voice Note Player (if hasVoiceNote) -->
-      \${hasVoiceNote ? \`
+      ${hasVoiceNote ? `
       <div class="mt-4 p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center gap-3">
         <button id="play-btn" onclick="toggleAudio()" class="w-8 h-8 rounded-full bg-slate-800 text-white flex items-center justify-center shadow transition-all focus:outline-none flex-shrink-0">
           <span id="play-icon" class="text-[10px] ml-0.5">▶</span>
@@ -409,9 +409,9 @@ export function generateBoyfriendPermitHtml(config: PublishedConfig): string {
           </div>
         </div>
         <span id="audio-time" class="text-[10px] font-semibold text-slate-500 font-sans flex-shrink-0">0:00</span>
-        <audio id="audio-el" src="\${voiceNoteSrc}" ontimeupdate="updateAudioProgress()" onloadedmetadata="initAudioMetadata()"></audio>
+        <audio id="audio-el" src="${voiceNoteSrc}" ontimeupdate="updateAudioProgress()" onloadedmetadata="initAudioMetadata()"></audio>
       </div>
-      \` : ""}
+      ` : ""}
 
       <!-- Action Button -->
       <div class="mt-5">
@@ -797,21 +797,23 @@ export function generateBoyfriendPermitHtml(config: PublishedConfig): string {
 
     // ── 4. Share Certificate ──
     document.getElementById('share-permit-btn').addEventListener('click', async () => {
+      const shareUrl = new URL(window.location.href);
+      shareUrl.searchParams.set('result', 'approved');
       const shareData = {
         title: 'Surat Izin Resmi - DearNote',
         text: 'Surat izin resmi dari ${config.toName} untuk ${config.fromName} telah disetujui! 📜🎉',
-        url: window.location.href
+        url: shareUrl.toString()
       };
 
       try {
         if (navigator.share) {
           await navigator.share(shareData);
         } else {
-          await navigator.clipboard.writeText(window.location.href);
+          await navigator.clipboard.writeText(shareUrl.toString());
           alert('Tautan surat izin berhasil disalin! Silakan bagikan ke WhatsApp/Sosmed Anda 🌸');
         }
       } catch (err) {
-        await navigator.clipboard.writeText(window.location.href);
+        await navigator.clipboard.writeText(shareUrl.toString());
         alert('Tautan surat izin berhasil disalin! 🌸');
       }
     });
@@ -935,6 +937,33 @@ export function generateBoyfriendPermitHtml(config: PublishedConfig): string {
 
     window.addEventListener('load', () => {
       setTimeout(initAudioMetadata, 1000);
+      
+      // Auto load result if ?result=approved is in query params
+      const urlParams = new URLSearchParams(window.location.search);
+      const resultParam = urlParams.get('result');
+      if (resultParam === 'approved') {
+        CHAPTERS.forEach(ch => {
+          const el = document.getElementById(ch);
+          if (el) {
+            el.classList.remove('active');
+            el.style.opacity = '0';
+            el.style.visibility = 'hidden';
+            el.style.pointerEvents = 'none';
+          }
+        });
+        const appEl = document.getElementById('ch-approved');
+        if (appEl) {
+          appEl.classList.add('active');
+          appEl.style.opacity = '1';
+          appEl.style.visibility = 'visible';
+          appEl.style.pointerEvents = 'auto';
+        }
+        currentIdx = CHAPTERS.indexOf('ch-approved');
+        const cg = document.getElementById('code-gate');
+        if (cg) cg.classList.add('hidden');
+        updateNav();
+        setTimeout(triggerConfettiRain, 800);
+      }
     });
 
     updateNav();

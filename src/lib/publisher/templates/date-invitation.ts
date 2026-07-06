@@ -413,23 +413,23 @@ export function generateDateInvitationHtml(config: PublishedConfig): string {
         </div>
 
         <!-- Message body -->
-        <div class="bg-rose-50 border border-rose-100 rounded-2xl p-4 mb-5 max-h-[105px] overflow-y-auto">
+        <div class="bg-rose-50 border border-rose-100 rounded-2xl p-3 mb-2.5 \${hasVoiceNote ? 'max-h-[50px]' : 'max-h-[105px]'} overflow-y-auto">
           <p class="font-hand text-base text-rose-800 leading-relaxed whitespace-pre-wrap">${openingMessage}</p>
         </div>
 
         <!-- Voice Note Player (if hasVoiceNote) -->
         \${hasVoiceNote ? \`
-        <div class="p-3 bg-rose-50 border border-rose-100 rounded-2xl flex items-center gap-3 mb-5 text-left">
-          <button id="play-btn" onclick="toggleAudio()" class="w-9 h-9 rounded-full bg-rose-800 text-white flex items-center justify-center shadow transition-all focus:outline-none flex-shrink-0">
+        <div class="p-2.5 bg-rose-50 border border-rose-100 rounded-2xl flex items-center gap-2.5 mb-2.5 text-left">
+          <button id="play-btn" onclick="toggleAudio()" class="w-8 h-8 rounded-full bg-rose-800 text-white flex items-center justify-center shadow transition-all focus:outline-none flex-shrink-0">
             <span id="play-icon" class="text-xs ml-0.5">▶</span>
           </button>
           <div class="flex-1 min-w-0">
-            <p class="text-[9px] uppercase font-bold tracking-widest text-rose-600 font-sans mb-1">🎙️ Voice Note</p>
+            <p class="text-[8px] uppercase font-bold tracking-widest text-rose-600 font-sans mb-0.5">🎙️ Voice Note</p>
             <div id="mini-timeline" onclick="seekAudio(event)" class="w-full h-1 bg-rose-200 rounded-full cursor-pointer relative">
               <div id="audio-progress" class="absolute left-0 top-0 bottom-0 w-0 bg-rose-600 rounded-full transition-all duration-100 ease-linear"></div>
             </div>
           </div>
-          <span id="audio-time" class="text-[10px] font-semibold text-rose-500 font-sans flex-shrink-0">0:00</span>
+          <span id="audio-time" class="text-[9px] font-semibold text-rose-500 font-sans flex-shrink-0">0:00</span>
           <audio id="audio-el" src="\${voiceNoteSrc}" ontimeupdate="updateAudioProgress()" onloadedmetadata="initAudioMetadata()"></audio>
         </div>
         \` : ""}
@@ -1117,21 +1117,30 @@ export function generateDateInvitationHtml(config: PublishedConfig): string {
 
     // ── Share ──
     document.getElementById('share-ticket-btn').addEventListener('click', async () => {
+      const shareUrl = new URL(window.location.href);
+      shareUrl.searchParams.set('result', 'ticket');
+      shareUrl.searchParams.set('date', selectedDate);
+      shareUrl.searchParams.set('time', selectedTime);
+      shareUrl.searchParams.set('activities', JSON.stringify(selectedActivities));
+      if (replyMessage) {
+        shareUrl.searchParams.set('reply', replyMessage);
+      }
+      
       const shareData = {
         title: 'DearNote Date Ticket 🌹',
         text: isEn 
           ? \`We have a date on \${selectedDate} at \${selectedTime}!! 💕 See the ticket here!\`
           : \`\${selectedDate} jam \${selectedTime} kita kencan ya!! 💕 Cek tiketnya di sini!\`,
-        url: window.location.href
+        url: shareUrl.toString()
       };
       try {
         if (navigator.share) await navigator.share(shareData);
         else {
-          await navigator.clipboard.writeText(window.location.href);
+          await navigator.clipboard.writeText(shareUrl.toString());
           alert(isEn ? 'Ticket link copied! Share it with them 💌' : 'Link tiket berhasil dicopy! Bagikan ke dia ya 💌');
         }
       } catch {
-        await navigator.clipboard.writeText(window.location.href);
+        await navigator.clipboard.writeText(shareUrl.toString());
         alert(isEn ? 'Ticket link copied! 💌' : 'Link tiket berhasil dicopy! 💌');
       }
     });
@@ -1243,6 +1252,43 @@ export function generateDateInvitationHtml(config: PublishedConfig): string {
 
     window.addEventListener('load', () => {
       setTimeout(initAudioMetadata, 1000);
+      
+      // Auto load ticket if ?result=ticket is in query params
+      const urlParams = new URLSearchParams(window.location.search);
+      const resultParam = urlParams.get('result');
+      if (resultParam === 'ticket') {
+        selectedDate = urlParams.get('date') || '';
+        selectedTime = urlParams.get('time') || '';
+        try {
+          selectedActivities = JSON.parse(urlParams.get('activities') || '[]');
+        } catch(e) {
+          selectedActivities = [];
+        }
+        replyMessage = urlParams.get('reply') || '';
+        
+        CHAPTERS.forEach(ch => {
+          const el = document.getElementById(ch);
+          if (el) {
+            el.classList.remove('active');
+            el.style.opacity = '0';
+            el.style.visibility = 'hidden';
+            el.style.pointerEvents = 'none';
+          }
+        });
+        const ticketEl = document.getElementById('ch-ticket');
+        if (ticketEl) {
+          ticketEl.classList.add('active');
+          ticketEl.style.opacity = '1';
+          ticketEl.style.visibility = 'visible';
+          ticketEl.style.pointerEvents = 'auto';
+        }
+        currentIdx = CHAPTERS.indexOf('ch-ticket');
+        const cg = document.getElementById('code-gate');
+        if (cg) cg.classList.add('hidden');
+        
+        populateTicket();
+        updateNav();
+      }
     });
 
     updateNav();
