@@ -284,7 +284,7 @@ export function generateDateTicketHtml(config: PublishedConfig): string {
       box-shadow: 0 15px 45px rgba(0,0,0,0.15);
       max-width: 480px;
       width: 100%;
-      min-height: 180px;
+      min-height: 200px;
       position: relative;
       overflow: hidden;
       font-family: 'Plus Jakarta Sans', sans-serif;
@@ -660,11 +660,11 @@ export function generateDateTicketHtml(config: PublishedConfig): string {
         <div>
           <p class="text-[8px] font-extrabold uppercase tracking-widest text-red-500 mb-0.5">★ ★ ★ VIP GUEST TICKET ★ ★ ★</p>
           <!-- Names -->
-          <h2 class="font-sans font-extrabold text-sm text-slate-800 leading-tight uppercase truncate" id="ticket-couple-names">
+          <h2 class="font-sans font-extrabold text-sm text-slate-800 leading-normal uppercase pb-0.5" id="ticket-couple-names">
             ${config.fromName} + ${config.toName}
           </h2>
           <!-- Tour Title -->
-          <p class="font-ticket text-[9px] font-bold text-slate-600 leading-tight mt-0.5 truncate uppercase">
+          <p class="font-ticket text-[9px] font-bold text-slate-600 leading-normal mt-0.5 pb-0.5 uppercase">
             ${inviteTitle}
           </p>
         </div>
@@ -687,15 +687,15 @@ export function generateDateTicketHtml(config: PublishedConfig): string {
 
         <!-- Location & Website url (similar to reference) -->
         <div class="text-center my-1.5">
-          <p class="font-extrabold text-xs text-slate-800 uppercase tracking-widest leading-none" id="ticket-location">PARIS, FRANCE</p>
+          <p class="font-extrabold text-xs text-slate-800 uppercase tracking-widest leading-normal pb-0.5" id="ticket-location">PARIS, FRANCE</p>
           <p class="font-ticket text-[9px] text-slate-600 lowercase tracking-tighter mt-1" id="ticket-website"></p>
         </div>
 
         <!-- Location details/activities summary -->
         <div class="text-[7.5px] text-slate-500 space-y-0.5 border-t border-dashed border-slate-100 pt-1.5">
-          <p class="truncate uppercase"><strong class="text-slate-700">WAKTU:</strong> <span id="ticket-time">—</span></p>
-          <p class="truncate uppercase"><strong class="text-slate-700">AGENDA:</strong> <span id="ticket-agenda">—</span></p>
-          <p class="truncate uppercase hidden" id="ticket-note-wrap"><strong class="text-slate-700">NOTE:</strong> <span id="ticket-note">—</span></p>
+          <p class="uppercase py-0.5 leading-normal"><strong class="text-slate-700">WAKTU:</strong> <span id="ticket-time">—</span></p>
+          <p class="uppercase py-0.5 leading-normal"><strong class="text-slate-700">AGENDA:</strong> <span id="ticket-agenda">—</span></p>
+          <p class="uppercase py-0.5 leading-normal hidden" id="ticket-note-wrap"><strong class="text-slate-700">NOTE:</strong> <span id="ticket-note">—</span></p>
         </div>
       </div>
 
@@ -1264,7 +1264,7 @@ export function generateDateTicketHtml(config: PublishedConfig): string {
       
       const fromClean = ${JSON.stringify(config.fromName)}.toLowerCase().replace(/[^a-z0-9]/g, '');
       const toClean = ${JSON.stringify(config.toName)}.toLowerCase().replace(/[^a-z0-9]/g, '');
-      document.getElementById('ticket-website').textContent = fromClean + toClean + '.dearnote.com';
+      document.getElementById('ticket-website').textContent = fromClean + '-' + toClean + '.dearnote.com';
     }
 
     // ── Share ──
