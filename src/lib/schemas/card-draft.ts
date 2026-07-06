@@ -76,7 +76,7 @@ export const CardDraftSchema = z.object({
   toName: z.string().min(1, { message: "Nama penerima wajib diisi" }).max(40, { message: "Nama penerima maksimal 40 karakter" }),
   secretCode: z.string().max(12, { message: "Kode akses maksimal 12 karakter" }).optional(), // Cosmetic code (optional)
   letterTitle: z.string().max(80, { message: "Judul catatan maksimal 80 karakter" }).optional(),
-  letterBody: z.string().min(1, { message: "Isi catatan wajib diisi" }).max(3000, { message: "Isi catatan maksimal 3000 karakter" }),
+  letterBody: z.string().min(1, { message: "Isi catatan wajib diisi" }).max(5000, { message: "Isi catatan maksimal 5000 karakter" }),
   photos: z.array(DraftPhotoSchema).max(5, { message: "Maksimal hanya boleh 5 foto" }),
   voiceNote: DraftVoiceNoteSchema.optional(),
   bgMusic: DraftBgMusicSchema.optional(),
@@ -116,7 +116,7 @@ export const PublishedConfigSchema = z.object({
   toName: z.string().min(1).max(40),
   secretCode: z.string().max(12).optional(),
   letterTitle: z.string().max(80).optional(),
-  letterBody: z.string().min(1).max(3000),
+  letterBody: z.string().min(1).max(5000),
   photos: z.array(PublishedPhotoSchema).max(5),
   voiceNote: PublishedVoiceNoteSchema.optional(),
   bgMusic: PublishedBgMusicSchema.optional(),

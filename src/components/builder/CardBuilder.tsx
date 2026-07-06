@@ -365,13 +365,13 @@ export default function CardBuilder() {
                 {t.letterBodyLabel} <span className="text-red-500">*</span>
               </label>
               <span className="text-xs text-gray-500 font-medium">
-                {formValues.letterBody?.length || 0}/3000
+                {formValues.letterBody?.length || 0}/5000
               </span>
             </div>
             <textarea
               placeholder={t.letterBodyPlaceholder}
               {...register("letterBody")}
-              maxLength={3000}
+              maxLength={5000}
               rows={8}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent text-sm text-gray-900 leading-relaxed resize-none"
             />
