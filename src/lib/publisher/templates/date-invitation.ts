@@ -357,6 +357,7 @@ export function generateDateInvitationHtml(config: PublishedConfig): string {
       .chapter > .card, .chapter > .date-ticket { transform: scale(0.82); }
     }
   </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body class="relative min-h-screen">
   <div class="bg-pattern"></div>
@@ -635,8 +636,11 @@ export function generateDateInvitationHtml(config: PublishedConfig): string {
 
     <!-- Share button below ticket -->
     <div class="mt-4 w-full max-w-[380px] flex flex-col gap-2">
-      <button id="share-ticket-btn" class="btn-rose w-full text-sm">
-        ${isEn ? "📤 Share Our Ticket!" : "📤 Bagikan Tiket Kita!"}
+      <button id="share-ticket-img-btn" class="btn-rose w-full text-sm flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold border-none">
+        📸 ${isEn ? "Share Ticket as Image" : "Bagikan Foto Tiket"}
+      </button>
+      <button id="share-ticket-btn" class="btn-rose w-full text-sm flex items-center justify-center gap-2">
+        🔗 ${isEn ? "Share Our Ticket Link!" : "Bagikan Link Tiket Kita!"}
       </button>
       <button id="back-home-btn" class="btn-ghost w-full text-xs">
         ${isEn ? "Back to Home~" : "Kembali ke Home~"}
@@ -1142,6 +1146,35 @@ export function generateDateInvitationHtml(config: PublishedConfig): string {
       } catch {
         await navigator.clipboard.writeText(shareUrl.toString());
         alert(isEn ? 'Ticket link copied! 💌' : 'Link tiket berhasil dicopy! 💌');
+      }
+    });
+
+    document.getElementById('share-ticket-img-btn').addEventListener('click', async () => {
+      const ticketEl = document.querySelector('.date-ticket');
+      if (!ticketEl) return;
+      try {
+        const canvas = await html2canvas(ticketEl, { useCORS: true, scale: 2 });
+        
+        // 1. Trigger Auto-Download first
+        const link = document.createElement('a');
+        link.download = 'date-ticket.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+
+        // 2. Trigger Share File
+        canvas.toBlob(async (blob) => {
+          if (!blob) return;
+          const file = new File([blob], 'date-ticket.png', { type: 'image/png' });
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({
+              files: [file],
+              title: isEn ? 'Date Ticket' : 'Tiket Kencan',
+              text: isEn ? 'Look at our Date Ticket! 💕' : 'Lihat tiket kencan kita! 💕'
+            });
+          }
+        }, 'image/png');
+      } catch (err) {
+        console.error(err);
       }
     });
 

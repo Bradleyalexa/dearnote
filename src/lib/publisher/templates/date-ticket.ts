@@ -441,6 +441,7 @@ export function generateDateTicketHtml(config: PublishedConfig): string {
       .chapter > .card, .chapter > .concert-ticket { transform: scale(0.82); }
     }
   </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body class="relative min-h-screen">
   <div class="bg-pattern"></div>
@@ -730,8 +731,11 @@ export function generateDateTicketHtml(config: PublishedConfig): string {
 
     <!-- Actions -->
     <div class="mt-5 w-full max-w-[380px] flex flex-col gap-2">
-      <button id="share-ticket-btn" class="btn-action w-full text-sm flex items-center justify-center gap-2">
-        ${isEn ? "📤 Share VIP Date Ticket" : "📤 Bagikan Tiket Kencan VIP"}
+      <button id="share-ticket-img-btn" class="w-full btn-action text-sm flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold">
+        📸 ${isEn ? "Share Ticket as Image" : "Bagikan Foto Tiket"}
+      </button>
+      <button id="share-ticket-btn" class="w-full btn-action text-sm flex items-center justify-center gap-2">
+        🔗 ${isEn ? "Share VIP Date Ticket Link" : "Bagikan Link Tiket"}
       </button>
       <button id="back-home-btn" class="btn-ghost w-full text-xs py-2">
         ${isEn ? "Back to Home" : "Kembali ke Home"}
@@ -1290,6 +1294,35 @@ export function generateDateTicketHtml(config: PublishedConfig): string {
       } catch {
         await navigator.clipboard.writeText(shareUrl.toString());
         alert(isEn ? 'Ticket link copied! 🎫' : 'Link tiket berhasil disalin! 🎫');
+      }
+    });
+
+    document.getElementById('share-ticket-img-btn').addEventListener('click', async () => {
+      const ticketEl = document.querySelector('.concert-ticket');
+      if (!ticketEl) return;
+      try {
+        const canvas = await html2canvas(ticketEl, { useCORS: true, scale: 2 });
+        
+        // 1. Trigger Auto-Download first
+        const link = document.createElement('a');
+        link.download = 'concert-ticket.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+
+        // 2. Trigger Share File
+        canvas.toBlob(async (blob) => {
+          if (!blob) return;
+          const file = new File([blob], 'concert-ticket.png', { type: 'image/png' });
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({
+              files: [file],
+              title: isEn ? 'VIP Date Ticket' : 'Tiket Kencan VIP',
+              text: isEn ? 'Look at our VIP Date Ticket! 💕' : 'Lihat tiket kencan VIP kita! 💕'
+            });
+          }
+        }, 'image/png');
+      } catch (err) {
+        console.error(err);
       }
     });
 

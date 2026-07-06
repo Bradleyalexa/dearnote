@@ -250,6 +250,7 @@ export function generateBoyfriendPermitHtml(config: PublishedConfig): string {
       transform: translateY(1px);
     }
   </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body class="relative min-h-screen">
   <div class="grid-bg"></div>
@@ -449,7 +450,7 @@ export function generateBoyfriendPermitHtml(config: PublishedConfig): string {
 
   <!-- ── 4. OFFICIAL APPROVED PERMIT DECREE ── -->
   <div class="chapter" id="ch-approved">
-    <div class="bg-white border-4 border-double border-slate-400 rounded-3xl shadow-2xl max-w-md w-full p-6 relative z-10 my-auto font-sans">
+    <div id="permit-certificate-card" class="bg-white border-4 border-double border-slate-400 rounded-3xl shadow-2xl max-w-md w-full p-6 relative z-10 my-auto font-sans">
       <!-- Legal Seal Banner -->
       <div class="text-center border-b-4 border-double border-slate-300 pb-3 mb-4">
         <h3 class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Sertifikat Perizinan Sah</h3>
@@ -513,8 +514,11 @@ export function generateBoyfriendPermitHtml(config: PublishedConfig): string {
 
       <!-- Action Button: Share / Copy Izin -->
       <div class="mt-5 pt-2 flex flex-col gap-2">
+        <button id="share-permit-img-btn" class="w-full btn-action flex items-center justify-center gap-2 text-sm bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-semibold">
+          📸 Bagikan Foto Izin Resmi
+        </button>
         <button id="share-permit-btn" class="w-full btn-action flex items-center justify-center gap-2 text-sm">
-          📤 Bagikan Surat Izin Resmi
+          🔗 Bagikan Link Surat Izin
         </button>
         <button id="back-home-btn" class="w-full py-2.5 text-center text-xs font-semibold text-slate-500 hover:text-slate-700 transition-colors">
           Kembali ke Home
@@ -815,6 +819,35 @@ export function generateBoyfriendPermitHtml(config: PublishedConfig): string {
       } catch (err) {
         await navigator.clipboard.writeText(shareUrl.toString());
         alert('Tautan surat izin berhasil disalin! 🌸');
+      }
+    });
+
+    document.getElementById('share-permit-img-btn').addEventListener('click', async () => {
+      const cardEl = document.getElementById('permit-certificate-card');
+      if (!cardEl) return;
+      try {
+        const canvas = await html2canvas(cardEl, { useCORS: true, scale: 2 });
+        
+        // 1. Trigger Auto-Download first
+        const link = document.createElement('a');
+        link.download = 'boyfriend-permit.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+
+        // 2. Trigger Share File
+        canvas.toBlob(async (blob) => {
+          if (!blob) return;
+          const file = new File([blob], 'boyfriend-permit.png', { type: 'image/png' });
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({
+              files: [file],
+              title: 'Surat Izin Resmi - DearNote',
+              text: 'Lihat surat izin resmi aku yang sudah disetujui! 💕📜'
+            });
+          }
+        }, 'image/png');
+      } catch (err) {
+        console.error(err);
       }
     });
 
