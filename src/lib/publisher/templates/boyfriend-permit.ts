@@ -1,6 +1,7 @@
 import { PublishedConfig } from "../../schemas/card-draft";
 
 export function generateBoyfriendPermitHtml(config: PublishedConfig): string {
+  const appUrl = process.env.APP_URL || "https://dearnote.asia";
   const hasSecretCode = !!config.secretCode;
   const letterTitle = config.letterTitle || "Minta Izin Khusus 🥺";
   const escapedLetterBody = JSON.stringify(config.letterBody);
@@ -853,7 +854,7 @@ export function generateBoyfriendPermitHtml(config: PublishedConfig): string {
 
     // top window redirection home
     document.getElementById('back-home-btn').addEventListener('click', () => {
-      window.top.location.href = '/';
+      window.top.location.href = '${appUrl}';
     });
 
     function triggerConfettiRain() {

@@ -1,6 +1,7 @@
 import { PublishedConfig } from "../../schemas/card-draft";
 
 export function generateDateTicketHtml(config: PublishedConfig): string {
+  const appUrl = process.env.APP_URL || "https://dearnote.asia";
   const isEn = config.lang === "en";
   const hasVoiceNote = !!config.voiceNote && !!config.voiceNote.src;
   const voiceNoteSrc = config.voiceNote?.src || "";
@@ -1327,7 +1328,7 @@ export function generateDateTicketHtml(config: PublishedConfig): string {
     });
 
     document.getElementById('back-home-btn').addEventListener('click', () => {
-      window.top.location.href = '/';
+      window.top.location.href = '${appUrl}';
     });
 
     // ── Spawn floating hearts ──
