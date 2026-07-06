@@ -457,11 +457,19 @@ export function generateScrapbookHtml(config: PublishedConfig): string {
         if (index < limit) {
           container.innerHTML += text.charAt(index);
           index++;
-          
           if (window.innerHeight + window.scrollY < document.body.offsetHeight) {
             window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
           }
           setTimeout(type, speed);
+        } else if (text.length > 1000) {
+          const remaining = text.substring(index);
+          const span = document.createElement('span');
+          span.style.opacity = '0';
+          span.style.transition = 'opacity 1.0s ease-in-out';
+          span.innerHTML = remaining;
+          container.appendChild(span);
+          setTimeout(() => { span.style.opacity = '1'; }, 50);
+          revealExtraSections();
         } else {
           revealExtraSections();
         }

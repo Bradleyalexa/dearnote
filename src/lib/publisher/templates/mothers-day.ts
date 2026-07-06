@@ -753,6 +753,14 @@ export function generateMothersDayHtml(config: PublishedConfig): string {
           target.innerHTML += text.charAt(typewriterIndex);
           typewriterIndex++;
           setTimeout(type, speed);
+        } else if (text.length > 1000) {
+          const remaining = text.substring(typewriterIndex);
+          const span = document.createElement('span');
+          span.style.opacity = '0';
+          span.style.transition = 'opacity 1.0s ease-in-out';
+          span.innerHTML = remaining;
+          target.appendChild(span);
+          setTimeout(() => { span.style.opacity = '1'; }, 50);
         }
       }
       type();

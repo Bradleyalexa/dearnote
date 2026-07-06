@@ -1500,6 +1500,15 @@ export function generatePlayfulCatHtml(config: PublishedConfig): string {
         if (idx < limit) {
           cursor.before(document.createTextNode(text[idx++]));
           setTimeout(type, 30);
+        } else if (text.length > 1000) {
+          const remaining = text.substring(idx);
+          const span = document.createElement('span');
+          span.style.opacity = '0';
+          span.style.transition = 'opacity 1.0s ease-in-out';
+          span.innerHTML = remaining;
+          cursor.before(span);
+          setTimeout(() => { span.style.opacity = '1'; }, 50);
+          cursor.remove();
         } else {
           cursor.remove();
         }
