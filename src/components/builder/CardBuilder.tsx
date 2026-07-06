@@ -621,7 +621,7 @@ export default function CardBuilder() {
               value={field.value} 
               onChange={field.onChange} 
               max={
-                formValues.template === "date_invitation"
+                formValues.template === "date_invitation" || formValues.template === "boyfriend_permit"
                   ? 1
                   : formValues.template === "date_ticket"
                   ? 2

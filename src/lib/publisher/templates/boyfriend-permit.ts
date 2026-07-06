@@ -211,17 +211,19 @@ export function generateBoyfriendPermitHtml(config: PublishedConfig): string {
 
     /* Official Stamp Style */
     .approved-stamp {
-      border: 4px solid #10b981;
+      border: 3px solid #10b981;
       color: #10b981;
-      padding: 6px 18px;
-      border-radius: 8px;
+      padding: 4px 12px;
+      border-radius: 6px;
       font-family: 'Fredoka', sans-serif;
       font-weight: bold;
       text-transform: uppercase;
       transform: rotate(-15deg);
       display: inline-block;
-      letter-spacing: 2px;
-      font-size: 1.5rem;
+      letter-spacing: 1px;
+      font-size: 1rem;
+      white-space: nowrap;
+      flex-shrink: 0;
       animation: stamp-pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
       opacity: 0;
       background: rgba(255,255,255,0.9);
