@@ -355,49 +355,319 @@ export function makeDummyDraft(templateId: TemplateType) {
   };
 }
 
+const TEMPLATE_TRANSLATIONS: Record<
+  "id" | "en",
+  Record<string, { name: string; description: string }>
+> = {
+  id: {
+    classic_editorial: {
+      name: "Classic Editorial",
+      description: "Tipografi serif klasik, kertas krem hangat, serta efek partikel debu halus yang elegan."
+    },
+    nocturnal_journal: {
+      name: "Nocturnal Journal",
+      description: "Jurnal bertema langit malam bertabur bintang, gelap, tenang, dan minimalis."
+    },
+    apology_letter: {
+      name: "Apology Letter",
+      description: "Amplop dengan segel lilin wax, surat tulisan tangan tulus — menyentuh hati."
+    },
+    scrapbook: {
+      name: "Vintage Scrapbook",
+      description: "Sampul cokelat tua klasik, tumpukan foto polaroid yang bisa digeser, nuansa nostalgia."
+    },
+    pink_book_folds: {
+      name: "Pink Book Folds",
+      description: "Binder merah muda pastel imut, animasi lipatan kertas 3D, kaset musik klasik."
+    },
+    open_when_cards: {
+      name: "Open When Cards",
+      description: "Koleksi amplop lipat interaktif 'Buka Saat...' untuk berbagai momen penting."
+    },
+    gift_box_reveal: {
+      name: "Gift Box Reveal",
+      description: "Kotak hadiah 3D interaktif, tarik pita pembuka, ledakan konfeti perayaan!"
+    },
+    playful_gift: {
+      name: "Playful Cute Gift",
+      description: "Kotak kado merah muda pastel imut, balon & gelembung ceria."
+    },
+    playful_dog: {
+      name: "Playful Shiba Dog",
+      description: "Shiba Inu interaktif! Ketuk untuk membangunkan, beri makan tulang, main bola."
+    },
+    playful_pooh: {
+      name: "Playful Pooh Bear",
+      description: "Beruang Pooh sedang tidur, bangunkan dia, makan madu, main lebah — sangat lucu!"
+    },
+    playful_cat: {
+      name: "Playful Cozy Cat",
+      description: "Buka kiriman kotak misterius, mainkan laser merah, suapi kue ikan, dan manjakan si manis untuk membaca pesanmu."
+    },
+    birthday_magic: {
+      name: "Birthday Magic",
+      description: "Template ulang tahun termewah! Terbangkan balon, tiup lilin kue interaktif, geser foto kenangan 3D, dan nyalakan kembang api!"
+    },
+    blooming_note: {
+      name: "Blooming Note",
+      description: "Template kejutan bunga premium. Ketuk amplop bersiggel wax untuk melihat sulur tanaman tumbuh dan bunga liar bermekaran indah di layar."
+    },
+    graduation_note: {
+      name: "Graduation Note",
+      description: "Perayaan kelulusan wisuda premium. Desain elegan warna navy & emas, gulungan ijazah interaktif, ledakan konfeti meriah."
+    },
+    graduation_memory_lane: {
+      name: "Graduation Memory Lane",
+      description: "Jurnal kenangan wisuda satu halaman. Tema krem & emas hangat, galeri foto scrapbook, dan kartu audio dengan catatan kaki P.S. merah muda."
+    },
+    sweet_cradle: {
+      name: "Sweet Cradle Surprise",
+      description: "Ucapan selamat kelahiran bayi premium. Ayunkan ranjang bayi interaktif, putar mainan gantung, segel cap kaki bayi, dan lagu pengantar tidur lembut."
+    },
+    eternal_love: {
+      name: "Eternal Love Cinema",
+      description: "Template pasangan paling premium — bab sinematik, partikel mengalir, mesin tik kuno, galeri polaroid & kembang api penutup."
+    },
+    anniversary_scrapbook: {
+      name: "Anniversary Scrapbook",
+      description: "Template anniversary premium dengan partikel berkilau, aksen rose gold, surat cinta mesin tik, dan kolase galeri kenangan scrapbook antik."
+    },
+    tender_welcome: {
+      name: "Tender Welcome Nursery",
+      description: "Ucapan selamat kelahiran bayi bergaya minimalis hangat. Tema kain linen krem pasir, segel lilin cap daun, pancaran sinar mentari pagi, dan motif zaitun."
+    },
+    christmas_magic: {
+      name: "Christmas Magic",
+      description: "Template Natal ajaib! Kocok snowglobe interaktif, hias & nyalakan lampu pohon Natal, baca kartu ucapan di bawah lampu peri, dan lihat Santa terbang!"
+    },
+    ramadhan_blessings: {
+      name: "Ramadan Blessings",
+      description: "Template Ramadan & Lebaran yang damai. Nyalakan lentera gantung, pukul bedug, buka ketupat interaktif, baca gulungan surat, dan terbangkan lampion!"
+    },
+    mothers_day: {
+      name: "Mother's Herbarium Book",
+      description: "Jurnal bunga pres 3D Hari Ibu. Buka sampul linen, balik halaman tulisan tangan kenangan, dan temukan foto polaroid dengan kelopak bunga berguguran."
+    },
+    herbarium_book: {
+      name: "Classic Herbarium Book",
+      description: "Jurnal bunga pres klasik 3D. Seret & letakkan bunga kering, putar tumpukan foto polaroid, dan tarik surat rahasia. Cocok untuk pacar, sahabat, atau gebetan."
+    },
+    teachers_day: {
+      name: "Teacher's Chalkboard Notebook",
+      description: "Notebook papan tulis untuk Hari Guru. Hapus cover papan tulis dengan penghapus spons, beri nilai bintang interaktif di rapot guru, putar foto, dan buka kado apel merah 3D."
+    },
+    fathers_day: {
+      name: "Father's Classic Wallet",
+      description: "Dompet kulit gelap klasik untuk Hari Ayah. Buka kancing kuningan dompet, cap stiker penghargaan Ayah, lihat foto polaroid di meja kerja, dan tarik surat jam saku antik."
+    },
+    cute_apology: {
+      name: "Cute Couple Apology",
+      description: "Kirim permintaan maaf menggemaskan ke pasanganmu. Lepas plester luka pink di amplop, kumpulkan poin maaf lewat sesajen Boba/Cokelat, dan pecahkan kue keberuntungan."
+    },
+    farewell_keepsake: {
+      name: "Sincere Farewell",
+      description: "Desain bersih, elegan, dan khidmat untuk perpisahan rekan kerja, teman, atau guru. Berfokus penuh pada ketulusan pesan, foto berbingkai rapi, dan rekaman suara hangat."
+    },
+    evasive_confession: {
+      name: "Evasive Confession",
+      description: "Desain retro Windows 95 pink super lucu dengan 4 pilihan mini-game interaktif pembuka. Tombol 'Gak' akan kabur saat didekati, memaksanya menjawab 'Mau'!"
+    },
+    boyfriend_permit: {
+      name: "Boyfriend's Permission Slip",
+      description: "Template lucu buat cowok yang mau minta izin (mabar, nongkrong, beli barang). Dilengkapi sesi penyuapan (bribery) interaktif, tombol 'Gak' yang kabur, dan Surat Izin Resmi!"
+    },
+    date_invitation: {
+      name: "Date Invitation 🌹",
+      description: "Undang pasanganmu kencan dengan cara paling imut! Pilih tanggal kencan bersama, tentukan kegiatannya, tunggu countdown, dan cetak Tiket Kencan resmi!"
+    },
+    date_ticket: {
+      name: "Concert Date Ticket 🎫",
+      description: "Undang kencan ala tiket konser atau boarding pass! Lengkap dengan cetakan foto, barcode, dan detail kursi tanggal kencan kustom."
+    },
+    selfie_detector: {
+      name: "Detective Beauty Dossier 🔍",
+      description: "Template interaktif bertema berkas kasus detektif untuk meminta foto selfie pacar. Dilengkapi amplop rahasia, upeti sogokan, dan kamera pengambil PAP kustom!"
+    },
+    selfie_request: {
+      name: "Selfie Request Pager 📱",
+      description: "Kirim permintaan PAP kustom dengan gaya pager Y2K & mock chat estetis! Lengkap dengan runaway button 'Gak Mau', serta fitur jepret foto langsung ke frame polaroid."
+    }
+  },
+  en: {
+    classic_editorial: {
+      name: "Classic Editorial",
+      description: "Elegant serif typography, warm cream paper, subtle dust particles."
+    },
+    nocturnal_journal: {
+      name: "Nocturnal Journal",
+      description: "Starry night sky, dark, quiet, and minimalist."
+    },
+    apology_letter: {
+      name: "Apology Letter",
+      description: "Wax-sealed envelope, heartfelt handwritten letter — touching."
+    },
+    scrapbook: {
+      name: "Vintage Scrapbook",
+      description: "Dark brown cover, draggable polaroids, nostalgic feel."
+    },
+    pink_book_folds: {
+      name: "Pink Book Folds",
+      description: "Cute pastel pink binder, 3D page animations, cassette tape."
+    },
+    open_when_cards: {
+      name: "Open When Cards",
+      description: "Collection of interactive envelope flip-cards for various moments."
+    },
+    gift_box_reveal: {
+      name: "Gift Box Reveal",
+      description: "3D gift box, pull ribbon, celebratory confetti!"
+    },
+    playful_gift: {
+      name: "Playful Cute Gift",
+      description: "Cute pastel pink gift box, cheerful balloons & bubbles."
+    },
+    playful_dog: {
+      name: "Playful Shiba Dog",
+      description: "Interactive Shiba Inu! Tap to wake up, feed bones, play ball."
+    },
+    playful_pooh: {
+      name: "Playful Pooh Bear",
+      description: "Sleeping Pooh, wake up, eat honey, play with bees — super cute!"
+    },
+    playful_cat: {
+      name: "Playful Cozy Cat",
+      description: "Open a mysterious box, play with red laser, feed fish treats, and pamper the kitty to unlock your letter."
+    },
+    birthday_magic: {
+      name: "Birthday Magic",
+      description: "Ultimate flagship birthday template! Pop rising balloons, blow out interactive cake candles, swipe 3D memories, and trigger fireworks!"
+    },
+    blooming_note: {
+      name: "Blooming Note",
+      description: "Heartwarming floral surprise flagship. Tap the wax-sealed envelope to watch procedurally growing vines and blooming wildflowers fill the screen."
+    },
+    graduation_note: {
+      name: "Graduation Note",
+      description: "Premium flagship graduation celebration. Sophisticated navy & gold design, elegant diploma scroll reveal, confetti burst."
+    },
+    graduation_memory_lane: {
+      name: "Graduation Memory Lane",
+      description: "Elegant single-page graduation memory lane. Cozy cream & gold theme, photo scrapbook grid, and audio card with pink P.S. details."
+    },
+    sweet_cradle: {
+      name: "Sweet Cradle Surprise",
+      description: "Heartwarming newborn baby congratulations flagship template. Interactive cradle rocking, spinning mobile, baby footprint wax seal, and sweet pastel lullaby elements."
+    },
+    eternal_love: {
+      name: "Eternal Love Cinema",
+      description: "Most premium couple template — cinematic chapters, canvas particles, typewriter, polaroid gallery & fireworks finale."
+    },
+    anniversary_scrapbook: {
+      name: "Anniversary Scrapbook",
+      description: "Premium anniversary template with interactive glowing particles, rose gold accents, typewriter love letter, and a gorgeous collaged vintage scrapbook memories gallery."
+    },
+    tender_welcome: {
+      name: "Tender Welcome Nursery",
+      description: "Elegant minimalist newborn congratulations template for parents. Warm sand-beige linen theme, hand-pressed leaf wax seal, gentle morning sunbeam glow, and olive branch motifs."
+    },
+    christmas_magic: {
+      name: "Christmas Magic",
+      description: "Magical Christmas flagship template! Shake the interactive snow globe, decorate & light up the Christmas tree, read cozy cards on glowing fairy lights, and watch Santa fly across the night sky!"
+    },
+    ramadhan_blessings: {
+      name: "Ramadan Blessings",
+      description: "Warm and peaceful Ramadan/Eid flagship template. Light the hanging lantern, strike the Bedug drum, unwrap the Ketupat, read scroll letters, and watch lanterns float up!"
+    },
+    mothers_day: {
+      name: "Mother's Herbarium Book",
+      description: "Elegant 3D pressed-flower herbarium journal. Flip open the linen cover, turn pages of handwritten memories, and discover cozy taped Polaroids with falling flower petals."
+    },
+    herbarium_book: {
+      name: "Classic Herbarium Book",
+      description: "Elegant 3D pressed-flower journal. Drag & drop flowers, cycle polaroid photo stack, and slide out a secret pocket letter. Suitable for partners, best friends, or crushes."
+    },
+    teachers_day: {
+      name: "Teacher's Chalkboard Notebook",
+      description: "Chalkboard-themed tribute book for teachers. Erase the chalkboard cover with the sponge eraser, grade your teacher with interactive stars/stickers on the report card, cycle photos, and open a 3D red apple gift note."
+    },
+    fathers_day: {
+      name: "Father's Classic Wallet",
+      description: "Classic dark-leather wallet journal tribute to Father. Unbuckle the brass snap fastener, click interactive stamps on Dad's badge board, view warm polaroid photos on a workbench desk, and slide out a vintage pocket watch message."
+    },
+    cute_apology: {
+      name: "Cute Couple Apology",
+      description: "Send a cute apology. Peel off the pink Band-Aid, collect forgiveness points with boba/chocolate treats, and crack open a fortune cookie."
+    },
+    farewell_keepsake: {
+      name: "Sincere Farewell",
+      description: "Clean, elegant, and solemn design for farewells. Fully focuses on sincere letter text, neat photo frames, and a warm voice note."
+    },
+    evasive_confession: {
+      name: "Evasive Confession",
+      description: "Super cute retro pink Windows 95 layout with 4 opening mini-games. The 'No' button runs away, forcing them to click 'Yes'!"
+    },
+    boyfriend_permit: {
+      name: "Boyfriend's Permission Slip",
+      description: "A cute and playful template for boys/husbands asking for permission (buying stuff, gaming, going out). Features interactive bribery vouchers, a runaway 'No' button, and a shareable Approved Slip!"
+    },
+    date_invitation: {
+      name: "Date Invitation 🌹",
+      description: "Invite your partner on a date in the cutest way! Pick a date together, choose activities, watch the countdown, and print a shareable DearNote Date Ticket~"
+    },
+    date_ticket: {
+      name: "Concert Date Ticket 🎫",
+      description: "Invite your partner with a retro concert gig theme! Complete with barcode, customized seat/row/section date stubs, and elegant typography."
+    },
+    selfie_detector: {
+      name: "Detective Beauty Dossier 🔍",
+      description: "Playful detective-themed dossier to request a selfie from your partner. Features folder dossiers, bribery vouchers, and interactive camera framing!"
+    },
+    selfie_request: {
+      name: "Selfie Request Pager 📱",
+      description: "A cute Y2K mock chat / pager interface requesting a selfie. Features a runaway button, interactive photo drop/take, and a cute polaroid frame!"
+    }
+  }
+};
+
 interface TemplatePickerProps {
   value: TemplateType;
   onChange: (id: TemplateType) => void;
+  autoOpenFilter?: FilterType | null;
+  onAutoOpenClose?: () => void;
 }
 
-export default function TemplatePicker({ value, onChange }: TemplatePickerProps) {
+export default function TemplatePicker({ 
+  value, 
+  onChange,
+  autoOpenFilter,
+  onAutoOpenClose
+}: TemplatePickerProps) {
   const { lang } = useI18nStore();
   const [isOpen, setIsOpen] = useState(false);
   const [filter, setFilter] = useState<FilterType>("semua");
+  const [searchQuery, setSearchQuery] = useState("");
   const [highlighted, setHighlighted] = useState<TemplateType>(value);
   const [previewSrc, setPreviewSrc] = useState<string>("");
   const [previewLoading, setPreviewLoading] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const [mounted, setMounted] = useState(false);
 
-  const getTmplName = (tmpl: any) => {
-    if (lang === "en") {
-      if (tmpl.id === "playful_cat") return "Playful Cozy Cat";
-      if (tmpl.id === "cute_apology") return "Cute Couple Apology";
-      if (tmpl.id === "farewell_keepsake") return "Sincere Farewell";
-      if (tmpl.id === "evasive_confession") return "Evasive Confession";
-      if (tmpl.id === "boyfriend_permit") return "Boyfriend's Permission Slip";
-      if (tmpl.id === "date_invitation") return "Date Invitation 🌹";
-      if (tmpl.id === "date_ticket") return "Concert Date Ticket 🎫";
-      if (tmpl.id === "selfie_detector") return "Detective Beauty Dossier 🔍";
-      if (tmpl.id === "selfie_request") return "Selfie Request Pager 📱";
+  useEffect(() => {
+    if (autoOpenFilter) {
+      setFilter(autoOpenFilter);
+      setIsOpen(true);
+      if (onAutoOpenClose) onAutoOpenClose();
     }
-    return tmpl.name;
+  }, [autoOpenFilter, onAutoOpenClose]);
+
+  const getTmplName = (tmpl: any) => {
+    const l = lang === "en" ? "en" : "id";
+    return TEMPLATE_TRANSLATIONS[l][tmpl.id]?.name || tmpl.name;
   };
 
   const getTmplDesc = (tmpl: any) => {
-    if (lang === "en") {
-      if (tmpl.id === "playful_cat") return "Open a mysterious box, play with red laser, feed fish treats, and pamper the kitty to unlock your letter.";
-      if (tmpl.id === "cute_apology") return "Send a cute apology. Peel off the pink Band-Aid, collect forgiveness points with boba/chocolate treats, and crack open a fortune cookie.";
-      if (tmpl.id === "farewell_keepsake") return "Clean, elegant, and solemn design for farewells. Fully focuses on sincere letter text, neat photo frames, and a warm voice note.";
-      if (tmpl.id === "evasive_confession") return "Super cute retro pink Windows 95 layout with 4 opening mini-games. The 'No' button runs away, forcing them to click 'Yes'!";
-      if (tmpl.id === "boyfriend_permit") return "A cute and playful template for boys/husbands asking for permission (buying stuff, gaming, going out). Features interactive bribery vouchers, a runaway 'No' button, and a shareable Approved Slip!";
-      if (tmpl.id === "date_invitation") return "Invite your partner on a date in the cutest way! Pick a date together, choose activities, watch the countdown, and print a shareable DearNote Date Ticket~";
-      if (tmpl.id === "date_ticket") return "Invite your partner with a retro concert gig theme! Complete with barcode, customized seat/row/section date stubs, and elegant typography.";
-      if (tmpl.id === "selfie_detector") return "Playful detective-themed dossier to request a selfie from your partner. Features folder dossiers, bribery vouchers, and interactive camera framing!";
-      if (tmpl.id === "selfie_request") return "A cute Y2K mock chat / pager interface requesting a selfie. Features a runaway button, interactive photo drop/take, and a cute polaroid frame!";
-    }
-    return tmpl.description;
+    const l = lang === "en" ? "en" : "id";
+    return TEMPLATE_TRANSLATIONS[l][tmpl.id]?.description || tmpl.description;
   };
 
   const getFilterLabel = (f: FilterType) => {
@@ -437,12 +707,28 @@ export default function TemplatePicker({ value, onChange }: TemplatePickerProps)
   const currentTemplate = TEMPLATE_REGISTRY.find((t) => t.id === value);
 
   const filtered = TEMPLATE_REGISTRY.filter((t) => {
-    if (filter === "semua") return true;
-    const isCategory = ["minimal", "romantic", "playful", "interaktif", "hari_raya"].includes(filter);
-    if (isCategory) {
-      return t.category === filter;
+    // 1. Audience / Category Filter
+    let matchesFilter = true;
+    if (filter !== "semua") {
+      const isCategory = ["minimal", "romantic", "playful", "interaktif", "hari_raya"].includes(filter);
+      if (isCategory) {
+        matchesFilter = t.category === filter;
+      } else {
+        matchesFilter = t.audience.includes(filter as "couple" | "friend" | "family" | "general");
+      }
     }
-    return t.audience.includes(filter as "couple" | "friend" | "family" | "general");
+
+    // 2. Search Query Filter
+    let matchesSearch = true;
+    if (searchQuery.trim() !== "") {
+      const query = searchQuery.toLowerCase().trim();
+      const nameMatch = getTmplName(t).toLowerCase().includes(query);
+      const descMatch = getTmplDesc(t).toLowerCase().includes(query);
+      const tagMatch = t.tags.some(tag => tag.toLowerCase().includes(query));
+      matchesSearch = nameMatch || descMatch || tagMatch;
+    }
+
+    return matchesFilter && matchesSearch;
   }).reverse();
 
   const generatePreview = useCallback((templateId: TemplateType) => {
@@ -489,11 +775,13 @@ export default function TemplatePicker({ value, onChange }: TemplatePickerProps)
   const handleConfirm = () => {
     onChange(highlighted);
     setIsOpen(false);
+    setSearchQuery("");
   };
 
   const handleClose = () => {
     setHighlighted(value);
     setIsOpen(false);
+    setSearchQuery("");
   };
 
   useEffect(() => {
@@ -588,54 +876,91 @@ export default function TemplatePicker({ value, onChange }: TemplatePickerProps)
             <div className="flex flex-1 overflow-hidden">
 
               {/* Left: Template list */}
-              <div className="w-full sm:w-80 flex-shrink-0 overflow-y-auto border-r border-gray-100 p-4 space-y-2">
-                {filtered.map((tmpl) => {
-                  const isSelected = highlighted === tmpl.id;
-                  return (
+              <div className="w-full sm:w-80 flex-shrink-0 flex flex-col border-r border-gray-100 p-4 overflow-hidden">
+                
+                {/* Search Bar */}
+                <div className="relative mb-3 flex-shrink-0">
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder={lang === "en" ? "Search templates..." : "Cari template..."}
+                    className="w-full pl-9 pr-8 py-2 text-xs border border-gray-200 focus:border-gray-900 focus:ring-1 focus:ring-gray-900 rounded-xl transition-all outline-none"
+                  />
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                  </div>
+                  {searchQuery && (
                     <button
-                      key={tmpl.id}
                       type="button"
-                      onClick={() => handleHighlight(tmpl.id)}
-                      className={`w-full text-left px-4 py-3 rounded-xl flex items-center gap-3 transition-all cursor-pointer ${
-                        isSelected
-                          ? "bg-gray-900 shadow-md"
-                          : "hover:bg-gray-50"
-                      }`}
+                      onClick={() => setSearchQuery("")}
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-0.5"
                     >
-                      <div
-                        className="w-12 h-12 rounded-lg flex-shrink-0 shadow-sm"
-                        style={{ background: tmpl.accent }}
-                      />
-                      <div className="flex-1 min-w-0">
-                        <p className={`text-sm font-bold truncate ${isSelected ? "text-white" : "text-gray-900"}`}>
-                          {getTmplName(tmpl)}
-                        </p>
-                        <p className={`text-xs line-clamp-2 mt-1 ${isSelected ? "text-gray-300" : "text-gray-500"}`}>
-                          {getTmplDesc(tmpl)}
-                        </p>
-                        {tmpl.tags.length > 0 && (
-                          <div className="flex gap-1 mt-2 flex-wrap">
-                            {tmpl.tags.slice(0, 2).map((tag) => (
-                              <span
-                                key={tag}
-                                className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                                  isSelected ? "bg-gray-700 text-gray-200" : "bg-gray-100 text-gray-600"
-                                }`}
-                              >
-                                {tag}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                      {isSelected && (
-                        <svg className="w-5 h-5 text-white flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                        </svg>
-                      )}
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                      </svg>
                     </button>
-                  );
-                })}
+                  )}
+                </div>
+
+                {/* List container */}
+                <div className="flex-1 overflow-y-auto space-y-2 pr-1">
+                  {filtered.length === 0 ? (
+                    <div className="py-12 text-center text-xs text-gray-500 font-medium">
+                      {lang === "en" ? "No templates found" : "Template tidak ditemukan"}
+                    </div>
+                  ) : (
+                    filtered.map((tmpl) => {
+                      const isSelected = highlighted === tmpl.id;
+                      return (
+                        <button
+                          key={tmpl.id}
+                          type="button"
+                          onClick={() => handleHighlight(tmpl.id)}
+                          className={`w-full text-left px-4 py-3 rounded-xl flex items-center gap-3 transition-all cursor-pointer ${
+                            isSelected
+                              ? "bg-gray-900 shadow-md"
+                              : "hover:bg-gray-50"
+                          }`}
+                        >
+                          <div
+                            className="w-12 h-12 rounded-lg flex-shrink-0 shadow-sm"
+                            style={{ background: tmpl.accent }}
+                          />
+                          <div className="flex-1 min-w-0">
+                            <p className={`text-sm font-bold truncate ${isSelected ? "text-white" : "text-gray-900"}`}>
+                              {getTmplName(tmpl)}
+                            </p>
+                            <p className={`text-xs line-clamp-2 mt-1 ${isSelected ? "text-gray-300" : "text-gray-500"}`}>
+                              {getTmplDesc(tmpl)}
+                            </p>
+                            {tmpl.tags.length > 0 && (
+                              <div className="flex gap-1 mt-2 flex-wrap">
+                                {tmpl.tags.slice(0, 2).map((tag) => (
+                                  <span
+                                    key={tag}
+                                    className={`text-[9px] px-2 py-0.5 rounded-full font-medium ${
+                                      isSelected ? "bg-gray-700 text-gray-200" : "bg-gray-100 text-gray-600"
+                                    }`}
+                                  >
+                                    {tag}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                          {isSelected && (
+                            <svg className="w-5 h-5 text-white flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                            </svg>
+                          )}
+                        </button>
+                      );
+                    })
+                  )}
+                </div>
               </div>
 
               {/* Right: Live preview */}

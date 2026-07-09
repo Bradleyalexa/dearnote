@@ -32,6 +32,9 @@ export default function CardBuilder() {
   const [visibleDates, setVisibleDates] = useState(2);
   const [visibleActivities, setVisibleActivities] = useState(2);
   const [bgMusicBlobUrl, setBgMusicBlobUrl] = useState<string | null>(null);
+  
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [onboardingFilter, setOnboardingFilter] = useState<"couple" | "friend" | "family" | "general" | null>(null);
 
   const {
     register,
@@ -100,6 +103,17 @@ export default function CardBuilder() {
       }
     }
   }, [setValue]);
+
+  // Trigger onboarding modal if no draft and not shown yet
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("dearnote_draft");
+      const onboardingShown = localStorage.getItem("dearnote_onboarding_shown");
+      if (!saved && !onboardingShown) {
+        setShowOnboarding(true);
+      }
+    }
+  }, []);
 
   // Auto-save draft to localStorage with 1.5s debounce
   useEffect(() => {
@@ -185,6 +199,8 @@ export default function CardBuilder() {
           <TemplatePicker
             value={formValues.template}
             onChange={(id) => { setValue("template", id); scrollToPreview(); }}
+            autoOpenFilter={onboardingFilter}
+            onAutoOpenClose={() => setOnboardingFilter(null)}
           />
         </div>
 
@@ -836,6 +852,106 @@ export default function CardBuilder() {
                 {t.cancelBtn}
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Onboarding Dialog / Wizard */}
+      {mounted && showOnboarding && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-300">
+          <div className="bg-white max-w-xl w-full rounded-3xl p-6 sm:p-8 text-center shadow-2xl relative animate-in zoom-in-95 duration-300 flex flex-col items-center">
+            {/* Header decoration */}
+            <div className="w-16 h-16 rounded-2xl bg-pink-100 text-pink-600 flex items-center justify-center text-3xl mb-4 shadow-inner">
+              🎁
+            </div>
+            
+            <h3 className="font-serif text-xl sm:text-2xl font-bold text-gray-900 mb-2">
+              {currentLang === "en" ? "Who is this card for?" : "Untuk siapa kartu ini dibuat?"}
+            </h3>
+            <p className="text-sm text-gray-600 max-w-md">
+              {currentLang === "en" 
+                ? "We will recommend the best layouts and designs tailored to your recipient." 
+                : "Kami akan merekomendasikan desain dan tata letak terbaik yang paling pas untuk penerima."}
+            </p>
+
+            {/* Grid of options */}
+            <div className="grid grid-cols-2 gap-4 w-full mt-6">
+              <button
+                type="button"
+                onClick={() => {
+                  setOnboardingFilter("couple");
+                  localStorage.setItem("dearnote_onboarding_shown", "true");
+                  setShowOnboarding(false);
+                }}
+                className="group p-5 border-2 border-gray-100 hover:border-pink-300 rounded-2xl bg-white hover:bg-pink-50/30 text-center transition-all duration-200 cursor-pointer hover:shadow-lg hover:shadow-pink-100 flex flex-col items-center gap-2"
+              >
+                <span className="text-3xl group-hover:scale-110 transition-transform">💖</span>
+                <span className="text-sm font-bold text-gray-900">{currentLang === "en" ? "Couple" : "Pasangan"}</span>
+                <span className="text-[10px] text-gray-500 font-medium leading-tight">
+                  {currentLang === "en" ? "Boyfriend, girlfriend, crush" : "Pacar, pasangan LDR, suami/istri"}
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setOnboardingFilter("friend");
+                  localStorage.setItem("dearnote_onboarding_shown", "true");
+                  setShowOnboarding(false);
+                }}
+                className="group p-5 border-2 border-gray-100 hover:border-blue-300 rounded-2xl bg-white hover:bg-blue-50/30 text-center transition-all duration-200 cursor-pointer hover:shadow-lg hover:shadow-blue-100 flex flex-col items-center gap-2"
+              >
+                <span className="text-3xl group-hover:scale-110 transition-transform">👯</span>
+                <span className="text-sm font-bold text-gray-900">{currentLang === "en" ? "Friend" : "Sahabat"}</span>
+                <span className="text-[10px] text-gray-500 font-medium leading-tight">
+                  {currentLang === "en" ? "Best friends, classmates" : "Teman dekat, wisuda, perpisahan"}
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setOnboardingFilter("family");
+                  localStorage.setItem("dearnote_onboarding_shown", "true");
+                  setShowOnboarding(false);
+                }}
+                className="group p-5 border-2 border-gray-100 hover:border-amber-300 rounded-2xl bg-white hover:bg-amber-50/30 text-center transition-all duration-200 cursor-pointer hover:shadow-lg hover:shadow-amber-100 flex flex-col items-center gap-2"
+              >
+                <span className="text-3xl group-hover:scale-110 transition-transform">🏠</span>
+                <span className="text-sm font-bold text-gray-900">{currentLang === "en" ? "Family" : "Keluarga"}</span>
+                <span className="text-[10px] text-gray-500 font-medium leading-tight">
+                  {currentLang === "en" ? "Parents, siblings, babies" : "Ibu, Ayah, saudara kandung"}
+                </span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setOnboardingFilter("general");
+                  localStorage.setItem("dearnote_onboarding_shown", "true");
+                  setShowOnboarding(false);
+                }}
+                className="group p-5 border-2 border-gray-100 hover:border-purple-300 rounded-2xl bg-white hover:bg-purple-50/30 text-center transition-all duration-200 cursor-pointer hover:shadow-lg hover:shadow-purple-100 flex flex-col items-center gap-2"
+              >
+                <span className="text-3xl group-hover:scale-110 transition-transform">✨</span>
+                <span className="text-sm font-bold text-gray-900">{currentLang === "en" ? "General" : "Umum"}</span>
+                <span className="text-[10px] text-gray-500 font-medium leading-tight">
+                  {currentLang === "en" ? "Teachers, general greetings" : "Guru, ucapan selamat, hari raya"}
+                </span>
+              </button>
+            </div>
+
+            {/* Skip Option */}
+            <button
+              type="button"
+              onClick={() => {
+                localStorage.setItem("dearnote_onboarding_shown", "true");
+                setShowOnboarding(false);
+              }}
+              className="mt-6 text-xs text-gray-500 hover:text-gray-900 font-bold uppercase tracking-wider transition-colors hover:underline cursor-pointer decoration-dotted"
+            >
+              {currentLang === "en" ? "Skip & View All Templates" : "Lewati & Lihat Semua Template"}
+            </button>
           </div>
         </div>
       )}
