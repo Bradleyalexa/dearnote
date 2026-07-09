@@ -49,26 +49,43 @@ export async function POST(req: NextRequest) {
     // 4. Generate Identifiers
     const orderId = `order_${nanoid(8)}`;
 
-    // Generate unique 6-digit numeric card ID
+    // Generate unique 8-digit numeric card ID
     let cardId = "";
     let isUnique = false;
     let attempts = 0;
-    while (!isUnique && attempts < 5) {
+    
+    while (!isUnique && attempts < 10) {
       let tempId = "";
-      for (let i = 0; i < 6; i++) {
+      for (let i = 0; i < 8; i++) {
         tempId += Math.floor(Math.random() * 10).toString();
       }
+      
       try {
+        // Check if status.json already exists in R2
         await getObject(`cards/${tempId}/status.json`);
+        // If it exists, increment attempts and loop again
         attempts++;
-      } catch (err) {
-        cardId = tempId;
-        isUnique = true;
+      } catch (err: any) {
+        // Only treat as unique if R2 returns a 404 (NoSuchKey)
+        if (err && (err.name === "NoSuchKey" || err.$metadata?.httpStatusCode === 404)) {
+          cardId = tempId;
+          isUnique = true;
+        } else {
+          // If R2 is failing for other reasons (e.g. rate limit, auth, network),
+          // don't assume the ID is unique. Log and try again.
+          console.error(`[Order API] R2 check error (attempt ${attempts + 1}):`, err);
+          attempts++;
+        }
       }
     }
 
+    // Bulletproof Fallback: if 10 random attempts fail (statistically impossible unless R2 is down),
+    // throw a clear error to prevent clashing / duplicate card creation.
     if (!cardId) {
-      cardId = Math.floor(100000 + Math.random() * 900000).toString();
+      return NextResponse.json(
+        { error: "Gagal membuat identitas kartu unik. Silakan coba beberapa saat lagi." },
+        { status: 500 }
+      );
     }
 
     const createdAt = new Date().toISOString();

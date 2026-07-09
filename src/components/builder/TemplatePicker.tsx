@@ -295,6 +295,24 @@ export const TEMPLATE_REGISTRY: {
     accent: "linear-gradient(135deg, #1e293b, #ef4444, #f8fafc)",
     tags: ["Couple", "Date", "Concert Ticket", "Playful", "Interactive"],
   },
+  {
+    id: "selfie_detector",
+    name: "Detective Beauty Dossier 🔍",
+    description: "Template interaktif bertema berkas kasus detektif untuk meminta foto selfie pacar Anda. Dilengkapi amplop berkas rahasia, janji sogokan upeti, serta kamera pengambil PAP kustom!",
+    category: "interaktif",
+    audience: ["couple"],
+    accent: "linear-gradient(135deg, #F5E6CA, #D4B499, #8C6A5C)",
+    tags: ["Interactive", "Playful", "Selfie", "Detective", "Flagship"],
+  },
+  {
+    id: "selfie_request",
+    name: "Selfie Request Pager 📱",
+    description: "Kirim permintaan PAP kustom dengan gaya pager Y2K & mock chat obrolan yang estetis! Dilengkapi runaway button 'Gak Mau', serta fitur jepret foto langsung ke frame polaroid cantik.",
+    category: "interaktif",
+    audience: ["couple"],
+    accent: "linear-gradient(135deg, #FDE2E4, #FFCAD4, #B5E2FA)",
+    tags: ["Interactive", "Playful", "Selfie", "Chat", "Y2K"],
+  },
 ];
 
 type FilterType =
@@ -361,6 +379,8 @@ export default function TemplatePicker({ value, onChange }: TemplatePickerProps)
       if (tmpl.id === "boyfriend_permit") return "Boyfriend's Permission Slip";
       if (tmpl.id === "date_invitation") return "Date Invitation 🌹";
       if (tmpl.id === "date_ticket") return "Concert Date Ticket 🎫";
+      if (tmpl.id === "selfie_detector") return "Detective Beauty Dossier 🔍";
+      if (tmpl.id === "selfie_request") return "Selfie Request Pager 📱";
     }
     return tmpl.name;
   };
@@ -374,6 +394,8 @@ export default function TemplatePicker({ value, onChange }: TemplatePickerProps)
       if (tmpl.id === "boyfriend_permit") return "A cute and playful template for boys/husbands asking for permission (buying stuff, gaming, going out). Features interactive bribery vouchers, a runaway 'No' button, and a shareable Approved Slip!";
       if (tmpl.id === "date_invitation") return "Invite your partner on a date in the cutest way! Pick a date together, choose activities, watch the countdown, and print a shareable DearNote Date Ticket~";
       if (tmpl.id === "date_ticket") return "Invite your partner with a retro concert gig theme! Complete with barcode, customized seat/row/section date stubs, and elegant typography.";
+      if (tmpl.id === "selfie_detector") return "Playful detective-themed dossier to request a selfie from your partner. Features folder dossiers, bribery vouchers, and interactive camera framing!";
+      if (tmpl.id === "selfie_request") return "A cute Y2K mock chat / pager interface requesting a selfie. Features a runaway button, interactive photo drop/take, and a cute polaroid frame!";
     }
     return tmpl.description;
   };
@@ -634,7 +656,8 @@ export default function TemplatePicker({ value, onChange }: TemplatePickerProps)
                         ref={iframeRef}
                         srcDoc={previewSrc}
                         className="w-full h-full border-none"
-                        sandbox="allow-scripts"
+                        sandbox="allow-scripts allow-same-origin allow-modals"
+                        allow="camera; microphone"
                         title="Template Preview"
                       />
                     </div>

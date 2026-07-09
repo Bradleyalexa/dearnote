@@ -337,6 +337,8 @@ export default function CardBuilder() {
             <label className="block text-sm font-semibold text-gray-900">
               {formValues.template === "boyfriend_permit"
                 ? (currentLang === "id" ? "Perihal Izin" : "Permission Subject")
+                : (formValues.template === "selfie_detector" || formValues.template === "selfie_request")
+                ? (currentLang === "id" ? "Sebab Kangen / Alasan Minta PAP 🚨" : "Reason / Request Subject 🚨")
                 : (formValues.template === "date_invitation" || formValues.template === "date_ticket")
                 ? (currentLang === "id" ? "Nama Tur / Agenda Utama 🌹" : "Tour Name / Main Subject 🌹")
                 : t.letterTitleLabel}
@@ -346,6 +348,8 @@ export default function CardBuilder() {
               placeholder={
                 formValues.template === "boyfriend_permit"
                   ? (currentLang === "id" ? "Contoh: Minta Izin Beli PS5" : "e.g., Request to buy PS5")
+                  : (formValues.template === "selfie_detector" || formValues.template === "selfie_request")
+                  ? (currentLang === "id" ? "Contoh: Pengen lihat senyum kamu / Kangen Akut" : "e.g., Want to see your smile / Acute Shortage of You")
                   : (formValues.template === "date_invitation" || formValues.template === "date_ticket")
                   ? (currentLang === "id" ? "Contoh: TIE THE KNOT TOUR 🎸" : "e.g., TIE THE KNOT TOUR 🎸")
                   : t.letterTitlePlaceholder
@@ -420,16 +424,22 @@ export default function CardBuilder() {
           </div>
         )}
 
-        {/* Template-specific: Upeti/Bribery Vouchers (only for Boyfriend's Permission Slip) */}
-        {formValues.template === "boyfriend_permit" && (
+        {/* Template-specific: Upeti/Bribery Vouchers (only for Boyfriend's Permission Slip and Selfie Requests) */}
+        {(formValues.template === "boyfriend_permit" || formValues.template === "selfie_detector" || formValues.template === "selfie_request") && (
           <div className="space-y-4 p-5 bg-blue-50/60 border border-blue-100 rounded-2xl">
             <label className="block text-sm font-semibold text-gray-900">
-              {currentLang === "id" ? "Daftar Upeti / Sogokan Pacar 🎁" : "Bribery Vouchers List 🎁"}
+              {formValues.template === "boyfriend_permit"
+                ? (currentLang === "id" ? "Daftar Upeti / Sogokan Pacar 🎁" : "Bribery Vouchers List 🎁")
+                : (currentLang === "id" ? "Imbalan / Sogokan Biar Dikasih PAP 🎁" : "Selfie Rewards / Bribery Vouchers 🎁")}
             </label>
             <p className="text-xs text-gray-600 leading-relaxed">
-              {currentLang === "id" 
-                ? "Sesuaikan judul upeti dan keterangan upeti yang kamu tawarkan untuk meluluhkan hati pacarmu agar permohonan ini disetujui." 
-                : "Customize the title and subtext of the bribery vouchers you offer to melt your partner's heart."}
+              {formValues.template === "boyfriend_permit"
+                ? (currentLang === "id" 
+                    ? "Sesuaikan judul upeti dan keterangan upeti yang kamu tawarkan untuk meluluhkan hati pacarmu agar permohonan ini disetujui." 
+                    : "Customize the title and subtext of the bribery vouchers you offer to melt your partner's heart.")
+                : (currentLang === "id"
+                    ? "Tawarkan 'sogokan' manis agar si dia mau mengirimkan foto selfie tercantiknya untukmu."
+                    : "Offer sweet rewards so she wants to take and send her prettiest selfie.")}
             </p>
             <div className="space-y-3">
               {[0, 1, 2, 3].map((idx) => {
@@ -445,12 +455,20 @@ export default function CardBuilder() {
                         value={titleVal || ""}
                         placeholder={
                           idx === 0 
-                            ? (currentLang === "id" ? "Judul Upeti (Contoh: Ditraktir Seblak & Boba)" : "Upeti Title (e.g., Treat to Seblak & Boba)")
+                            ? (formValues.template === "boyfriend_permit"
+                                ? (currentLang === "id" ? "Judul Upeti (Contoh: Ditraktir Seblak & Boba)" : "Upeti Title (e.g., Treat to Seblak & Boba)")
+                                : (currentLang === "id" ? "Judul Sogokan (Contoh: Ditraktir Boba Gula Aren)" : "Bribe Title (e.g., Buy Palm Sugar Boba)"))
                             : idx === 1
-                            ? (currentLang === "id" ? "Judul Upeti (Contoh: Voucher Pijat Pegal)" : "Upeti Title (e.g., Massage Voucher)")
+                            ? (formValues.template === "boyfriend_permit"
+                                ? (currentLang === "id" ? "Judul Upeti (Contoh: Voucher Pijat Pegal)" : "Upeti Title (e.g., Massage Voucher)")
+                                : (currentLang === "id" ? "Judul Sogokan (Contoh: Pelukan Hangat 10 Menit)" : "Bribe Title (e.g., Warm 10-Min Hug)"))
                             : idx === 2
-                            ? (currentLang === "id" ? "Judul Upeti (Contoh: Bebas Cuci Piring)" : "Upeti Title (e.g., Chore Waiver)")
-                            : (currentLang === "id" ? "Judul Upeti (Contoh: Menemani Shopping)" : "Upeti Title (e.g., Shopping Companion)")
+                            ? (formValues.template === "boyfriend_permit"
+                                ? (currentLang === "id" ? "Judul Upeti (Contoh: Bebas Cuci Piring)" : "Upeti Title (e.g., Chore Waiver)")
+                                : (currentLang === "id" ? "Judul Sogokan (Contoh: Nurut Ditemani Jalan-Jalan)" : "Bribe Title (e.g., Accompany Shopping)"))
+                            : (formValues.template === "boyfriend_permit"
+                                ? (currentLang === "id" ? "Judul Upeti (Contoh: Menemani Shopping)" : "Upeti Title (e.g., Shopping Companion)")
+                                : (currentLang === "id" ? "Judul Sogokan (Contoh: Kopi Susu Favorit)" : "Bribe Title (e.g., Favorite Iced Coffee)"))
                         }
                         onChange={(e) => {
                           const newTitle = e.target.value;
@@ -467,12 +485,20 @@ export default function CardBuilder() {
                         value={descVal || ""}
                         placeholder={
                           idx === 0 
-                            ? (currentLang === "id" ? "Keterangan/Subtext (Contoh: Seblak spesial level 5 + es teh manis)" : "Subtext (e.g., Spicy seblak level 5 + sweet iced tea)")
+                            ? (formValues.template === "boyfriend_permit"
+                                ? (currentLang === "id" ? "Keterangan/Subtext (Contoh: Seblak spesial level 5 + es teh manis)" : "Subtext (e.g., Spicy seblak level 5 + sweet iced tea)")
+                                : (currentLang === "id" ? "Keterangan (Contoh: Boba kesukaan kamu dianter ke rumah)" : "Subtext (e.g., Sent straight to your home)"))
                             : idx === 1
-                            ? (currentLang === "id" ? "Keterangan/Subtext (Contoh: Pijat pundak/kaki mandiri siap sedia kapan pun)" : "Subtext (e.g., Full shoulder massage whenever you want)")
+                            ? (formValues.template === "boyfriend_permit"
+                                ? (currentLang === "id" ? "Keterangan/Subtext (Contoh: Pijat pundak/kaki mandiri siap sedia kapan pun)" : "Subtext (e.g., Full shoulder massage whenever you want)")
+                                : (currentLang === "id" ? "Keterangan (Contoh: Siap sedia kapan saja kamu butuh pelukan)" : "Subtext (e.g., Ready whenever you feel down)"))
                             : idx === 2
-                            ? (currentLang === "id" ? "Keterangan/Subtext (Contoh: Bebas cuci piring & beres-beres selama 3 hari)" : "Subtext (e.g., Free from washing dishes and cleaning for 3 days)")
-                            : (currentLang === "id" ? "Keterangan/Subtext (Contoh: Janji tidak cemberut/mengeluh saat nemenin belanja)" : "Subtext (e.g., Promise not to complain while waiting outside)")
+                            ? (formValues.template === "boyfriend_permit"
+                                ? (currentLang === "id" ? "Keterangan/Subtext (Contoh: Bebas cuci piring & beres-beres selama 3 hari)" : "Subtext (e.g., Free from washing dishes and cleaning for 3 days)")
+                                : (currentLang === "id" ? "Keterangan (Contoh: Janji tidak cemberut/mengeluh selama jalan-jalan)" : "Subtext (e.g., Promise no complaining/pouting)"))
+                            : (formValues.template === "boyfriend_permit"
+                                ? (currentLang === "id" ? "Keterangan/Subtext (Contoh: Janji tidak cemberut/mengeluh saat nemenin belanja)" : "Subtext (e.g., Promise not to complain while waiting outside)")
+                                : (currentLang === "id" ? "Keterangan (Contoh: Kopi susu caramel macchiato dingin)" : "Subtext (e.g., Tall iced caramel macchiato)"))
                         }
                         onChange={(e) => {
                           const newDesc = e.target.value;
@@ -621,7 +647,10 @@ export default function CardBuilder() {
               value={field.value} 
               onChange={field.onChange} 
               max={
-                formValues.template === "date_invitation" || formValues.template === "boyfriend_permit"
+                formValues.template === "date_invitation" || 
+                formValues.template === "boyfriend_permit" ||
+                formValues.template === "selfie_detector" ||
+                formValues.template === "selfie_request"
                   ? 1
                   : formValues.template === "date_ticket"
                   ? 2

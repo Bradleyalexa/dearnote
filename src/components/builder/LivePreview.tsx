@@ -288,7 +288,8 @@ export default function LivePreview({ draft, bgMusicPreviewUrl, onFlowersChange 
                 srcDoc={srcDoc}
                 title="Live Card Preview"
                 className="w-full h-full border-none"
-                sandbox="allow-scripts"
+                sandbox="allow-scripts allow-same-origin allow-modals"
+                allow="camera; microphone"
               />
             </div>
 

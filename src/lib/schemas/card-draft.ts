@@ -34,6 +34,8 @@ export const TEMPLATES = [
   "boyfriend_permit",
   "date_invitation",
   "date_ticket",
+  "selfie_detector",
+  "selfie_request",
 ] as const;
 
 export const TemplateSchema = z.enum(TEMPLATES);

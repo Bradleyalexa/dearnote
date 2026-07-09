@@ -30,6 +30,8 @@ import { generateAnniversaryScrapbookHtml } from "./templates/anniversary-scrapb
 import { generateBoyfriendPermitHtml } from "./templates/boyfriend-permit";
 import { generateDateInvitationHtml } from "./templates/date-invitation";
 import { generateDateTicketHtml } from "./templates/date-ticket";
+import { generateSelfieDetectorHtml } from "./templates/selfie-detector";
+import { generateSelfieRequestHtml } from "./templates/selfie-request";
 
 /**
  * Main coordinator that returns the HTML page content based on the selected template.
@@ -101,6 +103,12 @@ export function generateIndexHtml(config: PublishedConfig): string {
       break;
     case "date_ticket":
       html = generateDateTicketHtml(config);
+      break;
+    case "selfie_detector":
+      html = generateSelfieDetectorHtml(config);
+      break;
+    case "selfie_request":
+      html = generateSelfieRequestHtml(config);
       break;
     case "birthday_magic":
       html = generateBirthdayMagicHtml(config);
