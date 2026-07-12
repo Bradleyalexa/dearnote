@@ -874,8 +874,9 @@ export function generateApologyLetterHtml(config: PublishedConfig): string {
         if (i < limit) {
           cursor.before(document.createTextNode(text[i]));
           i++;
-          const atBottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 60;
-          if (!atBottom) window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+          if (i % 4 === 0 && window.innerHeight + window.scrollY < document.body.offsetHeight - 50) {
+            window.scrollTo(0, document.body.scrollHeight);
+          }
           setTimeout(tick, 28);
         } else if (text.length > 1000) {
           const remaining = text.substring(i);

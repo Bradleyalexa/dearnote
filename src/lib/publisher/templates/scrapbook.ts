@@ -457,8 +457,8 @@ export function generateScrapbookHtml(config: PublishedConfig): string {
         if (index < limit) {
           container.innerHTML += text.charAt(index);
           index++;
-          if (window.innerHeight + window.scrollY < document.body.offsetHeight) {
-            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+          if (index % 4 === 0 && window.innerHeight + window.scrollY < document.body.offsetHeight - 50) {
+            window.scrollTo(0, document.body.scrollHeight);
           }
           setTimeout(type, speed);
         } else if (text.length > 1000) {
