@@ -412,16 +412,57 @@ export function generatePlayfulGiftHtml(config: PublishedConfig): string {
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
 
+    function drawHeart(ctx, x, y, size, color) {
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.moveTo(x, y - size / 4);
+      // Left curves
+      ctx.bezierCurveTo(x - size/2, y - size, x - size, y - size/3, x - size, y + size/6);
+      ctx.bezierCurveTo(x - size, y + size*0.6, x - size/3, y + size*0.8, x, y + size);
+      // Right curves
+      ctx.bezierCurveTo(x + size/3, y + size*0.8, x + size, y + size*0.6, x + size, y + size/6);
+      ctx.bezierCurveTo(x + size, y - size/3, x + size/2, y - size, x, y - size/4);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    function drawStar(ctx, cx, cy, outerRadius, color) {
+      const spikes = 5;
+      const innerRadius = outerRadius * 0.4;
+      let rot = Math.PI / 2 * 3;
+      let x = cx;
+      let y = cy;
+      const step = Math.PI / spikes;
+
+      ctx.beginPath();
+      ctx.moveTo(cx, cy - outerRadius);
+      for (let i = 0; i < spikes; i++) {
+        x = cx + Math.cos(rot) * outerRadius;
+        y = cy + Math.sin(rot) * outerRadius;
+        ctx.lineTo(x, y);
+        rot += step;
+
+        x = cx + Math.cos(rot) * innerRadius;
+        y = cy + Math.sin(rot) * innerRadius;
+        ctx.lineTo(x, y);
+        rot += step;
+      }
+      ctx.lineTo(cx, cy - outerRadius);
+      ctx.closePath();
+      ctx.fillStyle = color;
+      ctx.fill();
+    }
+
     class PlayfulParticle {
       constructor(x, y, isExplosion = false) {
         this.x = x || Math.random() * canvas.width;
         this.y = y || (isExplosion ? canvas.height * 0.48 : canvas.height + 20);
         this.size = Math.random() * 8 + 4;
-        this.speedX = isExplosion ? (Math.random() - 0.5) * 10 : (Math.random() - 0.5) * 1.5;
-        this.speedY = isExplosion ? (Math.random() - 0.8) * 10 : -Math.random() * 1.5 - 0.5;
+        this.speedX = isExplosion ? (Math.random() - 0.5) * 8 : (Math.random() - 0.5) * 1.5;
+        this.speedY = isExplosion ? (Math.random() - 0.8) * 8 : -Math.random() * 1.5 - 0.5;
         this.opacity = Math.random() * 0.7 + 0.3;
         
-        // Randomly pick shape: 0 = bubble, 1 = heart emoji, 2 = star emoji
+        // Randomly pick shape: 0 = bubble, 1 = heart, 2 = star
         this.type = Math.floor(Math.random() * 3);
         this.color = ['#FFC6FF', '#BDB2FF', '#CAFFBF', '#FDFFB6', '#FFADAD', '#9BF6FF'][Math.floor(Math.random() * 6)];
         this.life = isExplosion ? Math.random() * 60 + 30 : 9999;
@@ -438,28 +479,22 @@ export function generatePlayfulGiftHtml(config: PublishedConfig): string {
         if (this.type === 0) {
           // Soft colorful bubble
           ctx.fillStyle = this.color;
-          ctx.shadowBlur = 4;
-          ctx.shadowColor = this.color;
           ctx.beginPath();
           ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
           ctx.fill();
         } else if (this.type === 1) {
-          // Heart Emoji or symbol
-          ctx.font = \`\${this.size * 1.5}px Arial\`;
-          ctx.fillStyle = '#FF6B8B';
-          ctx.fillText('❤️', this.x, this.y);
+          // Vector pink heart
+          drawHeart(ctx, this.x, this.y, this.size * 1.6, '#FF6B8B');
         } else {
-          // Star Emoji or symbol
-          ctx.font = \`\${this.size * 1.5}px Arial\`;
-          ctx.fillStyle = '#FDFFB6';
-          ctx.fillText('⭐', this.x, this.y);
+          // Vector yellow star
+          drawStar(ctx, this.x, this.y, this.size * 1.6, '#FDFFB6');
         }
         ctx.restore();
       }
     }
 
     function initParticles() {
-      for (let i = 0; i < 30; i++) {
+      for (let i = 0; i < 25; i++) {
         particles.push(new PlayfulParticle());
       }
     }
@@ -474,7 +509,7 @@ export function generatePlayfulGiftHtml(config: PublishedConfig): string {
         if (particles[i].y < -20 || particles[i].life <= 0 || particles[i].size <= 1) {
           particles.splice(i, 1);
           i--;
-          if (particles.filter(p => p.life > 1000).length < 30) {
+          if (particles.filter(p => p.life > 1000).length < 25) {
             particles.push(new PlayfulParticle());
           }
         }
@@ -489,7 +524,7 @@ export function generatePlayfulGiftHtml(config: PublishedConfig): string {
       const centerX = rect.left + rect.width / 2;
       const centerY = rect.top + rect.height / 2;
 
-      for (let i = 0; i < 120; i++) {
+      for (let i = 0; i < 50; i++) {
         particles.push(new PlayfulParticle(centerX, centerY, true));
       }
     }
@@ -572,7 +607,7 @@ export function generatePlayfulGiftHtml(config: PublishedConfig): string {
       const boxContainer = document.getElementById('gift-box');
       boxContainer.classList.remove('idle');
       
-      // Squash effect before popup
+      // Squash effect before popup (snappy 100ms)
       boxContainer.style.transform = 'scale(1.15, 0.8)';
       
       setTimeout(() => {
@@ -582,27 +617,29 @@ export function generatePlayfulGiftHtml(config: PublishedConfig): string {
         
         // Trigger bubbles/hearts explosion
         triggerBoxExplosion();
-      }, 150);
+      }, 100);
 
-      // Fade out and show content (snappier transition)
+      // Start fading out the gift box section (at 250ms)
       setTimeout(() => {
         const giftSection = document.getElementById('gift-box-section');
-        giftSection.style.transition = 'all 0.4s ease';
+        giftSection.style.transition = 'all 0.25s ease-out';
         giftSection.classList.add('scale-90', 'opacity-0');
+      }, 250);
+
+      // Remove gift section and reveal letter content (at 500ms total)
+      setTimeout(() => {
+        const giftSection = document.getElementById('gift-box-section');
+        if (giftSection) giftSection.remove();
+        
+        const contentSection = document.getElementById('content-section');
+        contentSection.classList.remove('hidden');
         
         setTimeout(() => {
-          giftSection.remove();
-          const contentSection = document.getElementById('content-section');
-          contentSection.classList.remove('hidden');
-          
-          setTimeout(() => {
-            contentSection.classList.add('bounce-up-active');
-            contentSection.classList.remove('bounce-up-enter');
-            
-            setTimeout(startTypewriter, 200);
-          }, 50);
-        }, 400);
-      }, 700);
+          contentSection.classList.add('bounce-up-active');
+          contentSection.classList.remove('bounce-up-enter');
+          startTypewriter();
+        }, 30);
+      }, 500);
     }
 
     function startTypewriter() {
@@ -616,8 +653,9 @@ export function generatePlayfulGiftHtml(config: PublishedConfig): string {
         if (index < limit) {
           container.innerHTML += text.charAt(index);
           index++;
-          if (window.innerHeight + window.scrollY < document.body.offsetHeight - 50) {
-            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+          // High performance throttled scroll to bottom (avoid smooth scroll thrashing)
+          if (index % 4 === 0 && window.innerHeight + window.scrollY < document.body.offsetHeight - 50) {
+            window.scrollTo(0, document.body.scrollHeight);
           }
           setTimeout(type, speed);
         } else if (text.length > 1000) {
