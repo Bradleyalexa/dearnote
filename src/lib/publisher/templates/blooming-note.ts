@@ -1083,7 +1083,10 @@ export function generateBloomingNoteHtml(config: PublishedConfig): string {
         if (bgmFab)      { bgmFab.classList.add('visible'); bgmFab.textContent = '🎵'; }
         if (bgmInnerBtn) bgmInnerBtn.innerHTML = '&#9646;&#9646;';
         toggleVisualizerActive(true);
-      }).catch(() => {});
+      }).catch(() => {
+        if (bgmFab)      { bgmFab.classList.add('visible'); bgmFab.textContent = '🔇'; }
+        if (bgmInnerBtn) bgmInnerBtn.innerHTML = '&#9654;';
+      });
     }
 
     function toggleBgm() {

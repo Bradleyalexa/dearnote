@@ -802,7 +802,10 @@ export function generateEternalLoveHtml(config: PublishedConfig): string {
         if (bgmFab)      { bgmFab.classList.add('visible'); bgmFab.textContent = '🎵'; }
         if (bgmInnerBtn) bgmInnerBtn.innerHTML = '&#9646;&#9646;';
         setVisualizerActive(true);
-      }).catch(() => {});
+      }).catch(() => {
+        if (bgmFab)      { bgmFab.classList.add('visible'); bgmFab.textContent = '🔇'; }
+        if (bgmInnerBtn) bgmInnerBtn.innerHTML = '&#9654;';
+      });
     }
 
     function toggleBgm() {

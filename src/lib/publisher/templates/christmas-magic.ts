@@ -10,7 +10,7 @@ export function generateChristmasMagicHtml(config: PublishedConfig): string {
   const hasBgMusic = !!config.bgMusic;
   const bgMusicSrc = config.bgMusic?.src || "";
   const hasPhotos = config.photos && config.photos.length > 0;
-  const hasAudio = hasVoiceNote || hasBgMusic;
+  const hasAudio = hasVoiceNote;
 
   const vBars = Array.from({ length: 24 }, (_, i) =>
     `<div class="v-bar" style="animation-delay:${(i * 0.04).toFixed(3)}s;height:${12 + ((i % 6) * 6)}px"></div>`
@@ -61,19 +61,22 @@ export function generateChristmasMagicHtml(config: PublishedConfig): string {
       ${
         hasBgMusic
           ? `
-      <div class="audio-control-row" style="border-top:1.5px dashed rgba(212, 175, 55, 0.3);margin-top:0.9rem;padding-top:0.9rem">
+      <div class="audio-control-row" ${
+        hasVoiceNote
+          ? 'style="border-top:1.5px dashed rgba(212, 175, 55, 0.3);margin-top:0.9rem;padding-top:0.9rem"'
+          : ''
+      }>
         <div class="audio-info">
           <span class="audio-icon">🎵</span>
           <div>
-            <p class="audio-label">Carol Player</p>
-            <p class="audio-sublabel">Ambient holiday tune</p>
+            <p class="audio-label">Background Instrument</p>
+            <p class="audio-sublabel">Ambient Christmas tune</p>
           </div>
         </div>
         <div class="audio-player-control">
           <button id="bgm-inner-btn" class="circular-play-btn">&#9646;&#9646;</button>
-          <p class="music-note-decor">Carol of the Bells</p>
+          <p class="music-note-decor">Jingle Chimes</p>
         </div>
-        <audio id="bg-audio" src="${bgMusicSrc}" loop></audio>
       </div>`
           : ""
       }
@@ -738,6 +741,7 @@ export function generateChristmasMagicHtml(config: PublishedConfig): string {
   <div id="progress-tracker"></div>
   <canvas id="snow-canvas"></canvas>
   <button id="music-fab" title="Toggle Music">🎵</button>
+  ${hasBgMusic ? `<audio id="bg-audio" src="${bgMusicSrc}" loop></audio>` : ""}
   <div class="nav-indicator-dots" id="nav-dots"></div>
 
   <!-- Santa Flight Sleigh Element -->
@@ -1434,7 +1438,10 @@ export function generateChristmasMagicHtml(config: PublishedConfig): string {
         if (bgmFab)      { bgmFab.classList.add('visible'); bgmFab.textContent = '🎵'; }
         if (bgmInnerBtn) bgmInnerBtn.innerHTML = '&#9646;&#9646;';
         toggleVisualizerActive(true);
-      }).catch(() => {});
+      }).catch(() => {
+        if (bgmFab)      { bgmFab.classList.add('visible'); bgmFab.textContent = '🔇'; }
+        if (bgmInnerBtn) bgmInnerBtn.innerHTML = '&#9654;';
+      });
     }
 
     function toggleBgmPlay() {

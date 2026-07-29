@@ -1599,7 +1599,10 @@ export function generateGraduationNoteHtml(config: PublishedConfig): string {
       bgAudio.play().then(() => {
         if (bgmFab) { bgmFab.classList.add('visible'); bgmFab.textContent = '🎵'; }
         if (bgmInnerBtn) bgmInnerBtn.textContent = '⏸';
-      }).catch(() => {});
+      }).catch(() => {
+        if (bgmFab) { bgmFab.classList.add('visible'); bgmFab.textContent = '🔇'; }
+        if (bgmInnerBtn) bgmInnerBtn.textContent = '▶';
+      });
     }
 
     function toggleBgm() {
