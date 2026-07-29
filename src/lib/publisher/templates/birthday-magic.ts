@@ -10,7 +10,7 @@ export function generateBirthdayMagicHtml(config: PublishedConfig): string {
   const hasBgMusic = !!config.bgMusic;
   const bgMusicSrc = config.bgMusic?.src || "";
   const hasPhotos = config.photos && config.photos.length > 0;
-  const hasAudio = hasVoiceNote || hasBgMusic; // Audio chapter if voice note or bg music exists
+  const hasAudio = hasVoiceNote; // Audio chapter only if voice note exists
 
   const vBars = Array.from({ length: 24 }, (_, i) =>
     `<div class="v-bar" style="animation-delay:${(i * 0.04).toFixed(3)}s;height:${12 + ((i % 6) * 6)}px"></div>`
@@ -73,7 +73,6 @@ export function generateBirthdayMagicHtml(config: PublishedConfig): string {
           <button id="bgm-inner-btn" class="circular-play-btn">&#9646;&#9646;</button>
           <p class="music-note-decor">Accompanying your day</p>
         </div>
-        <audio id="bg-audio" src="${bgMusicSrc}" loop></audio>
       </div>`
           : ""
       }
@@ -610,6 +609,7 @@ export function generateBirthdayMagicHtml(config: PublishedConfig): string {
   <div id="progress-tracker"></div>
   <canvas id="party-canvas"></canvas>
   <button id="music-fab" title="Toggle Music">🎵</button>
+  ${hasBgMusic ? `<audio id="bg-audio" src="${bgMusicSrc}" loop></audio>` : ""}
   <div class="nav-indicator-dots" id="nav-dots"></div>
 
   <!-- ════════ PASSCODE GATE ════════ -->

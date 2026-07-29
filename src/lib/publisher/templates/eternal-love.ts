@@ -10,7 +10,7 @@ export function generateEternalLoveHtml(config: PublishedConfig): string {
   const hasBgMusic = !!config.bgMusic;
   const bgMusicSrc = config.bgMusic?.src || "";
   const hasPhotos = config.photos && config.photos.length > 0;
-  const hasAudio = hasVoiceNote || hasBgMusic;
+  const hasAudio = hasVoiceNote;
 
   const vBars = Array.from({ length: 22 }, (_, i) =>
     `<div class="v-bar" style="animation-delay:${(i * 0.055).toFixed(3)}s;height:${16 + ((i % 5) * 7)}px"></div>`
@@ -59,7 +59,6 @@ export function generateEternalLoveHtml(config: PublishedConfig): string {
           <button id="bgm-inner-btn" class="round-play-btn">&#9646;&#9646;</button>
           <p style="font-size:0.68rem;color:var(--muted);font-style:italic">Accompanying every moment</p>
         </div>
-        <audio id="bg-audio" src="${bgMusicSrc}" loop></audio>
       </div>`
           : ""
       }
@@ -493,6 +492,7 @@ export function generateEternalLoveHtml(config: PublishedConfig): string {
   <div class="bokeh-bg"></div>
   <div id="progress-bar"></div>
   <button id="bgm-fab" title="Toggle Music">🎵</button>
+  ${hasBgMusic ? `<audio id="bg-audio" src="${bgMusicSrc}" loop></audio>` : ""}
   <div class="nav-dots" id="nav-dots"></div>
 
   <!-- ════════ CODE GATE ════════ -->

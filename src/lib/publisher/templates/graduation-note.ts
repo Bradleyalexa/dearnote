@@ -10,7 +10,7 @@ export function generateGraduationNoteHtml(config: PublishedConfig): string {
   const hasBgMusic = !!config.bgMusic;
   const bgMusicSrc = config.bgMusic?.src || "";
   const hasPhotos = config.photos && config.photos.length > 0;
-  const hasAudio = hasVoiceNote || hasBgMusic; // Audio chapter if voice note or bg music exists
+  const hasAudio = hasVoiceNote; // Audio chapter only if voice note exists
 
   const photosChapterHtml = hasPhotos
     ? `
@@ -67,7 +67,6 @@ export function generateGraduationNoteHtml(config: PublishedConfig): string {
             <button id="bgm-inner-btn" class="play-btn">⏸</button>
             <span class="music-label">Playing</span>
           </div>
-          <audio id="bg-audio" src="${bgMusicSrc}" loop></audio>
         </div>`
             : ""
         }
@@ -1267,6 +1266,7 @@ export function generateGraduationNoteHtml(config: PublishedConfig): string {
   <div id="progress-tracker"></div>
   <canvas id="confetti-canvas"></canvas>
   <button id="music-fab" title="Toggle Music">🎵</button>
+  ${hasBgMusic ? `<audio id="bg-audio" src="${bgMusicSrc}" loop></audio>` : ""}
   <div class="nav-indicator-dots" id="nav-dots"></div>
 
   <!-- Photo Modal -->

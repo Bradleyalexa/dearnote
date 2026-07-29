@@ -12,7 +12,7 @@ export function generateAnniversaryScrapbookHtml(config: PublishedConfig): strin
   const voiceNoteSrc = config.voiceNote?.src || "";
   const hasBgMusic = !!config.bgMusic;
   const bgMusicSrc = config.bgMusic?.src || "";
-  const hasAudio = hasVoiceNote || hasBgMusic;
+  const hasAudio = hasVoiceNote;
 
   const vBars = Array.from({ length: 22 }, (_, i) =>
     `<div class="v-bar" style="animation-delay:${(i * 0.055).toFixed(3)}s;height:${16 + ((i % 5) * 7)}px"></div>`
@@ -51,7 +51,6 @@ export function generateAnniversaryScrapbookHtml(config: PublishedConfig): strin
           <button id="bgm-inner-btn" class="round-play-btn">&#9646;&#9646;</button>
           <p style="font-size:0.68rem;color:#8b7355;font-style:italic">Accompanying every moment</p>
         </div>
-        <audio id="bg-audio" src="${bgMusicSrc}" loop></audio>
       </div>`
           : ""
       }
@@ -624,6 +623,7 @@ export function generateAnniversaryScrapbookHtml(config: PublishedConfig): strin
   <canvas id="particle-canvas"></canvas>
   <div id="progress-bar"></div>
   <button id="bgm-fab" title="Toggle Music">🎵</button>
+  ${hasBgMusic ? `<audio id="bg-audio" src="${bgMusicSrc}" loop></audio>` : ""}
   <div class="nav-dots" id="nav-dots"></div>
 
   <!-- ════════ CODE GATE ════════ -->
