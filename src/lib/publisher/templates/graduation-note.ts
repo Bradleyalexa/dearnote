@@ -10,7 +10,7 @@ export function generateGraduationNoteHtml(config: PublishedConfig): string {
   const hasBgMusic = !!config.bgMusic;
   const bgMusicSrc = config.bgMusic?.src || "";
   const hasPhotos = config.photos && config.photos.length > 0;
-  const hasAudio = hasVoiceNote; // Audio chapter only if voice note exists
+  const hasAudio = hasVoiceNote || hasBgMusic; // Audio chapter if voice note or bg music exists
 
   const photosChapterHtml = hasPhotos
     ? `

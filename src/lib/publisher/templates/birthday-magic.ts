@@ -10,7 +10,7 @@ export function generateBirthdayMagicHtml(config: PublishedConfig): string {
   const hasBgMusic = !!config.bgMusic;
   const bgMusicSrc = config.bgMusic?.src || "";
   const hasPhotos = config.photos && config.photos.length > 0;
-  const hasAudio = hasVoiceNote; // Audio chapter only if voice note exists
+  const hasAudio = hasVoiceNote || hasBgMusic; // Audio chapter if voice note or bg music exists
 
   const vBars = Array.from({ length: 24 }, (_, i) =>
     `<div class="v-bar" style="animation-delay:${(i * 0.04).toFixed(3)}s;height:${12 + ((i % 6) * 6)}px"></div>`
@@ -57,7 +57,11 @@ export function generateBirthdayMagicHtml(config: PublishedConfig): string {
       ${
         hasBgMusic
           ? `
-      <div class="audio-control-row" style="border-top:1.5px dashed rgba(255,154,162,0.25);margin-top:0.9rem;padding-top:0.9rem">
+      <div class="audio-control-row" ${
+        hasVoiceNote
+          ? 'style="border-top:1.5px dashed rgba(255,154,162,0.25);margin-top:0.9rem;padding-top:0.9rem"'
+          : ''
+      }>
         <div class="audio-info">
           <span class="audio-icon">🎵</span>
           <div>

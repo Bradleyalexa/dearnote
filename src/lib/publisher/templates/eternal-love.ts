@@ -10,7 +10,7 @@ export function generateEternalLoveHtml(config: PublishedConfig): string {
   const hasBgMusic = !!config.bgMusic;
   const bgMusicSrc = config.bgMusic?.src || "";
   const hasPhotos = config.photos && config.photos.length > 0;
-  const hasAudio = hasVoiceNote;
+  const hasAudio = hasVoiceNote || hasBgMusic;
 
   const vBars = Array.from({ length: 22 }, (_, i) =>
     `<div class="v-bar" style="animation-delay:${(i * 0.055).toFixed(3)}s;height:${16 + ((i % 5) * 7)}px"></div>`
@@ -49,7 +49,11 @@ export function generateEternalLoveHtml(config: PublishedConfig): string {
       ${
         hasBgMusic
           ? `
-      <div class="audio-row" style="border-top:1px solid rgba(210,130,140,0.18);padding-top:0.9rem;margin-top:0.5rem">
+      <div class="audio-row" ${
+        hasVoiceNote
+          ? 'style="border-top:1px solid rgba(210,130,140,0.18);padding-top:0.9rem;margin-top:0.5rem"'
+          : ''
+      }>
         <p class="audio-row-label">🎼 Background Music</p>
         <div class="audio-row-controls">
           <button id="bgm-inner-btn" class="round-play-btn">&#9646;&#9646;</button>

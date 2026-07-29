@@ -12,7 +12,7 @@ export function generateAnniversaryScrapbookHtml(config: PublishedConfig): strin
   const voiceNoteSrc = config.voiceNote?.src || "";
   const hasBgMusic = !!config.bgMusic;
   const bgMusicSrc = config.bgMusic?.src || "";
-  const hasAudio = hasVoiceNote;
+  const hasAudio = hasVoiceNote || hasBgMusic;
 
   const vBars = Array.from({ length: 22 }, (_, i) =>
     `<div class="v-bar" style="animation-delay:${(i * 0.055).toFixed(3)}s;height:${16 + ((i % 5) * 7)}px"></div>`
@@ -41,7 +41,11 @@ export function generateAnniversaryScrapbookHtml(config: PublishedConfig): strin
       ${
         hasBgMusic
           ? `
-      <div class="audio-row" style="border-top:1px solid rgba(139,115,85,0.15);padding-top:0.9rem;margin-top:0.5rem">
+      <div class="audio-row" ${
+        hasVoiceNote
+          ? 'style="border-top:1px solid rgba(139,115,85,0.15);padding-top:0.9rem;margin-top:0.5rem"'
+          : ''
+      }>
         <p class="audio-row-label">🎼 Background Music</p>
         <div class="audio-row-controls">
           <button id="bgm-inner-btn" class="round-play-btn">&#9646;&#9646;</button>
