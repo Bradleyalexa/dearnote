@@ -3,6 +3,10 @@ import { getJson } from "@/lib/r2/client";
 import { verifyDokuSignature, generateDigest } from "@/lib/doku/signature";
 import { publishCard } from "@/lib/publisher/publish-card";
 
+interface StoredOrder {
+  status: string;
+}
+
 export async function POST(req: Request) {
   const secretKey = process.env.DOKU_SECRET_KEY;
   if (!secretKey) {
@@ -62,7 +66,7 @@ export async function POST(req: Request) {
     if (transactionStatus?.toUpperCase() === "SUCCESS") {
       // Load order status first to check if already published
       const orderKey = `orders/${orderId}.json`;
-      const order = await getJson<any>(orderKey);
+      const order = await getJson<StoredOrder>(orderKey);
 
       if (!order) {
         console.error(`[Doku Webhook] Order ${orderId} not found in database.`);
@@ -70,7 +74,8 @@ export async function POST(req: Request) {
       }
 
       if (order.status === "published") {
-        console.log(`[Doku Webhook] Order ${orderId} is already published. Acknowledging webhook.`);
+        console.log(`[Doku Webhook] Order ${orderId} is already published. Reconciling pending cleanup.`);
+        await publishCard(orderId);
         return NextResponse.json({ status: "ALREADY_PUBLISHED" });
       }
 
@@ -84,7 +89,7 @@ export async function POST(req: Request) {
 
     // Always acknowledge with 200 OK
     return NextResponse.json({ status: "OK" });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("[Doku Webhook] Internal server error handling webhook:", error);
     return NextResponse.json(
       { error: "Internal Server Error" },

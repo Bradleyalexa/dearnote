@@ -1,10 +1,18 @@
 import QRCode from "qrcode";
 import fs from "fs";
 import path from "path";
-import { getJson, putJson, putObject, copyObject } from "../r2/client";
+import {
+  copyObject,
+  deleteObject,
+  getJson,
+  isObjectNotFoundError,
+  objectExists,
+  putJson,
+  putObject,
+} from "../r2/client";
 import { generateConfig } from "./generate-config";
 import { generateIndexHtml } from "./generate-index-html";
-import { PublishedConfig } from "../schemas/card-draft";
+import type { CardDraft } from "../schemas/card-draft";
 
 interface OrderInfo {
   orderId: string;
@@ -17,6 +25,131 @@ interface OrderInfo {
   paymentUrl: string;
   createdAt: string;
   updatedAt: string;
+}
+
+const PENDING_ASSET_KEY_PATTERN = /^pending\/order_[A-Za-z0-9_-]+\/assets\/[A-Za-z0-9._-]+$/;
+
+function isSafePendingAssetKey(key: string): boolean {
+  // The exact segment regex prevents traversal because the filename cannot
+  // contain a slash. Consecutive dots inside a filename are therefore safe.
+  return PENDING_ASSET_KEY_PATTERN.test(key);
+}
+
+function collectPendingAssetKeys(draft: CardDraft): {
+  keys: string[];
+  hasUnsafeReferences: boolean;
+} {
+  const keys = new Set<string>();
+  let hasUnsafeReferences = false;
+
+  const addRequiredPendingKey = (key: string) => {
+    if (isSafePendingAssetKey(key)) {
+      keys.add(key);
+    } else {
+      hasUnsafeReferences = true;
+      console.warn(`[Publisher] Refusing to delete unsafe pending key: ${key}`);
+    }
+  };
+
+  for (const photo of draft.photos) addRequiredPendingKey(photo.key);
+  if (draft.voiceNote) addRequiredPendingKey(draft.voiceNote.key);
+
+  // Presets use short catalogue IDs. A key containing a slash is treated as
+  // a custom R2 upload by the existing publisher and must be a pending key.
+  if (draft.bgMusic?.key.includes("/")) {
+    addRequiredPendingKey(draft.bgMusic.key);
+  }
+
+  return { keys: [...keys], hasUnsafeReferences };
+}
+
+function getExpectedPublishedKeys(cardId: string, draft: CardDraft): string[] {
+  const cardPrefix = `cards/${cardId}`;
+  const keys = [
+    `${cardPrefix}/notes.html`,
+    `${cardPrefix}/config.json`,
+    `${cardPrefix}/qr.svg`,
+    `${cardPrefix}/qr.png`,
+    `${cardPrefix}/status.json`,
+    ...draft.photos.map((_, index) => `${cardPrefix}/assets/photo-${index + 1}.webp`),
+  ];
+
+  if (draft.voiceNote) keys.push(`${cardPrefix}/assets/voice-note.mp3`);
+  if (draft.bgMusic) keys.push(`${cardPrefix}/assets/bg-music.mp3`);
+  return keys;
+}
+
+async function cleanupPublishedPending(
+  orderId: string,
+  cardId: string,
+  draftKey: string
+): Promise<void> {
+  if (!(await objectExists(draftKey))) {
+    console.log(`[Publisher] No pending draft remains for published order ${orderId}.`);
+    return;
+  }
+
+  let draft: CardDraft;
+  try {
+    draft = await getJson<CardDraft>(draftKey);
+  } catch (error) {
+    // Another concurrent webhook may have deleted the draft between HEAD and
+    // GET. Treat that race as an already-completed idempotent cleanup.
+    if (isObjectNotFoundError(error)) {
+      console.log(`[Publisher] Pending draft was already cleaned for ${orderId}.`);
+      return;
+    }
+    throw error;
+  }
+  const expectedPublishedKeys = getExpectedPublishedKeys(cardId, draft);
+  const publishedChecks = await Promise.all(
+    expectedPublishedKeys.map(async (key) => ({ key, exists: await objectExists(key) }))
+  );
+  const missingPublishedKeys = publishedChecks
+    .filter((result) => !result.exists)
+    .map((result) => result.key);
+
+  if (missingPublishedKeys.length > 0) {
+    throw new Error(
+      `Pending cleanup blocked for ${orderId}; published objects are missing: ${missingPublishedKeys.join(", ")}`
+    );
+  }
+
+  const { keys: pendingAssetKeys, hasUnsafeReferences } = collectPendingAssetKeys(draft);
+  const deletionResults = await Promise.allSettled(
+    pendingAssetKeys.map((key) => deleteObject(key))
+  );
+  const failedAssetKeys = pendingAssetKeys.filter(
+    (_, index) => deletionResults[index].status === "rejected"
+  );
+
+  if (hasUnsafeReferences || failedAssetKeys.length > 0) {
+    throw new Error(
+      `Pending draft retained for ${orderId}; ` +
+      `${failedAssetKeys.length} asset deletion(s) failed and unsafe references=${hasUnsafeReferences}.`
+    );
+  }
+
+  // Delete the draft last. If an asset deletion fails above, retaining the
+  // draft preserves the list of keys so a later webhook can retry cleanup.
+  await deleteObject(draftKey);
+  console.log(
+    `[Publisher] Cleaned ${pendingAssetKeys.length} pending asset(s) and draft for published order ${orderId}.`
+  );
+}
+
+async function cleanupPublishedPendingBestEffort(
+  orderId: string,
+  cardId: string,
+  draftKey: string
+): Promise<void> {
+  try {
+    await cleanupPublishedPending(orderId, cardId, draftKey);
+  } catch (error) {
+    // Publication must stay successful if cleanup is temporarily unavailable.
+    // A later invocation can retry this idempotently.
+    console.warn(`[Publisher] Pending cleanup failed for ${orderId}; it will be retried.`, error);
+  }
 }
 
 /**
@@ -37,13 +170,14 @@ export async function publishCard(orderId: string): Promise<string> {
 
     // Check if already published to prevent double-publish
     if (order.status === "published") {
-      console.log(`[Publisher] Order ${orderId} is already published.`);
+      console.log(`[Publisher] Order ${orderId} is already published. Reconciling pending cleanup...`);
+      await cleanupPublishedPending(orderId, order.cardId, draftKey);
       return `${process.env.PUBLIC_CARD_BASE_URL}/cards/${order.cardId}/notes.html`;
     }
 
     // 2. Load draft data from R2
     console.log(`[Publisher] Loading draft for order ${orderId}...`);
-    const draft = await getJson<any>(draftKey);
+    const draft = await getJson<CardDraft>(draftKey);
     if (!draft) {
       throw new Error(`Draft for order ${orderId} not found in storage.`);
     }
@@ -166,6 +300,10 @@ export async function publishCard(orderId: string): Promise<string> {
       updatedAt: new Date().toISOString(),
     };
     await putJson(orderKey, updatedOrder);
+
+    // The order and all published card objects now exist. Remove only the
+    // corresponding pending uploads; cleanup failures do not unpublish card.
+    await cleanupPublishedPendingBestEffort(orderId, cardId, draftKey);
 
     console.log(`[Publisher] SUCCESS: Card ${cardId} published!`);
     return cardUrl;

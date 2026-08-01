@@ -2,6 +2,7 @@ import {
   S3Client,
   PutObjectCommand,
   GetObjectCommand,
+  HeadObjectCommand,
   CopyObjectCommand,
   DeleteObjectCommand,
 } from "@aws-sdk/client-s3";
@@ -59,6 +60,32 @@ export async function getObject(key: string): Promise<Buffer> {
   // Convert S3 body stream to a Buffer
   const bytes = await response.Body.transformToByteArray();
   return Buffer.from(bytes);
+}
+
+/**
+ * Check whether an object exists without downloading its body.
+ */
+export async function objectExists(key: string): Promise<boolean> {
+  try {
+    await s3Client.send(new HeadObjectCommand({
+      Bucket: bucketName,
+      Key: key,
+    }));
+    return true;
+  } catch (error) {
+    if (isObjectNotFoundError(error)) return false;
+    throw error;
+  }
+}
+
+export function isObjectNotFoundError(error: unknown): boolean {
+  const storageError = error as {
+    name?: string;
+    $metadata?: { httpStatusCode?: number };
+  };
+  return storageError.$metadata?.httpStatusCode === 404 ||
+    storageError.name === "NotFound" ||
+    storageError.name === "NoSuchKey";
 }
 
 /**
