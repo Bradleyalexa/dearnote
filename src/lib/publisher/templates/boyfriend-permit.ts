@@ -290,7 +290,7 @@ export function generateBoyfriendPermitHtml(config: PublishedConfig): string {
   </div>
 
   <!-- ── 1. INTRODUCTION & REQUEST FORM ── -->
-  <div class="chapter active" id="ch-intro">
+  <div class="chapter ${!hasSecretCode ? 'active' : ''}" id="ch-intro">
     <div class="bg-white border-2 border-slate-300 rounded-2xl shadow-xl max-w-md w-full p-5 relative z-10 font-sans my-auto">
       <!-- Decorative Paper Header -->
       <div class="flex items-center justify-between border-b-2 border-dashed border-slate-200 pb-4 mb-4">
@@ -584,7 +584,9 @@ export function generateBoyfriendPermitHtml(config: PublishedConfig): string {
           ? 'w-4 h-2 rounded-full bg-blue-500 transition-all duration-200' 
           : 'w-2 h-2 rounded-full bg-slate-300 transition-all duration-200';
       });
-      const pct = CHAPTERS.length > 1 ? (currentIdx / (CHAPTERS.length - 1)) * 100 : 0;
+      const pct = VISIBLE_CHAPTERS.length > 1 && vIdx >= 0
+        ? (vIdx / (VISIBLE_CHAPTERS.length - 1)) * 100
+        : 0;
       document.getElementById('progress-bar').style.width = pct + '%';
     }
 
@@ -593,9 +595,19 @@ export function generateBoyfriendPermitHtml(config: PublishedConfig): string {
       if (targetIdx === currentIdx || targetIdx < 0 || targetIdx >= CHAPTERS.length) return;
       const fromEl = document.getElementById(CHAPTERS[currentIdx]);
       const toEl   = document.getElementById(CHAPTERS[targetIdx]);
-      if (!fromEl || !toEl) return;
+      if (!toEl) return;
 
-      fromEl.classList.remove('active');
+      if (fromEl) {
+        fromEl.classList.remove('active');
+        if (fromEl.id === 'code-gate') {
+          fromEl.style.opacity = '0';
+          fromEl.style.transform = 'translateY(-20px) scale(0.98)';
+          fromEl.style.pointerEvents = 'none';
+          setTimeout(() => {
+            try { fromEl.remove(); } catch(e) {}
+          }, 600);
+        }
+      }
       toEl.classList.add('active');
 
       currentIdx = targetIdx;
@@ -710,6 +722,15 @@ export function generateBoyfriendPermitHtml(config: PublishedConfig): string {
       const val = codeInput.value.trim().toUpperCase();
       const exp = SECRET_CODE.trim().toUpperCase();
       if (!HAS_SECRET || val === exp || val === '123') {
+        const gate = document.getElementById('code-gate');
+        if (gate) {
+          gate.style.opacity = '0';
+          gate.style.transform = 'translateY(-20px) scale(0.98)';
+          gate.style.pointerEvents = 'none';
+          setTimeout(() => {
+            try { gate.remove(); } catch(e) {}
+          }, 600);
+        }
         goTo(CHAPTERS.indexOf('ch-intro'));
         setTimeout(playBgMusic, 500);
       } else {
